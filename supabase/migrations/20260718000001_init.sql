@@ -21,19 +21,6 @@ begin
 end;
 $$;
 
-create or replace function public.is_admin()
-returns boolean
-language sql
-security definer
-set search_path = public
-stable
-as $$
-  select exists (
-    select 1 from public.profiles
-    where id = auth.uid() and role = 'admin'
-  );
-$$;
-
 -- ── Identity ────────────────────────────────────────────────────
 create table public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
@@ -49,6 +36,20 @@ create table public.profiles (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+-- is_admin() must come AFTER profiles exists
+create or replace function public.is_admin()
+returns boolean
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select exists (
+    select 1 from public.profiles
+    where id = auth.uid() and role = 'admin'
+  );
+$$;
 
 create table public.provider_details (
   profile_id uuid primary key references public.profiles(id) on delete cascade,
