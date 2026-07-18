@@ -1,0 +1,56 @@
+{
+  "brand": {
+    "name": "LawMarket",
+    "tagline": "Verified legal services in Georgia"
+  },
+  "nav": {
+    "findLawyer": "Find a lawyer",
+    "expat": "Expat consultation",
+    "howItWorks": "How it works",
+    "login": "Log in",
+    "signup": "Sign up",
+    "dashboard": "Dashboard"
+  },
+  "home": {
+    "headline": "Legal services\nbacked by the record",
+    "subhead": "Find lawyers with verified cases and transparent profiles — or apply for an expat consultation.",
+    "ctaPrimary": "Find a lawyer",
+    "ctaSecondary": "Expat application",
+    "statLabel": "Manually verified cases",
+    "statValue": "Verified",
+    "sectionHowTitle": "How it works",
+    "sectionHowBody": "Three steps — from discovery to booking.",
+    "step1Title": "Discover",
+    "step1Body": "Filter by practice area, city, and language.",
+    "step2Title": "Evaluate",
+    "step2Body": "Review profile, services, and manually verified cases.",
+    "step3Title": "Book",
+    "step3Body": "Message or book — pay through a secure channel."
+  },
+  "auth": {
+    "loginTitle": "Log in",
+    "signupTitle": "Sign up",
+    "email": "Email",
+    "password": "Password",
+    "fullName": "Full name",
+    "submitLogin": "Log in",
+    "submitSignup": "Create account",
+    "noAccount": "No account?",
+    "hasAccount": "Already have an account?",
+    "onboardingTitle": "Complete your profile",
+    "roleLabel": "Who are you?",
+    "roleClient": "Client",
+    "roleProvider": "Lawyer / provider",
+    "city": "City",
+    "phone": "Phone",
+    "continue": "Continue",
+    "lawFirm": "Law firm",
+    "errorGeneric": "Something went wrong. Please try again."
+  },
+  "expat": {
+    "title": "Expat consultation",
+    "body": "Applications are reviewed. After acceptance you can pay and book a call.",
+    "criteriaTitle": "Criteria (placeholder)",
+    "applyCta": "Apply"
+  }
+}
