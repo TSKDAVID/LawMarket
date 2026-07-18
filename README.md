@@ -4,9 +4,19 @@ Premium legal-services marketplace for Georgia.
 
 **Stack:** Next.js (App Router, TypeScript) · Supabase · Tailwind CSS · shadcn/ui
 
+## Important: do not use GitHub Pages
+
+This app uses **Server Components, middleware, Server Actions, and cookie-based auth**.  
+**GitHub Pages only serves static files** — it cannot host LawMarket.
+
+If you enabled **Settings → Pages → GitHub Actions**, turn Pages **off** for this repo.  
+Use **Vercel** (connected to this GitHub repo) instead.
+
+---
+
 ## Local development
 
-1. Copy env file and fill Supabase keys:
+1. Copy env and fill keys:
 
 ```bash
 cp .env.example .env.local
@@ -19,31 +29,50 @@ npm install
 npm run dev
 ```
 
-3. Apply database migrations (remote project or local CLI):
+3. Database (already applied on the linked LawMarket Supabase project):
 
 ```bash
-# Link to your Supabase project, then:
+npx supabase link --project-ref gqgoulzulbfejzertqzj
 npx supabase db push
 npx supabase db query -f supabase/seed.sql
 ```
 
-Or paste `supabase/migrations/20260718000001_init.sql` and `supabase/seed.sql` into the Supabase SQL editor.
+---
 
-## GitHub → Vercel deployment
+## Deploy for testing (recommended): GitHub → Vercel
 
-1. Push this repo to GitHub (`TSKDAVID/LawMarket`).
-2. Import the repo in [Vercel](https://vercel.com) (Framework: Next.js).
-3. Set environment variables (Production + Preview):
+### What you do once
 
-| Variable | Notes |
+1. Go to [vercel.com](https://vercel.com) → **Add New Project** → import `TSKDAVID/LawMarket`.
+2. Framework preset: **Next.js** (auto-detected).
+3. Add environment variables (**Production** and **Preview**):
+
+| Variable | Value |
 |---|---|
-| `NEXT_PUBLIC_SUPABASE_URL` | Project URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Anon/public key |
-| `SUPABASE_SERVICE_ROLE_KEY` | Server-only; never expose to client |
-| `NEXT_PUBLIC_SITE_URL` | e.g. `https://your-app.vercel.app` |
+| `NEXT_PUBLIC_SUPABASE_URL` | `https://gqgoulzulbfejzertqzj.supabase.co` |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | your publishable / anon key |
+| `SUPABASE_SERVICE_ROLE_KEY` | your **secret** / service_role key (server only) |
+| `NEXT_PUBLIC_SITE_URL` | your Vercel URL, e.g. `https://lawmarket.vercel.app` |
 
-4. In Supabase Auth → URL configuration, add your Vercel URL(s) to redirect allow-list.
-5. Run the init migration + seed on the hosted Supabase project before testing signup.
+4. Deploy. Every push to `main` will auto-deploy.
+5. In Supabase → **Authentication → URL configuration**:
+   - Site URL = your Vercel URL
+   - Redirect URLs include `https://YOUR-APP.vercel.app/**` and `http://localhost:3000/**`
+
+### What GitHub Actions already does
+
+- **CI** (`.github/workflows/ci.yml`): on every push/PR to `main`, runs `lint` + `build` so broken code is caught before deploy.
+- **Optional Vercel Actions deploy** (`.github/workflows/deploy-vercel.yml`): only needed if you prefer Actions over Vercel’s GitHub integration. Leave it off unless you add `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID` secrets.
+
+---
+
+## Checklist
+
+- [ ] Disable GitHub Pages on this repo (if enabled)
+- [ ] Import repo in Vercel and set the 4 env vars above
+- [ ] Paste **secret** key into Vercel + local `.env.local` (`SUPABASE_SERVICE_ROLE_KEY`)
+- [ ] Add Vercel URL to Supabase Auth redirect allow-list
+- [ ] Confirm CI is green on GitHub → Actions
 
 ## Phase 1 status
 
@@ -52,6 +81,7 @@ Or paste `supabase/migrations/20260718000001_init.sql` and `supabase/seed.sql` i
 - Auth (signup/login/onboarding) — profiles created by DB trigger
 - Expat consultation apply flow (placeholder criteria, submittable)
 - `lib/data/*` service layer (admin via `lib/data/admin.ts`)
+- GitHub Actions CI + Vercel deploy docs
 
 ## Scripts
 
