@@ -1,40 +1,51 @@
 @import "tailwindcss";
 
-@theme inline {
-  --color-paper: #f3f3f0;
-  --color-paper-alt: #edece7;
-  --color-ink: #17171a;
-  --color-ink-muted: #54534a;
-  --color-border: #dedcd3;
-  --color-seal: #6e2a28;
-  --color-brass: #9c7c3c;
-  --color-brass-bg: #f3eee0;
-  --color-background: var(--color-paper);
-  --color-foreground: var(--color-ink);
-  --color-muted: var(--color-ink-muted);
-  --color-primary: var(--color-seal);
-  --color-accent: var(--color-brass);
-  --font-display: var(--font-libre-caslon), var(--font-noto-serif-georgian), serif;
-  --font-sans: var(--font-inter), var(--font-noto-sans-georgian), system-ui, sans-serif;
-  --font-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
+@theme {
+  --color-brand-50: #f4f6fb;
+  --color-brand-100: #e6eaf5;
+  --color-brand-200: #c8d2e9;
+  --color-brand-300: #9aabd4;
+  --color-brand-400: #6580ba;
+  --color-brand-500: #435fa1;
+  --color-brand-600: #324a86;
+  --color-brand-700: #293c6d;
+  --color-brand-800: #1f2d51;
+  --color-brand-900: #16203a;
+  --color-brand-950: #0d1424;
+
+  --font-sans: var(--font-noto-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-noto-serif), ui-serif, Georgia, serif;
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
+body {
+  @apply bg-white text-slate-800 antialiased;
+}
 
-  html {
-    @apply scroll-smooth;
-  }
+::selection {
+  @apply bg-brand-800 text-white;
+}
 
-  body {
-    @apply bg-paper text-ink font-sans antialiased;
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-  h1,
-  h2,
-  h3 {
-    @apply font-display tracking-tight text-ink;
-  }
+.animate-fade-up {
+  animation: fade-up 0.6s ease-out both;
+}
+
+.delay-100 {
+  animation-delay: 100ms;
+}
+.delay-200 {
+  animation-delay: 200ms;
+}
+.delay-300 {
+  animation-delay: 300ms;
 }

@@ -1,36 +1,67 @@
-import { getOwnProfile } from "@/lib/data/profiles";
+import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
+import { createClient } from "@/lib/supabase/server";
+import { Badge } from "@/components/ui/badge";
+import { ProviderProfileForm } from "@/components/provider/profile-form";
 
-export default async function ProfilePage(): Promise<React.JSX.Element> {
-  const profile = await getOwnProfile();
+export default async function DashboardProfilePage() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  const t = await getTranslations("dashboard.profile");
+
+  const [{ data: profile }, { data: areas }, { data: existing }] =
+    await Promise.all([
+      supabase.from("profiles").select("role, full_name").eq("id", user.id).single(),
+      supabase.from("practice_areas").select("*").order("id"),
+      supabase
+        .from("provider_profiles")
+        .select("*, provider_practice_areas ( practice_area_id )")
+        .eq("id", user.id)
+        .maybeSingle(),
+    ]);
+
+  if (profile?.role !== "provider") {
+    return <p className="text-slate-500">{t("notProvider")}</p>;
+  }
 
   return (
     <div>
-      <h1 className="font-display text-3xl">პროფილი</h1>
-      <dl className="mt-8 grid gap-4 border border-border p-6 sm:grid-cols-2">
-        <div>
-          <dt className="text-xs uppercase tracking-wide text-ink-muted">სახელი</dt>
-          <dd className="mt-1 text-ink">{profile?.full_name}</dd>
-        </div>
-        <div>
-          <dt className="text-xs uppercase tracking-wide text-ink-muted">როლი</dt>
-          <dd className="mt-1 font-mono text-sm">{profile?.role}</dd>
-        </div>
-        <div>
-          <dt className="text-xs uppercase tracking-wide text-ink-muted">ქალაქი</dt>
-          <dd className="mt-1 text-ink">{profile?.city ?? "—"}</dd>
-        </div>
-        <div>
-          <dt className="text-xs uppercase tracking-wide text-ink-muted">ტელეფონი</dt>
-          <dd className="mt-1 text-ink">{profile?.phone ?? "—"}</dd>
-        </div>
-        {profile?.public_slug ? (
-          <div className="sm:col-span-2">
-            <dt className="text-xs uppercase tracking-wide text-ink-muted">საჯარო slug</dt>
-            <dd className="mt-1 font-mono text-sm">/providers/{profile.public_slug}</dd>
-          </div>
-        ) : null}
-      </dl>
-      <p className="mt-4 text-sm text-ink-muted">რედაქტორის ფორმა Phase 3-ში დაემატება.</p>
+      <div className="flex items-center gap-3">
+        <h1 className="font-serif text-2xl font-bold text-slate-900">
+          {t("title")}
+        </h1>
+        {existing && (
+          <Badge variant={existing.is_published ? "success" : "warning"}>
+            {existing.is_published ? t("published") : t("unpublished")}
+          </Badge>
+        )}
+      </div>
+
+      <div className="mt-8 rounded-xl border border-slate-200 bg-white p-6 sm:p-8">
+        <ProviderProfileForm
+          areas={areas ?? []}
+          values={{
+            slug: existing?.slug ?? "",
+            headline_ka: existing?.headline_ka ?? "",
+            headline_en: existing?.headline_en ?? "",
+            bio_ka: existing?.bio_ka ?? "",
+            bio_en: existing?.bio_en ?? "",
+            city: existing?.city ?? "",
+            languages: existing?.languages ?? ["ka"],
+            years_experience: existing?.years_experience ?? 0,
+            accepts_expat: existing?.accepts_expat ?? false,
+            is_published: existing?.is_published ?? false,
+            practiceAreaIds:
+              existing?.provider_practice_areas?.map(
+                (pa: { practice_area_id: number }) => pa.practice_area_id,
+              ) ?? [],
+          }}
+        />
+      </div>
     </div>
   );
 }

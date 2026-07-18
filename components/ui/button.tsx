@@ -1,22 +1,23 @@
 import * as React from "react";
-import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-sm text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-seal/40 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center gap-2 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        default: "bg-seal text-paper hover:bg-seal/90",
-        secondary: "border border-border bg-transparent text-ink hover:bg-paper-alt",
-        ghost: "text-ink hover:bg-paper-alt",
-        link: "text-seal underline-offset-4 hover:underline",
+        default: "bg-brand-900 text-white hover:bg-brand-800",
+        secondary: "bg-brand-50 text-brand-900 hover:bg-brand-100",
+        outline:
+          "border border-slate-200 bg-white text-slate-800 hover:bg-slate-50",
+        ghost: "text-slate-700 hover:bg-slate-100",
+        destructive: "bg-red-600 text-white hover:bg-red-500",
       },
       size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-8 rounded-sm px-3 text-xs",
-        lg: "h-12 rounded-sm px-6 text-base",
+        default: "h-10 px-5",
+        sm: "h-8 px-3 text-xs",
+        lg: "h-12 px-7 text-base",
       },
     },
     defaultVariants: {
@@ -28,17 +29,15 @@ const buttonVariants = cva(
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
-  asChild?: boolean;
+    VariantProps<typeof buttonVariants> {}
+
+function Button({ className, variant, size, ...props }: ButtonProps) {
+  return (
+    <button
+      className={cn(buttonVariants({ variant, size }), className)}
+      {...props}
+    />
+  );
 }
 
-export function Button({
-  className,
-  variant,
-  size,
-  asChild = false,
-  ...props
-}: ButtonProps): React.JSX.Element {
-  const Comp = asChild ? Slot : "button";
-  return <Comp className={cn(buttonVariants({ variant, size, className }))} {...props} />;
-}
+export { Button, buttonVariants };

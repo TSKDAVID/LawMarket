@@ -1,54 +1,91 @@
 import Link from "next/link";
-import { VerifiedSeal } from "@/components/marketplace/VerifiedSeal";
-import type { ProviderListItem } from "@/lib/data/providers";
+import { getLocale, getTranslations } from "next-intl/server";
+import { BadgeCheck, MapPin, Plane } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { pickLocale, formatGel } from "@/lib/utils";
+import type { ProviderListItem } from "@/lib/types";
 
-export function ProviderCard({ provider }: { provider: ProviderListItem }): React.JSX.Element {
-  const areas = (provider.provider_practice_areas ?? [])
-    .map((p) => p.practice_areas?.name)
+export async function ProviderCard({ provider }: { provider: ProviderListItem }) {
+  const locale = await getLocale();
+  const t = await getTranslations("lawyers");
+  const tc = await getTranslations("common");
+
+  const name = provider.profiles?.full_name ?? "";
+  const initials = name
+    .split(" ")
+    .map((p) => p[0])
+    .slice(0, 2)
+    .join("");
+  const areas = provider.provider_practice_areas
+    .map((pa) => pa.practice_areas)
     .filter(Boolean)
     .slice(0, 3);
-  const languages = provider.provider_details?.languages ?? [];
-  const verified = provider.provider_details?.identity_verified;
+  const verifiedCount = provider.cases.length;
+  const minPrice = provider.services.length
+    ? Math.min(...provider.services.map((s) => Number(s.price_gel)))
+    : null;
 
   return (
-    <Link
-      href={`/providers/${provider.public_slug}`}
-      className="group block border border-border bg-paper p-5 transition-colors hover:bg-paper-alt/60"
-    >
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <h2 className="font-display text-xl text-ink group-hover:text-seal transition-colors">
-            {provider.full_name}
-          </h2>
-          {provider.provider_details?.law_firm ? (
-            <p className="mt-1 text-sm text-ink-muted">{provider.provider_details.law_firm}</p>
-          ) : null}
-        </div>
-        {verified ? <VerifiedSeal size={36} /> : null}
-      </div>
-
-      <dl className="mt-4 grid gap-2 text-sm">
-        <div className="flex gap-2">
-          <dt className="font-mono text-xs uppercase tracking-wide text-ink-muted">ქალაქი</dt>
-          <dd className="text-ink">{provider.city ?? "—"}</dd>
-        </div>
-        {provider.provider_details?.years_experience != null ? (
-          <div className="flex gap-2">
-            <dt className="font-mono text-xs uppercase tracking-wide text-ink-muted">გამოცდილება</dt>
-            <dd className="font-mono text-ink">{provider.provider_details.years_experience} წელი</dd>
+    <Link href={`/lawyers/${provider.slug}`} className="group block h-full">
+      <Card className="h-full transition-all group-hover:-translate-y-0.5 group-hover:shadow-md">
+        <CardContent className="flex h-full flex-col p-6">
+          <div className="flex items-start gap-4">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-50 font-serif font-bold text-brand-800">
+              {initials}
+            </div>
+            <div className="min-w-0">
+              <h3 className="truncate font-semibold text-slate-900 group-hover:text-brand-800">
+                {name}
+              </h3>
+              <p className="mt-0.5 line-clamp-2 text-sm text-slate-500">
+                {pickLocale(locale, provider.headline_ka, provider.headline_en)}
+              </p>
+            </div>
           </div>
-        ) : null}
-      </dl>
 
-      {areas.length > 0 ? (
-        <p className="mt-4 text-sm text-ink-muted">{areas.join(" · ")}</p>
-      ) : null}
+          <div className="mt-4 flex flex-wrap gap-1.5">
+            {areas.map((a) => (
+              <Badge key={a!.id} variant="outline">
+                {pickLocale(locale, a!.name_ka, a!.name_en)}
+              </Badge>
+            ))}
+            {provider.accepts_expat && (
+              <Badge variant="default">
+                <Plane className="h-3 w-3" /> Expat
+              </Badge>
+            )}
+          </div>
 
-      {languages.length > 0 ? (
-        <p className="mt-2 font-mono text-xs uppercase tracking-wide text-brass">
-          {languages.join(" / ")}
-        </p>
-      ) : null}
+          <div className="mt-auto flex items-center justify-between pt-4 text-xs text-slate-500">
+            <span className="inline-flex items-center gap-1">
+              <MapPin className="h-3.5 w-3.5" />
+              {provider.city}
+            </span>
+            {verifiedCount > 0 && (
+              <span className="inline-flex items-center gap-1 font-medium text-emerald-700">
+                <BadgeCheck className="h-3.5 w-3.5" />
+                {verifiedCount} {t("verifiedCases")}
+              </span>
+            )}
+            {minPrice !== null && (
+              <span>
+                {t("from")} {formatGel(minPrice, locale)}
+              </span>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </Link>
   );
 }
+
+export const providerListSelect = `
+  id, slug, headline_ka, headline_en, city, languages, years_experience, accepts_expat,
+  profiles ( full_name, avatar_url ),
+  provider_practice_areas ( practice_areas ( id, slug, name_ka, name_en ) ),
+  cases ( id ),
+  services ( price_gel )
+`;
+
+export { type ProviderListItem };

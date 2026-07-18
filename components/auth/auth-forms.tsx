@@ -1,67 +1,118 @@
 "use client";
 
-import { useActionState } from "react";
 import Link from "next/link";
-import { loginAction, signupAction, type AuthActionState } from "@/app/(auth)/actions";
+import { useActionState } from "react";
+import { useTranslations } from "next-intl";
+import { login, signup, type AuthState } from "@/lib/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 
-const initial: AuthActionState = {};
-
-export function LoginForm({ nextPath }: { nextPath?: string }): React.JSX.Element {
-  const [state, action, pending] = useActionState(loginAction, initial);
+export function LoginForm({ next }: { next?: string }) {
+  const t = useTranslations("auth");
+  const [state, action, pending] = useActionState<AuthState, FormData>(
+    login,
+    null,
+  );
 
   return (
-    <form action={action} className="space-y-4">
-      {nextPath ? <input type="hidden" name="next" value={nextPath} /> : null}
+    <form action={action} className="space-y-5">
+      {next && <input type="hidden" name="next" value={next} />}
+      {state?.error && (
+        <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+          {t("invalidCredentials")}
+        </p>
+      )}
       <div className="space-y-2">
-        <Label htmlFor="email">ელფოსტა</Label>
-        <Input id="email" name="email" type="email" required autoComplete="email" />
+        <Label htmlFor="email">{t("email")}</Label>
+        <Input id="email" name="email" type="email" required autoFocus />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="password">პაროლი</Label>
-        <Input id="password" name="password" type="password" required autoComplete="current-password" />
+        <Label htmlFor="password">{t("password")}</Label>
+        <Input id="password" name="password" type="password" required />
       </div>
-      {state.error ? <p className="text-sm text-seal">{state.error}</p> : null}
-      <Button type="submit" className="w-full" disabled={pending}>
-        {pending ? "..." : "შესვლა"}
+      <Button type="submit" size="lg" className="w-full" disabled={pending}>
+        {t("loginButton")}
       </Button>
-      <p className="text-sm text-ink-muted">
-        არ გაქვს ანგარიში?{" "}
-        <Link href="/signup" className="text-seal underline-offset-4 hover:underline">
-          რეგისტრაცია
+      <p className="text-center text-sm text-slate-500">
+        {t("noAccount")}{" "}
+        <Link href="/signup" className="font-medium text-brand-800 hover:underline">
+          {t("signupButton")}
         </Link>
       </p>
     </form>
   );
 }
 
-export function SignupForm(): React.JSX.Element {
-  const [state, action, pending] = useActionState(signupAction, initial);
+export function SignupForm() {
+  const t = useTranslations("auth");
+  const [state, action, pending] = useActionState<AuthState, FormData>(
+    signup,
+    null,
+  );
 
   return (
-    <form action={action} className="space-y-4">
+    <form action={action} className="space-y-5">
+      {state?.error && (
+        <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+          {t("signupError")}
+        </p>
+      )}
       <div className="space-y-2">
-        <Label htmlFor="fullName">სრული სახელი</Label>
-        <Input id="fullName" name="fullName" required autoComplete="name" />
+        <Label htmlFor="full_name">{t("fullName")}</Label>
+        <Input id="full_name" name="full_name" required autoFocus />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="email">ელფოსტა</Label>
-        <Input id="email" name="email" type="email" required autoComplete="email" />
+        <Label htmlFor="email">{t("email")}</Label>
+        <Input id="email" name="email" type="email" required />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="password">პაროლი</Label>
-        <Input id="password" name="password" type="password" required minLength={8} autoComplete="new-password" />
+        <Label htmlFor="password">{t("password")}</Label>
+        <Input
+          id="password"
+          name="password"
+          type="password"
+          minLength={8}
+          required
+        />
+        <p className="text-xs text-slate-400">{t("passwordHint")}</p>
       </div>
-      {state.error ? <p className="text-sm text-seal">{state.error}</p> : null}
-      <Button type="submit" className="w-full" disabled={pending}>
-        {pending ? "..." : "ანგარიშის შექმნა"}
+
+      <fieldset className="space-y-2">
+        <Label>{t("iAm")}</Label>
+        <div className="grid gap-2 sm:grid-cols-2">
+          {[
+            { value: "client", label: t("roleClient") },
+            { value: "provider", label: t("roleProvider") },
+          ].map((role, i) => (
+            <label
+              key={role.value}
+              className={cn(
+                "flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-700",
+                "has-checked:border-brand-800 has-checked:bg-brand-50 has-checked:text-brand-900",
+              )}
+            >
+              <input
+                type="radio"
+                name="role"
+                value={role.value}
+                defaultChecked={i === 0}
+                className="accent-brand-900"
+              />
+              {role.label}
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      <Button type="submit" size="lg" className="w-full" disabled={pending}>
+        {t("signupButton")}
       </Button>
-      <p className="text-sm text-ink-muted">
-        უკვე გაქვს ანგარიში?{" "}
-        <Link href="/login" className="text-seal underline-offset-4 hover:underline">
-          შესვლა
+      <p className="text-center text-sm text-slate-500">
+        {t("haveAccount")}{" "}
+        <Link href="/login" className="font-medium text-brand-800 hover:underline">
+          {t("loginButton")}
         </Link>
       </p>
     </form>

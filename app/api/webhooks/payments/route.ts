@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
 
 /**
- * Payment webhooks (BOG iPay / TBC) — Phase 3+.
- * Stub only: verifies nothing and writes nothing yet.
+ * Reserved endpoint for the BOG iPay payment gateway callback.
+ * The current build uses a stubbed payment flow; when real payments are
+ * integrated, this handler will verify the gateway signature and update
+ * the corresponding booking/payment records.
  */
-export async function POST(): Promise<NextResponse> {
+export async function POST() {
   return NextResponse.json(
-    { ok: false, message: "Payment webhooks are not implemented yet." },
-    { status: 501 },
+    { received: true, note: "Payment webhook stub — BOG iPay integration pending." },
+    { status: 200 },
   );
 }

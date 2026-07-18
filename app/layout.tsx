@@ -1,64 +1,45 @@
 import type { Metadata } from "next";
-import { Libre_Caslon_Display, Inter, IBM_Plex_Mono, Noto_Serif_Georgian, Noto_Sans_Georgian } from "next/font/google";
+import { Noto_Sans_Georgian, Noto_Serif_Georgian } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
-import { getLocale, getMessages } from "next-intl/server";
+import { getLocale } from "next-intl/server";
+import { SiteHeader } from "@/components/shared/site-header";
+import { SiteFooter } from "@/components/shared/site-footer";
 import "./globals.css";
 
-const libreCaslon = Libre_Caslon_Display({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-libre-caslon",
-  display: "swap",
+const notoSans = Noto_Sans_Georgian({
+  subsets: ["georgian", "latin"],
+  variable: "--font-noto-sans",
 });
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-const ibmPlexMono = IBM_Plex_Mono({
-  weight: ["400", "500"],
-  subsets: ["latin"],
-  variable: "--font-ibm-plex-mono",
-  display: "swap",
-});
-
-const notoSerifGeorgian = Noto_Serif_Georgian({
-  subsets: ["georgian"],
-  variable: "--font-noto-serif-georgian",
-  display: "swap",
-});
-
-const notoSansGeorgian = Noto_Sans_Georgian({
-  subsets: ["georgian"],
-  variable: "--font-noto-sans-georgian",
-  display: "swap",
+const notoSerif = Noto_Serif_Georgian({
+  subsets: ["georgian", "latin"],
+  variable: "--font-noto-serif",
 });
 
 export const metadata: Metadata = {
   title: {
-    default: "LawMarket",
-    template: "%s · LawMarket",
+    default: "LawMarket — იურიდიული ბაზარი საქართველოსთვის",
+    template: "%s | LawMarket",
   },
-  description: "დადასტურებული იურიდიული მომსახურება საქართველოში",
+  description:
+    "იპოვე ვერიფიცირებული იურისტი საქართველოში. გამჭვირვალე ფასები, ვერიფიცირებული საქმეები, პირდაპირი კომუნიკაცია.",
 };
 
 export default async function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>): Promise<React.JSX.Element> {
+}: Readonly<{ children: React.ReactNode }>) {
   const locale = await getLocale();
-  const messages = await getMessages();
 
   return (
-    <html
-      lang={locale}
-      className={`${libreCaslon.variable} ${inter.variable} ${ibmPlexMono.variable} ${notoSerifGeorgian.variable} ${notoSansGeorgian.variable}`}
-    >
-      <body>
-        <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
+    <html lang={locale}>
+      <body
+        className={`${notoSans.variable} ${notoSerif.variable} flex min-h-screen flex-col font-sans`}
+      >
+        <NextIntlClientProvider>
+          <SiteHeader />
+          <main className="flex-1">{children}</main>
+          <SiteFooter />
+        </NextIntlClientProvider>
       </body>
     </html>
   );

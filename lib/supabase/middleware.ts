@@ -1,75 +1,43 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-export async function updateSession(request: NextRequest): Promise<NextResponse> {
-  let supabaseResponse = NextResponse.next({
-    request,
-  });
+const PROTECTED_PREFIXES = ["/dashboard", "/admin"];
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+export async function updateSession(request: NextRequest) {
+  let supabaseResponse = NextResponse.next({ request });
 
-  if (!url || !anonKey) {
-    return supabaseResponse;
-  }
-
-  const supabase = createServerClient(url, anonKey, {
-    cookies: {
-      getAll() {
-        return request.cookies.getAll();
-      },
-      setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
-        cookiesToSet.forEach(({ name, value }) => {
-          request.cookies.set(name, value);
-        });
-        supabaseResponse = NextResponse.next({
-          request,
-        });
-        cookiesToSet.forEach(({ name, value, options }) => {
-          supabaseResponse.cookies.set(name, value, options);
-        });
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) =>
+            request.cookies.set(name, value),
+          );
+          supabaseResponse = NextResponse.next({ request });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options),
+          );
+        },
       },
     },
-  });
+  );
 
+  // Do not run code between createServerClient and getUser().
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const path = request.nextUrl.pathname;
-  const isDashboard = path.startsWith("/dashboard");
-  const isAdmin = path.startsWith("/admin");
-  const isAuthPage = path === "/login" || path === "/signup" || path === "/onboarding";
-
-  if ((isDashboard || isAdmin) && !user) {
-    const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = "/login";
-    redirectUrl.searchParams.set("next", path);
-    return NextResponse.redirect(redirectUrl);
-  }
-
-  if (user && (path === "/login" || path === "/signup")) {
-    const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = "/dashboard";
-    return NextResponse.redirect(redirectUrl);
-  }
-
-  if (isAdmin && user) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .maybeSingle();
-
-    if (profile?.role !== "admin") {
-      const redirectUrl = request.nextUrl.clone();
-      redirectUrl.pathname = "/dashboard";
-      return NextResponse.redirect(redirectUrl);
-    }
-  }
-
-  if (user && !isAuthPage && path === "/onboarding") {
-    return supabaseResponse;
+  const { pathname } = request.nextUrl;
+  if (!user && PROTECTED_PREFIXES.some((p) => pathname.startsWith(p))) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    url.searchParams.set("next", pathname);
+    return NextResponse.redirect(url);
   }
 
   return supabaseResponse;

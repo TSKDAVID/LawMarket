@@ -1,17 +1,21 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-export type InputProps = React.InputHTMLAttributes<HTMLInputElement>;
-
-export function Input({ className, type, ...props }: InputProps): React.JSX.Element {
+function Input({
+  className,
+  type,
+  ...props
+}: React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <input
       type={type}
       className={cn(
-        "flex h-10 w-full rounded-sm border border-border bg-paper px-3 py-2 text-sm text-ink placeholder:text-ink-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-seal/30 disabled:cursor-not-allowed disabled:opacity-50",
+        "h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 disabled:cursor-not-allowed disabled:opacity-50",
         className,
       )}
       {...props}
     />
   );
 }
+
+export { Input };
