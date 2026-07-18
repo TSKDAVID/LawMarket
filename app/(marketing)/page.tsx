@@ -2,9 +2,13 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Button } from "@/components/ui/button";
 import { VerifiedSeal } from "@/components/marketplace/VerifiedSeal";
+import { ProviderCard } from "@/components/marketplace/provider-card";
+import { listPublishedProviders } from "@/lib/data/providers";
 
 export default async function HomePage(): Promise<React.JSX.Element> {
   const t = await getTranslations("home");
+  const providers = await listPublishedProviders();
+  const featured = providers.slice(0, 3);
 
   return (
     <>
@@ -66,6 +70,27 @@ export default async function HomePage(): Promise<React.JSX.Element> {
           ))}
         </ol>
       </section>
+
+      {featured.length > 0 ? (
+        <section className="border-t border-border bg-paper-alt/40">
+          <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <h2 className="text-3xl sm:text-4xl">პროვაიდერები</h2>
+                <p className="mt-2 text-ink-muted">დემო პროფილები ტესტირებისთვის.</p>
+              </div>
+              <Button asChild variant="secondary">
+                <Link href="/providers">ყველას ნახვა</Link>
+              </Button>
+            </div>
+            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {featured.map((p) => (
+                <ProviderCard key={p.id} provider={p} />
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
     </>
   );
 }
