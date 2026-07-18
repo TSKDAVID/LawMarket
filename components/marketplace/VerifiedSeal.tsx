@@ -7,6 +7,7 @@ interface VerifiedSealProps {
   title?: string;
 }
 
+/** Minimal line-art verification seal — signature motif, not a generic check badge. */
 export function VerifiedSeal({
   className,
   size = 48,

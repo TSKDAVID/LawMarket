@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Button } from "@/components/ui/button";
-import { VerifiedSeal } from "@/components/marketplace/verified-seal";
+import { VerifiedSeal } from "@/components/marketplace/VerifiedSeal";
 
 export default async function HomePage(): Promise<React.JSX.Element> {
   const t = await getTranslations("home");
@@ -13,7 +13,7 @@ export default async function HomePage(): Promise<React.JSX.Element> {
           className="pointer-events-none absolute inset-0 opacity-[0.35]"
           style={{
             backgroundImage:
-              "radial-gradient(ellipse 80% 60% at 100% 0%, #EDECE7 0%, transparent 55%), radial-gradient(ellipse 50% 40% at 0% 100%, #F3EEE0 0%, transparent 50%)",
+              "radial-gradient(ellipse 80% 60% at 100% 0%, var(--color-paper-alt) 0%, transparent 55%), radial-gradient(ellipse 50% 40% at 0% 100%, var(--color-brass-bg) 0%, transparent 50%)",
           }}
         />
         <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-20 sm:px-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-end lg:gap-16 lg:py-28">
