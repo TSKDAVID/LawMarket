@@ -1,34 +1,116 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-50: #f4f6fb;
-  --color-brand-100: #e6eaf5;
-  --color-brand-200: #c8d2e9;
-  --color-brand-300: #9aabd4;
-  --color-brand-400: #6580ba;
-  --color-brand-500: #435fa1;
-  --color-brand-600: #324a86;
-  --color-brand-700: #293c6d;
-  --color-brand-800: #1f2d51;
-  --color-brand-900: #16203a;
-  --color-brand-950: #0d1424;
+  --color-espresso: #1c1210;
+  --color-espresso-hover: #2a1d19;
+  --color-cream: #f6efe3;
+  --color-cream-muted: #ede2cf;
+  --color-burgundy: #6b1423;
+  --color-burgundy-dark: #4a0e1f;
+  --color-burgundy-tint: #f3e4e6;
+  --color-brass: #8a6d3b;
 
-  --font-sans: var(--font-noto-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-noto-serif), ui-serif, Georgia, serif;
+  --accent-action: #6b1423;
+  --accent-trust: #8a6d3b;
+  --surface-dark: #1c1210;
+  --text-muted: rgba(28, 18, 16, 0.5);
+
+  --text-display: 3rem;
+  --text-title: 1.875rem;
+  --text-body: 1rem;
+  --text-meta: 0.875rem;
+
+  --font-heading: var(--font-inter);
+  --font-body: var(--font-inter);
+
+  --radius-card: 0.75rem;
+  --radius-control: 0.625rem;
+  --radius-pill: 9999px;
+
+  --section-sm: 2.5rem;
+  --section-md: 4rem;
+  --section-lg: 5rem;
+
+  --page-max: 85rem;
+  --page-gutter: clamp(1.25rem, 4vw, 2.5rem);
+}
+
+html[data-locale="en"] {
+  --font-heading: var(--font-playfair);
+  --font-body: var(--font-inter);
+}
+
+html[data-locale="ka"] {
+  --font-heading: var(--font-noto-serif-ka);
+  --font-body: var(--font-noto-sans-ka);
 }
 
 body {
-  @apply bg-white text-slate-800 antialiased;
+  @apply bg-cream text-espresso antialiased;
+  font-family: var(--font-body);
+}
+
+/* Soft paper grain — signature Law Market texture on cream surfaces */
+.paper-grain {
+  background-image:
+    radial-gradient(rgba(28, 18, 16, 0.035) 0.6px, transparent 0.6px),
+    radial-gradient(rgba(107, 20, 35, 0.025) 0.5px, transparent 0.5px);
+  background-size: 3px 3px, 7px 7px;
+  background-position: 0 0, 1px 2px;
+}
+
+/* Comfortable editorial width — not full-bleed, not a narrow SaaS column */
+.page-shell {
+  width: 100%;
+  max-width: var(--page-max);
+  margin-inline: auto;
+  padding-inline: var(--page-gutter);
+}
+
+.page-shell--narrow {
+  max-width: 42rem;
+}
+
+/* Featured service card — subtle brass corner, one place only */
+.chamber-corner {
+  position: relative;
+}
+
+.chamber-corner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-top: 2px solid color-mix(in srgb, var(--color-brass) 55%, transparent);
+  border-right: 2px solid color-mix(in srgb, var(--color-brass) 55%, transparent);
+  pointer-events: none;
+}
+
+/* Burgundy left rule — brand marker for section titles */
+.brand-rule {
+  @apply border-l-[3px] border-burgundy pl-4;
 }
 
 ::selection {
-  @apply bg-brand-800 text-white;
+  @apply bg-burgundy text-cream;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: clip;
+}
+
+body {
+  overflow-x: clip;
+  max-width: 100%;
 }
 
 @keyframes fade-up {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -37,15 +119,14 @@ body {
 }
 
 .animate-fade-up {
-  animation: fade-up 0.6s ease-out both;
+  animation: fade-up 0.5s ease-out both;
 }
 
-.delay-100 {
-  animation-delay: 100ms;
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
-.delay-200 {
-  animation-delay: 200ms;
-}
-.delay-300 {
-  animation-delay: 300ms;
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }

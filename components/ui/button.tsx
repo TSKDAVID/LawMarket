@@ -1,43 +1,45 @@
-import * as React from "react";
+import { type ButtonHTMLAttributes, forwardRef } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
-const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+export const buttonVariants = cva(
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius-control)] font-body font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-burgundy focus-visible:ring-offset-2 focus-visible:ring-offset-cream disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        default: "bg-brand-900 text-white hover:bg-brand-800",
-        secondary: "bg-brand-50 text-brand-900 hover:bg-brand-100",
+        primary: "bg-burgundy text-cream hover:bg-burgundy-dark",
+        dark: "bg-espresso text-cream hover:bg-espresso-hover",
         outline:
-          "border border-slate-200 bg-white text-slate-800 hover:bg-slate-50",
-        ghost: "text-slate-700 hover:bg-slate-100",
-        destructive: "bg-red-600 text-white hover:bg-red-500",
+          "border border-espresso/20 bg-transparent text-espresso hover:border-burgundy hover:text-burgundy",
+        outlineInverse:
+          "border border-cream/30 bg-transparent text-cream hover:border-cream hover:bg-cream/10",
+        ghost: "bg-transparent text-espresso hover:bg-espresso/5",
       },
       size: {
-        default: "h-10 px-5",
-        sm: "h-8 px-3 text-xs",
+        sm: "h-9 px-4 text-sm",
+        md: "h-11 px-6 text-sm",
         lg: "h-12 px-7 text-base",
       },
     },
     defaultVariants: {
-      variant: "default",
-      size: "default",
+      variant: "primary",
+      size: "md",
     },
-  },
+  }
 );
 
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {}
+export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
+  VariantProps<typeof buttonVariants>;
 
-function Button({ className, variant, size, ...props }: ButtonProps) {
-  return (
-    <button
-      className={cn(buttonVariants({ variant, size }), className)}
-      {...props}
-    />
-  );
-}
-
-export { Button, buttonVariants };
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, size, ...props }, ref) => {
+    return (
+      <button
+        ref={ref}
+        className={cn(buttonVariants({ variant, size }), className)}
+        {...props}
+      />
+    );
+  }
+);
+Button.displayName = "Button";

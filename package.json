@@ -2,32 +2,37 @@
   "name": "lawmarket",
   "version": "0.1.0",
   "private": true,
+  "description": "Law Market — a bilingual (Georgian/English) marketplace for browsing, comparing, and booking fixed-price legal services from verified lawyers.",
+  "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && node scripts/postbuild.mjs",
     "start": "next start",
     "lint": "eslint"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TSKDAVID/LawMarket.git"
+  },
+  "license": "UNLICENSED",
   "dependencies": {
-    "@supabase/ssr": "^0.12.3",
-    "@supabase/supabase-js": "^2.110.7",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "lucide-react": "^1.25.0",
-    "next": "16.2.10",
-    "next-intl": "^4.13.2",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
+    "lucide-react": "^1.30.0",
+    "next": "^16.3.0",
+    "next-intl": "^4.13.5",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.2.10",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^26.2.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.3.0",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^6.0.3"
   }
 }

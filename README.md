@@ -1,62 +1,59 @@
-# LawMarket
+# Law Market
 
-Legal-services marketplace for Georgia. Lawyers publish profiles, list services and show admin-verified successful cases; clients discover providers, message them and book services. Includes a dedicated expat-consultation track for foreigners setting up or operating in Georgia.
+Bilingual (Georgian / English) marketplace for fixed-price legal services in Georgia.
 
-Primary language is Georgian, with a full English translation (useful for the expat track).
-
-## Stack
-
-- **Next.js 15** (App Router, TypeScript, Server Actions)
-- **Supabase** — Postgres, Auth, Storage, Realtime (RLS on every table)
-- **Tailwind CSS 4** with a small hand-rolled shadcn-style component set
-- **next-intl** — cookie-based locale switching (`ka` default, `en`)
+**Live site (after Pages is enabled):** https://lawmarket.ge  
+**GitHub Pages URL:** https://TSKDAVID.github.io/LawMarket/
 
 ## Local development
 
-1. Install dependencies:
+```bash
+npm install
+npm run dev
+```
 
-   ```bash
-   npm install
-   ```
+Open [http://localhost:3000](http://localhost:3000).
 
-2. Copy `.env.example` to `.env.local` and fill in your Supabase project credentials:
+## Production build (static export)
 
-   ```
-   NEXT_PUBLIC_SUPABASE_URL=...
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=...
-   ```
+```bash
+npm run build
+```
 
-3. Apply the database schema in `supabase/migrations/` and, optionally, the demo data in `supabase/seed.sql` to your Supabase project.
+Output is written to `out/` for GitHub Pages.
 
-4. Run the dev server:
+## Deploy to GitHub Pages + custom domain
 
-   ```bash
-   npm run dev
-   ```
+This repo deploys automatically on every push to `main` via [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml).
 
-## Demo accounts (from seed data)
+### One-time GitHub setup
 
-All seeded accounts use the password `Password123!`:
+1. Open the repo **Settings → Pages**
+2. Under **Build and deployment → Source**, choose **GitHub Actions**
+3. After the first successful workflow run, the site is live
 
-| Email                 | Role     |
-| --------------------- | -------- |
-| `admin@lawmarket.ge`  | admin    |
-| `nino@lawmarket.ge`   | provider |
-| `giorgi@lawmarket.ge` | provider |
-| `tamar@lawmarket.ge`  | provider |
-| `client@lawmarket.ge` | client   |
+### Connect `lawmarket.ge` (or your domain)
 
-## Key flows
+1. In **Settings → Pages → Custom domain**, enter `lawmarket.ge` and save  
+   (this repo already includes [`public/CNAME`](public/CNAME))
+2. Enable **Enforce HTTPS** once DNS has propagated
+3. At your DNS provider, add:
 
-- **Provider**: sign up → onboarding → publish profile + services → submit cases with case number and proof → admin approves → verified cases appear publicly.
-- **Client**: browse `/lawyers` with filters → view profile → message or book → pay (stubbed for now).
-- **Expat**: apply at `/expat/apply` → admin accepts/rejects → after acceptance the client pays and a call is scheduled.
-- **Admin**: `/admin/cases` and `/admin/applications` review queues.
+| Type  | Name | Value |
+|-------|------|--------|
+| `A`   | `@`  | `185.199.108.153` |
+| `A`   | `@`  | `185.199.109.153` |
+| `A`   | `@`  | `185.199.110.153` |
+| `A`   | `@`  | `185.199.111.153` |
+| `CNAME` | `www` | `TSKDAVID.github.io` |
 
-## Payments
+GitHub’s current Pages IPs are listed in [GitHub Docs: managing a custom domain](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site).
 
-Payments are currently **stubbed**: the full booking/checkout UI exists, but the "pay" step records a fake successful payment. The `app/api/webhooks/payments` route is reserved for the future BOG iPay integration.
+DNS can take from a few minutes up to 48 hours.
 
-## Deployment
+## Stack
 
-The repo deploys to Vercel. Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` in the Vercel project environment variables.
+- Next.js (App Router) static export
+- next-intl (ka default, en at `/en`)
+- Tailwind CSS v4
+- Placeholder marketplace data in `data/`

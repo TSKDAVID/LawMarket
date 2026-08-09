@@ -1,19 +1,21 @@
 import { getRequestConfig } from "next-intl/server";
-import { cookies } from "next/headers";
+import { hasLocale } from "next-intl";
+import { routing, type Locale } from "./routing";
+import { getMessagesForLocale } from "./messages";
+import { getIntlMessageFallback, onIntlError } from "./intl-shared";
 
-export const LOCALES = ["ka", "en"] as const;
-export type Locale = (typeof LOCALES)[number];
-export const DEFAULT_LOCALE: Locale = "ka";
+export { getIntlMessageFallback, onIntlError } from "./intl-shared";
 
-export default getRequestConfig(async () => {
-  const store = await cookies();
-  const cookieLocale = store.get("NEXT_LOCALE")?.value;
-  const locale: Locale = LOCALES.includes(cookieLocale as Locale)
-    ? (cookieLocale as Locale)
-    : DEFAULT_LOCALE;
+export default getRequestConfig(async ({ requestLocale }) => {
+  const requested = await requestLocale;
+  const locale = hasLocale(routing.locales, requested)
+    ? requested
+    : routing.defaultLocale;
 
   return {
     locale,
-    messages: (await import(`../messages/${locale}.json`)).default,
+    messages: getMessagesForLocale(locale as Locale),
+    onError: onIntlError,
+    getMessageFallback: getIntlMessageFallback,
   };
 });
