@@ -5,6 +5,8 @@ Bilingual (Georgian / English) marketplace for fixed-price legal services in Geo
 **Live site (after Pages is enabled):** https://lawmarket.ge  
 **GitHub Pages URL:** https://TSKDAVID.github.io/LawMarket/
 
+Georgian is the default locale (`/`, also `/ka/`). English lives under `/en/`.
+
 ## Local development
 
 ```bash
@@ -12,7 +14,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000) (redirects to `/ka`).
 
 ## Production build (static export)
 
@@ -20,7 +22,7 @@ Open [http://localhost:3000](http://localhost:3000).
 npm run build
 ```
 
-Output is written to `out/` for GitHub Pages.
+Output is written to `out/` for GitHub Pages. A post-build step hoists the Georgian (`ka`) pages to the site root and writes `.nojekyll`.
 
 ## Deploy to GitHub Pages + custom domain
 
@@ -28,9 +30,10 @@ This repo deploys automatically on every push to `main` via [`.github/workflows/
 
 ### One-time GitHub setup
 
-1. Open the repo **Settings → Pages**
+1. Open https://github.com/TSKDAVID/LawMarket/settings/pages
 2. Under **Build and deployment → Source**, choose **GitHub Actions**
-3. After the first successful workflow run, the site is live
+3. Open the **Actions** tab and confirm the **Deploy to GitHub Pages** workflow succeeds
+4. After the first green run, the site is live
 
 ### Connect `lawmarket.ge` (or your domain)
 
@@ -39,15 +42,15 @@ This repo deploys automatically on every push to `main` via [`.github/workflows/
 2. Enable **Enforce HTTPS** once DNS has propagated
 3. At your DNS provider, add:
 
-| Type  | Name | Value |
-|-------|------|--------|
-| `A`   | `@`  | `185.199.108.153` |
-| `A`   | `@`  | `185.199.109.153` |
-| `A`   | `@`  | `185.199.110.153` |
-| `A`   | `@`  | `185.199.111.153` |
+| Type | Name | Value |
+|------|------|--------|
+| `A` | `@` | `185.199.108.153` |
+| `A` | `@` | `185.199.109.153` |
+| `A` | `@` | `185.199.110.153` |
+| `A` | `@` | `185.199.111.153` |
 | `CNAME` | `www` | `TSKDAVID.github.io` |
 
-GitHub’s current Pages IPs are listed in [GitHub Docs: managing a custom domain](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site).
+GitHub’s current Pages IPs are listed in [Managing a custom domain for your GitHub Pages site](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site).
 
 DNS can take from a few minutes up to 48 hours.
 
