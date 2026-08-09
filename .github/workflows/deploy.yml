@@ -28,11 +28,10 @@ jobs:
           cache: npm
 
       - name: Install
-        run: npm ci
+        run: npm install --no-fund --no-audit
 
       - name: Build static site
         env:
-          # Custom domain serves from site root (no /LawMarket basePath)
           GITHUB_PAGES: "true"
           CUSTOM_DOMAIN: "true"
         run: npm run build
