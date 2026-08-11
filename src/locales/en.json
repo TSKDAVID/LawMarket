@@ -40,6 +40,7 @@
     "countAnnouncement": "{count} services found",
     "emptyTitle": "No entry matches this query.",
     "emptyAction": "Clear the search",
+    "view": "In full",
     "note": "Every price is final, and every service carries the written guarantee."
   },
   "guaranteeSection": {

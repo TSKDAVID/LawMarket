@@ -4,7 +4,12 @@ import { notFound } from "next/navigation";
 import { getDictionary, isLocale } from "@/lib/i18n";
 import { localeHref } from "@/lib/routes";
 import { formatClause, formatGel } from "@/lib/format";
-import { getLawyers, getLedger, getPriceRange } from "@/lib/repository";
+import {
+  getLawyers,
+  getLawyersForService,
+  getLedger,
+  getPriceRange,
+} from "@/lib/repository";
 import { pageMetadata, siteUrl } from "@/lib/seo";
 import { Eyebrow } from "@/components/Eyebrow";
 import { Rule } from "@/components/Rule";
@@ -62,10 +67,14 @@ export default async function HomePage({
         slug: service.slug,
         clause: formatClause(service.number),
         name: service.name[locale],
+        description: service.description[locale],
+        lawyer: getLawyersForService(service)[0]?.name[locale],
         price: formatGel(service.priceGel, locale),
         searchable: [
           service.name.ka,
           service.name.en,
+          service.description.ka,
+          service.description.en,
           area.name.ka,
           area.name.en,
         ]
@@ -149,6 +158,8 @@ export default async function HomePage({
               countAnnouncement: dict.ledger.countAnnouncement,
               emptyTitle: dict.ledger.emptyTitle,
               emptyAction: dict.ledger.emptyAction,
+              guaranteedMark: dict.common.guaranteedMark,
+              view: dict.ledger.view,
             }}
           />
         </div>

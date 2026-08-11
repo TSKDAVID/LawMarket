@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { LedgerRow } from "@/components/LedgerRow";
+import { ServiceEntry } from "@/components/ServiceEntry";
 import { PracticeIcon } from "@/components/PracticeIcon";
 import type { Locale } from "@/schemas";
 
@@ -16,8 +16,10 @@ export interface LedgerItem {
   slug: string;
   clause: string; // "§ 01"
   name: string; // active-locale name
+  description: string; // active-locale brief
+  lawyer?: string; // assigned lawyer, active locale
   price: string; // "₾ 250"
-  searchable: string; // lowercased ka+en names + area names
+  searchable: string; // lowercased ka+en names, descriptions, area names
 }
 
 export interface LedgerGroup {
@@ -35,6 +37,8 @@ export interface LedgerStrings {
   countAnnouncement: string; // "{count} …"
   emptyTitle: string;
   emptyAction: string;
+  guaranteedMark: string;
+  view: string;
 }
 
 export function LedgerSearch({
@@ -175,11 +179,15 @@ export function LedgerSearch({
               <ul className="divide-y divide-ink/15">
                 {group.items.map((item) => (
                   <li key={item.slug}>
-                    <LedgerRow
+                    <ServiceEntry
                       href={`${serviceHrefPrefix}/${item.slug}`}
                       clause={item.clause}
-                      label={item.name}
+                      name={item.name}
+                      description={item.description}
+                      lawyer={item.lawyer}
                       price={item.price}
+                      guaranteedLabel={strings.guaranteedMark}
+                      viewLabel={strings.view}
                     />
                   </li>
                 ))}
