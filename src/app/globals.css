@@ -1,0 +1,149 @@
+@import "tailwindcss";
+
+/*
+ * LAWMARKET design tokens — exactly BRAND.md §2.
+ * Cream dominates, espresso structures, burgundy means "act here",
+ * brass appears only on trust marks.
+ */
+@theme {
+  --color-*: initial;
+  --color-paper: #f6efe3;
+  --color-paper-deep: #efe6d4;
+  --color-ink: #1c1210;
+  --color-ink-70: #453a36;
+  --color-stamp: #6b1423;
+  --color-stamp-press: #4d0e19;
+  --color-brass: #8a6d3b;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  --font-display: var(--font-alk), "Georgia", serif;
+  --font-text: var(--font-bpg), "Georgia", serif;
+  --font-mono: var(--font-plex), var(--font-bpg), "Courier New", monospace;
+
+  /* Editorial type scale — big jumps, single weight (no bold exists). */
+  --text-display-2xl: clamp(2.5rem, 1.35rem + 5vw, 5.1rem);
+  --text-display-2xl--line-height: 1.06;
+  --text-display-xl: clamp(2rem, 1.2rem + 3.4vw, 3.6rem);
+  --text-display-xl--line-height: 1.1;
+  --text-display-lg: clamp(1.6rem, 1.15rem + 1.9vw, 2.5rem);
+  --text-display-lg--line-height: 1.16;
+  --text-display-md: clamp(1.3rem, 1.1rem + 0.9vw, 1.75rem);
+  --text-display-md--line-height: 1.25;
+
+  --tracking-eyebrow: 0.18em;
+}
+
+@layer base {
+  html {
+    /* Single-weight brand fonts: never let the browser fake a bold/italic. */
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    /* Barely perceptible paper grain (BRAND.md §5) — noise, not a gradient. */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.028'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
+    color: var(--color-ink);
+    font-family: var(--font-text);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+  }
+
+  ::selection {
+    background-color: var(--color-stamp);
+    color: var(--color-paper);
+  }
+
+  /* On-brand focus: 2px burgundy, offset, never removed (ENGINEERING.md §9). */
+  :focus-visible {
+    outline: 2px solid var(--color-stamp);
+    outline-offset: 2px;
+    border-radius: 0;
+  }
+
+  /* Espresso bands (header, footer, overlays) need a cream ring instead. */
+  .band-espresso :focus-visible {
+    outline-color: var(--color-paper);
+  }
+
+  input,
+  textarea {
+    border-radius: 0;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: color-mix(in srgb, var(--color-ink-70) 72%, transparent);
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Typographic dot leader for ledger rows — real periods, baseline-set. */
+  .dot-leader {
+    overflow: hidden;
+    white-space: nowrap;
+    min-width: 2ch;
+    color: color-mix(in srgb, var(--color-ink) 42%, transparent);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.28em;
+    user-select: none;
+  }
+  .dot-leader::after {
+    content: "......................................................................................................................";
+  }
+
+  /* Underlined bare field on a 1px espresso rule — never a rounded pill. */
+  .rule-field {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--color-ink);
+    padding: 0.5rem 0;
+    font-family: var(--font-text);
+    color: var(--color-ink);
+    transition: box-shadow 150ms ease-out, border-color 150ms ease-out;
+  }
+  .rule-field:focus-visible {
+    outline: none;
+    border-bottom-color: var(--color-stamp);
+    box-shadow: 0 1px 0 0 var(--color-stamp);
+  }
+  .rule-field[aria-invalid="true"] {
+    border-bottom-color: var(--color-stamp);
+    box-shadow: 0 1px 0 0 var(--color-stamp);
+  }
+
+  /* The confirmation seal presses onto the executed order — ≤200ms, ease-out. */
+  @keyframes stamp-in {
+    from {
+      opacity: 0;
+      transform: scale(1.12);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  .animate-stamp {
+    animation: stamp-in 180ms ease-out both;
+  }
+}

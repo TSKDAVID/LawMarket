@@ -1,0 +1,347 @@
+{
+  "common": {
+    "brand": "LawMarket",
+    "skipToContent": "Skip to content",
+    "menu": "Menu",
+    "close": "Close",
+    "backHome": "Return to the front page",
+    "langSwitcherLabel": "Choose language",
+    "navLabel": "Primary navigation",
+    "sealAria": "LawMarket — seal of guarantee",
+    "guaranteedMark": "GUARANTEED",
+    "specimenMark": "SPECIMEN",
+    "placeholderNote": "Specimen entry — replaced with live data before launch."
+  },
+  "nav": {
+    "home": "Front page",
+    "services": "Services",
+    "lawyers": "Lawyers",
+    "guarantee": "Guarantee",
+    "about": "About",
+    "consultation": "Free consultation",
+    "terms": "Terms",
+    "privacy": "Privacy"
+  },
+  "hero": {
+    "eyebrow": "LAWMARKET — LEGAL SERVICES, GUARANTEED",
+    "title": "Legal services, with a written guarantee.",
+    "lede": "A fixed price, an assigned lawyer, a written guarantee. If the service is not delivered as described, we return the full amount you paid.",
+    "consultNote": "Your first conversation with a lawyer — 15 minutes, free of charge.",
+    "ctaPrimary": "Choose a service",
+    "ctaConsult": "Free 15-minute consultation",
+    "meta": "15 SERVICES · 3 PRACTICE AREAS · FIXED PRICES IN ₾"
+  },
+  "ledger": {
+    "eyebrow": "INDEX OF SERVICES · § 01 — § 15",
+    "title": "The register of services",
+    "searchLabel": "Search the register",
+    "searchPlaceholder": "Service or practice area…",
+    "clear": "Clear the search",
+    "countAnnouncement": "{count} services found",
+    "emptyTitle": "No entry matches this query.",
+    "emptyAction": "Clear the search",
+    "note": "Every price is final, and every service carries the written guarantee."
+  },
+  "guaranteeSection": {
+    "eyebrow": "THE GUARANTEE — SIGNED TERMS",
+    "title": "The guarantee is a signed term.",
+    "clauses": [
+      "Every service on LawMarket carries a written guarantee.",
+      "You receive exactly the service described on its page — performed by the assigned lawyer, within the stated term.",
+      "If the service is not delivered as described, we return the full amount you paid.",
+      "The price you see is a term we sign."
+    ],
+    "signedPlace": "LAWMARKET · TBILISI, GEORGIA",
+    "signedLabel": "Signed on every order",
+    "link": "The guarantee in full"
+  },
+  "lawyersSection": {
+    "eyebrow": "THE BAR REGISTER",
+    "title": "The register of lawyers",
+    "lede": "Every matter is performed by a specific, assigned lawyer — whose case file is public.",
+    "caseFile": "Case file",
+    "viewAll": "The full register"
+  },
+  "consultStrip": {
+    "eyebrow": "STANDING OFFER",
+    "title": "The first 15 minutes — free.",
+    "lede": "Discuss your matter with a lawyer before you choose a service. No obligation.",
+    "cta": "Request a consultation"
+  },
+  "footer": {
+    "indexHeading": "Index",
+    "documentsHeading": "Documents",
+    "requisitesHeading": "Particulars",
+    "legalLine": "LAWMARKET LLC · IDENT. NO. 000000000 (PLACEHOLDER) · TBILISI, GEORGIA",
+    "jurisdiction": "Jurisdiction: Georgia. Services are performed by members of the Georgian Bar Association.",
+    "guaranteeLine": "Every service carries a written guarantee.",
+    "rights": "© 2026 LAWMARKET — ALL RIGHTS RESERVED"
+  },
+  "service": {
+    "subjectHeading": "Subject of the service",
+    "includedHeading": "What is included",
+    "included": [
+      "Full performance of the described service by the assigned lawyer",
+      "A case reference and the written guarantee",
+      "A full refund if the service is not delivered as described"
+    ],
+    "guaranteeTermsHeading": "Guarantee terms",
+    "factsPrice": "Price",
+    "factsGuarantee": "Guarantee",
+    "factsGuaranteeValue": "Written",
+    "factsLawyer": "Assigned lawyer",
+    "factsArea": "Practice area",
+    "orderCta": "Engage us — {price}",
+    "orderNote": "No account is needed — you receive a case reference after payment.",
+    "consultPrompt": "Not sure this is the service you need?",
+    "consultLink": "The first 15 minutes with a lawyer — free",
+    "relatedHeading": "Other services in this practice area",
+    "backToRegister": "The full register"
+  },
+  "lawyers": {
+    "registerEyebrow": "THE BAR REGISTER",
+    "registerTitle": "The register of lawyers",
+    "registerLede": "Every matter is performed by a specific, assigned lawyer. Their specialisation, completed cases and reviews sit in a public case file.",
+    "profileEyebrow": "CASE FILE",
+    "experienceLabel": "Experience",
+    "specialtyLabel": "Specialisation",
+    "casesHeading": "Completed cases",
+    "casesNote": "The register fills as guaranteed services complete.",
+    "casesEmpty": "Completed cases appear here as guaranteed services complete.",
+    "reviewsHeading": "Reviews",
+    "reviewsEmpty": "Reviews appear here as clients complete guaranteed services.",
+    "servicesHeading": "Services with this lawyer",
+    "completed": "Completed",
+    "caseFile": "Case file",
+    "ratingLabel": "{rating} / 5"
+  },
+  "checkout": {
+    "pageTitle": "Place the order",
+    "letterEyebrow": "ENGAGEMENT LETTER — DRAFT",
+    "letterHeading": "Engagement letter",
+    "letterIntro": "This letter records the engagement of LawMarket for the service described below.",
+    "subjectLabel": "Subject",
+    "performerLabel": "Performer",
+    "priceLabel": "Price",
+    "totalLabel": "Total due",
+    "guaranteeLabel": "Guarantee",
+    "dateLabel": "Date",
+    "referenceLabel": "Case reference",
+    "clientHeading": "The client",
+    "nameLabel": "Full name",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone",
+    "phoneHint": "Georgian mobile — e.g. 5XX XX XX XX",
+    "submit": "Sign & pay — {price}",
+    "submitting": "Submitting…",
+    "consentBefore": "By pressing the button you agree to the ",
+    "consentTerms": "terms of service",
+    "consentBetween": " and the ",
+    "consentPrivacy": "privacy policy",
+    "consentAfter": ".",
+    "errors": {
+      "name": "Enter your full name.",
+      "email": "Enter a valid email address.",
+      "phone": "Enter a Georgian mobile number — e.g. 5XX XX XX XX.",
+      "server": "The order could not be submitted. Try again."
+    },
+    "emptyTitle": "No service selected.",
+    "emptyBody": "To place an order, choose a service from the register.",
+    "emptyAction": "View the register"
+  },
+  "terminal": {
+    "eyebrow": "PAYMENT TERMINAL — SANDBOX MODE",
+    "title": "Approve the payment",
+    "note": "Sandbox mode — no real charge is made. Choose an outcome to simulate.",
+    "orderLabel": "Order",
+    "amountLabel": "Amount",
+    "approve": "Approve payment",
+    "decline": "Simulate a decline",
+    "cancel": "Cancel payment",
+    "fail": "Simulate a network failure",
+    "alreadyPaid": "This order is already paid."
+  },
+  "result": {
+    "successEyebrow": "ORDER EXECUTED — GUARANTEE IN FORCE",
+    "successTitle": "The order is executed.",
+    "successBody": "Payment is confirmed and the guarantee is in force. The assigned lawyer will contact you within one business day.",
+    "successKeepRef": "Keep the case reference — it is your receipt.",
+    "declinedEyebrow": "PAYMENT DECLINED",
+    "declinedTitle": "The payment was declined.",
+    "declinedBody": "The bank declined the payment; nothing was charged. Try again, or use another card.",
+    "cancelledEyebrow": "PAYMENT CANCELLED",
+    "cancelledTitle": "The payment was cancelled.",
+    "cancelledBody": "You cancelled the payment. The order is held — resume payment whenever you wish.",
+    "failedEyebrow": "RESULT UNCONFIRMED",
+    "failedTitle": "The payment result could not be confirmed.",
+    "failedBody": "A network failure interrupted confirmation. If you were charged, the order will be confirmed under your case reference — or try again.",
+    "retry": "Retry payment",
+    "resume": "Resume payment",
+    "checkStatus": "Check status",
+    "executedEyebrow": "ENGAGEMENT LETTER — EXECUTED",
+    "backToRegister": "Back to the register",
+    "notFoundTitle": "Order not found.",
+    "notFoundBody": "No order exists under this number, or it has expired."
+  },
+  "consultation": {
+    "eyebrow": "STANDING OFFER — FREE 15 MINUTES",
+    "title": "The first 15 minutes — free.",
+    "lede": "If you do not yet know which service you need, speak with a lawyer — 15 minutes, free and without obligation.",
+    "howHeading": "How it proceeds",
+    "steps": [
+      "You leave your contact details.",
+      "A lawyer contacts you within one business day.",
+      "Fifteen minutes are devoted to your matter.",
+      "If needed, the lawyer recommends a service from the register — at its fixed price."
+    ],
+    "formHeading": "The request",
+    "matterLabel": "Brief description of the matter (optional)",
+    "submit": "Send the request",
+    "submitting": "Submitting…",
+    "successEyebrow": "REQUEST REGISTERED",
+    "successTitle": "The request is registered.",
+    "successBody": "A lawyer will contact you within one business day at the number provided.",
+    "refLabel": "Request reference"
+  },
+  "guaranteePage": {
+    "eyebrow": "THE GUARANTEE — IN FULL",
+    "title": "The guarantee.",
+    "fullText": "Every service on LawMarket carries a written guarantee. You receive exactly the service described on its page — performed by the assigned lawyer, within the stated term. If the service is not delivered as described, we return the full amount you paid. The price you see is a term we sign.",
+    "clausesHeading": "The terms, as clauses",
+    "refundHeading": "How the refund works",
+    "refundSteps": [
+      "Write to us quoting your case reference.",
+      "The order and its performance are checked against the terms described on the page.",
+      "If the service does not match its description, the full amount returns to the same account."
+    ],
+    "cta": "Choose a service from the register"
+  },
+  "aboutPage": {
+    "eyebrow": "LAWMARKET — EST. 2026",
+    "title": "A register we put our name to.",
+    "paragraphs": [
+      "LawMarket is a register of legal services: each carries an exact description, a final price, and an assigned lawyer.",
+      "Prices are published in advance and do not change while a matter is under way. What you see in the register is what you pay.",
+      "Every completed matter is entered in the lawyer's public case file — this is how the record of experience and reviews accumulates.",
+      "We work in the jurisdiction of Georgia, with lawyers who are members of the Georgian Bar Association."
+    ],
+    "principlesHeading": "Three principles",
+    "principles": [
+      "The price is fixed and known in advance.",
+      "The matter is performed by a specific, assigned lawyer.",
+      "Every order carries a written guarantee."
+    ]
+  },
+  "termsPage": {
+    "eyebrow": "TERMS OF SERVICE",
+    "title": "Terms of service.",
+    "updated": "In force from 11 August 2026",
+    "articles": [
+      {
+        "title": "General provisions",
+        "body": "These terms govern the use of the LawMarket website and the ordering of services. By placing an order you agree to these terms."
+      },
+      {
+        "title": "Services and prices",
+        "body": "The description and final price of every service are published on its page. The price is fixed and does not change after the order is placed."
+      },
+      {
+        "title": "Ordering and payment",
+        "body": "Orders are placed without creating an account. Payment is taken through a payment provider; the order reference (e.g. LM-2026-00042) is your receipt."
+      },
+      {
+        "title": "Performance",
+        "body": "The service is performed by the assigned lawyer named on its page, who will contact you within one business day to confirm the initial details."
+      },
+      {
+        "title": "Guarantee and refunds",
+        "body": "If the service is not delivered as described, we return the full amount you paid. A refund request is submitted by quoting the case reference."
+      },
+      {
+        "title": "Liability",
+        "body": "LawMarket's liability is limited to the scope of the ordered service and the amount paid for it."
+      },
+      {
+        "title": "Governing law",
+        "body": "These terms are governed by the law of Georgia. Disputes between the parties are heard by the courts of Georgia."
+      }
+    ]
+  },
+  "privacyPage": {
+    "eyebrow": "PRIVACY POLICY",
+    "title": "Privacy policy.",
+    "updated": "In force from 11 August 2026",
+    "articles": [
+      {
+        "title": "The data controller",
+        "body": "Your personal data is processed by LawMarket LLC (Tbilisi, Georgia)."
+      },
+      {
+        "title": "What is collected",
+        "body": "When you place an order or request a consultation we collect: your full name, email address, phone number, and the matter you describe."
+      },
+      {
+        "title": "Purpose and basis",
+        "body": "Data is processed solely to perform the ordered service and to contact you — the legal basis is the performance of a contract."
+      },
+      {
+        "title": "Disclosure",
+        "body": "Payment is processed by the payment provider — we never hold card details. The substance of your matter is disclosed only to the lawyer assigned to your case."
+      },
+      {
+        "title": "Retention",
+        "body": "Order records are kept for as long as tax and legal obligations require; consultation requests for no more than one year."
+      },
+      {
+        "title": "Analytics",
+        "body": "We use privacy-preserving, cookieless analytics. There are no advertising trackers on this site."
+      },
+      {
+        "title": "Your rights",
+        "body": "Under the Law of Georgia on Personal Data Protection you may request access to, correction of, or erasure of your data."
+      },
+      {
+        "title": "Contact",
+        "body": "For data matters, write to privacy@lawmarket.ge (PLACEHOLDER)."
+      }
+    ]
+  },
+  "notFound": {
+    "eyebrow": "§ 404",
+    "title": "This clause does not exist.",
+    "body": "The page you are looking for is not in this document. Return to the register.",
+    "link": "Return to the front page"
+  },
+  "errorPage": {
+    "eyebrow": "§ 500",
+    "title": "The document could not be processed.",
+    "body": "An unexpected error occurred. Try again — or return to the register.",
+    "retry": "Try again"
+  },
+  "meta": {
+    "siteName": "LawMarket",
+    "home": {
+      "title": "LawMarket — Legal services with a written guarantee",
+      "description": "A register of legal services at fixed prices: contracts, claims, registrations. Every service carries a written guarantee; the first 15 minutes with a lawyer are free."
+    },
+    "serviceTitle": "{name} — {price} · LawMarket",
+    "serviceDescription": "{description}. The price is final — {price}. The service carries a written guarantee.",
+    "lawyersTitle": "The register of lawyers · LawMarket",
+    "lawyersDescription": "The public register of assigned lawyers: specialisation, experience, completed cases and reviews.",
+    "lawyerTitle": "{name} — {specialty} · LawMarket",
+    "lawyerDescription": "{experience}. Case file on LawMarket: completed cases and reviews.",
+    "checkoutTitle": "Place the order · LawMarket",
+    "checkoutDescription": "Place an order without creating an account — at a fixed price, with a written guarantee.",
+    "consultationTitle": "Free 15-minute consultation · LawMarket",
+    "consultationDescription": "Speak with a lawyer about your matter — 15 minutes, free and without obligation. A lawyer contacts you within one business day.",
+    "guaranteeTitle": "The guarantee · LawMarket",
+    "guaranteeDescription": "Every service carries a written guarantee: exact performance or a full refund. The price you see is a signed term.",
+    "aboutTitle": "About · LawMarket",
+    "aboutDescription": "LawMarket — a register of legal services at fixed prices, with assigned lawyers and a written guarantee.",
+    "termsTitle": "Terms of service · LawMarket",
+    "termsDescription": "LawMarket's terms of service: ordering, payment, performance, the guarantee and refunds.",
+    "privacyTitle": "Privacy policy · LawMarket",
+    "privacyDescription": "How we handle your data: what we collect, on what basis and for how long — under the law of Georgia.",
+    "notFoundTitle": "§ 404 — This clause does not exist · LawMarket"
+  }
+}
