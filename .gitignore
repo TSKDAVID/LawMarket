@@ -38,3 +38,7 @@ screenshots/
 
 # local documents
 *.docx
+
+# design-v1 font kits (used by the design-v1 branch, not this app)
+alk-sanet-master/
+bpg-nino-mkhedruli-master/
