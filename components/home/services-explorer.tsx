@@ -259,7 +259,7 @@ export function ServicesExplorer({
             )}
           </div>
 
-          <div className="mt-4 flex w-full min-w-0 flex-wrap items-center gap-1.5">
+          <div className="mt-4 flex w-full min-w-0 items-center gap-1.5 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <button
               type="button"
               onClick={() => setActiveCategory(null)}
@@ -295,14 +295,20 @@ export function ServicesExplorer({
 
           {displayedServices.length > 0 ? (
             <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {displayedServices.map((service) => (
-                <ServiceCard
-                  key={service.id}
-                  service={service}
-                  category={categoryById.get(service.categoryId)}
-                  lawyer={lawyerById.get(service.lawyerId)}
-                />
-              ))}
+              {displayedServices.map((service, index) => {
+                const isLead = !isFiltering && index === 0;
+                return (
+                  <ServiceCard
+                    key={service.id}
+                    service={service}
+                    category={categoryById.get(service.categoryId)}
+                    lawyer={lawyerById.get(service.lawyerId)}
+                    featured={isLead}
+                    showDescription={isLead}
+                    className={isLead ? "sm:col-span-2" : undefined}
+                  />
+                );
+              })}
             </div>
           ) : (
             <div className="mt-5 rounded-[var(--radius-card)] border border-dashed border-espresso/15 bg-white/50 px-6 py-14 text-center">

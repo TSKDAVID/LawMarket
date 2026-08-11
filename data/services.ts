@@ -11,7 +11,7 @@ export const services: Service[] = [
       "Full company registration service: name reservation, founding documents, and registration with the Public Registry, so your LLC is ready to operate.",
     description_ka:
       "კომპანიის სრული რეგისტრაციის სერვისი: სახელის დაჯავშნა, დამფუძნებელი დოკუმენტები და რეგისტრაცია საჯარო რეესტრში, რათა თქვენი შპს მზად იყოს საქმიანობისთვის.",
-    price: 799,
+    price: 800,
     currency: "GEL",
     durationMinutes: null,
     lawyerId: "law-nino-beridze",
@@ -59,7 +59,7 @@ export const services: Service[] = [
       "A thorough review of any contract before you sign, with plain-language notes on risks, unusual clauses, and suggested changes.",
     description_ka:
       "ნებისმიერი ხელშეკრულების საფუძვლიანი შემოწმება ხელმოწერამდე, რისკებზე, უჩვეულო პუნქტებზე და შესაძლო ცვლილებებზე გასაგებ ენაზე შენიშვნებით.",
-    price: 349,
+    price: 350,
     currency: "GEL",
     durationMinutes: 60,
     lawyerId: "law-mariam-chkheidze",
@@ -107,7 +107,7 @@ export const services: Service[] = [
       "End-to-end support for filing an uncontested divorce, including document preparation and court filing, handled with care and confidentiality.",
     description_ka:
       "სრული მხარდაჭერა შეუთანხმებელი განქორწინების საქმის წარსადგენად, დოკუმენტების მომზადებისა და სასამართლოში წარდგენის ჩათვლით, ყურადღებითა და კონფიდენციალურობით.",
-    price: 899,
+    price: 900,
     currency: "GEL",
     durationMinutes: null,
     lawyerId: "law-giorgi-abashidze",
@@ -155,7 +155,7 @@ export const services: Service[] = [
       "Protect your brand name and logo with a full trademark search and registration application with the National Intellectual Property Center.",
     description_ka:
       "დაიცავით თქვენი ბრენდის სახელი და ლოგო სასაქონლო ნიშნის სრული ძიებითა და საქართველოს ინტელექტუალური საკუთრების ეროვნულ ცენტრში რეგისტრაციის განაცხადით.",
-    price: 649,
+    price: 650,
     currency: "GEL",
     durationMinutes: null,
     lawyerId: "law-nino-beridze",
@@ -203,7 +203,7 @@ export const services: Service[] = [
       "Draft a legally sound will that reflects your wishes and protects your family, with guidance on estate planning options.",
     description_ka:
       "შეადგინეთ იურიდიულად უზადო ანდერძი, რომელიც ასახავს თქვენს სურვილებს და იცავს თქვენს ოჯახს, მემკვიდრეობის დაგეგმვის ვარიანტებზე კონსულტაციით.",
-    price: 599,
+    price: 600,
     currency: "GEL",
     durationMinutes: null,
     lawyerId: "law-giorgi-abashidze",
@@ -251,7 +251,7 @@ export const services: Service[] = [
       "Preparation and submission of your residence permit or visa application, including document checklists tailored to your situation.",
     description_ka:
       "თქვენი ბინადრობის ნებართვის ან ვიზის განაცხადის მომზადება და წარდგენა, თქვენს სიტუაციაზე მორგებული საბუთების ჩამონათვალის ჩათვლით.",
-    price: 549,
+    price: 550,
     currency: "GEL",
     durationMinutes: null,
     lawyerId: "law-ana-kapanadze",
@@ -299,7 +299,7 @@ export const services: Service[] = [
       "Independent review of a property purchase agreement to check ownership history, encumbrances, and contract terms before you buy.",
     description_ka:
       "უძრავი ქონების ნასყიდობის ხელშეკრულების დამოუკიდებელი შემოწმება საკუთრების ისტორიის, ტვირთის და ხელშეკრულების პირობების დასადგენად შეძენამდე.",
-    price: 449,
+    price: 450,
     currency: "GEL",
     durationMinutes: 90,
     lawyerId: "law-levan-tsereteli",
@@ -314,7 +314,7 @@ export const services: Service[] = [
       "A one-on-one session to choose the right business structure and understand the registration process before you commit.",
     description_ka:
       "პირადი კონსულტაცია სწორი ბიზნეს-სტრუქტურის შესარჩევად და რეგისტრაციის პროცესის გასაგებად გადაწყვეტილების მიღებამდე.",
-    price: 199,
+    price: 200,
     currency: "GEL",
     durationMinutes: 45,
     lawyerId: "law-nino-beridze",
@@ -329,7 +329,7 @@ export const services: Service[] = [
       "A confidential session to understand your rights and options in a custody matter, and what to expect from the process.",
     description_ka:
       "კონფიდენციალური კონსულტაცია მეურვეობის საკითხში თქვენი უფლებებისა და შესაძლებლობების გასაგებად და პროცესისგან მოსალოდნელის გასაცნობად.",
-    price: 249,
+    price: 250,
     currency: "GEL",
     durationMinutes: 45,
     lawyerId: "law-giorgi-abashidze",
@@ -344,7 +344,7 @@ export const services: Service[] = [
       "A custom employment agreement drafted for your business, compliant with Georgian labor law and tailored to the role.",
     description_ka:
       "თქვენი ბიზნესისთვის მორგებული შრომითი ხელშეკრულების შედგენა, საქართველოს შრომის კანონმდებლობასთან შესაბამისობით.",
-    price: 399,
+    price: 400,
     currency: "GEL",
     durationMinutes: null,
     lawyerId: "law-mariam-chkheidze",
@@ -359,7 +359,7 @@ export const services: Service[] = [
       "Understand your tax obligations, including small business status eligibility, and get a clear plan for staying compliant.",
     description_ka:
       "გაიგეთ თქვენი საგადასახადო ვალდებულებები, მცირე ბიზნესის სტატუსის შესაბამისობის ჩათვლით, და მიიღეთ მკაფიო გეგმა შესაბამისობის შესანარჩუნებლად.",
-    price: 299,
+    price: 300,
     currency: "GEL",
     durationMinutes: 45,
     lawyerId: "law-david-lomidze",
@@ -374,7 +374,7 @@ export const services: Service[] = [
       "An urgent, confidential consultation to understand the charges against you and your immediate options and rights.",
     description_ka:
       "სასწრაფო, კონფიდენციალური კონსულტაცია თქვენს წინააღმდეგ წაყენებული ბრალდებისა და თქვენი უშუალო შესაძლებლობებისა და უფლებების გასაცნობად.",
-    price: 349,
+    price: 350,
     currency: "GEL",
     durationMinutes: 30,
     lawyerId: "law-ketevan-japaridze",
@@ -389,7 +389,7 @@ export const services: Service[] = [
       "Certified translation and notarization of personal or business documents for use in Georgia or abroad.",
     description_ka:
       "პირადი ან ბიზნეს დოკუმენტების დამოწმებული თარგმანი და ნოტარიული დამოწმება საქართველოში ან საზღვარგარეთ გამოსაყენებლად.",
-    price: 149,
+    price: 150,
     currency: "GEL",
     durationMinutes: null,
     lawyerId: "law-irakli-mchedlishvili",
@@ -404,7 +404,7 @@ export const services: Service[] = [
       "Guidance and representation for resolving disputes over deposits, repairs, or lease terms between landlords and tenants.",
     description_ka:
       "კონსულტაცია და წარმომადგენლობა დეპოზიტების, შეკეთებების ან იჯარის პირობებთან დაკავშირებული დავების მოსაგვარებლად მეიჯარესა და მოიჯარეს შორის.",
-    price: 499,
+    price: 500,
     currency: "GEL",
     durationMinutes: null,
     lawyerId: "law-levan-tsereteli",
@@ -419,7 +419,7 @@ export const services: Service[] = [
       "Complete support through the citizenship application process, from eligibility review to document submission.",
     description_ka:
       "სრული მხარდაჭერა მოქალაქეობის განაცხადის პროცესში, უფლებამოსილების შემოწმებიდან დოკუმენტების წარდგენამდე.",
-    price: 799,
+    price: 800,
     currency: "GEL",
     durationMinutes: null,
     lawyerId: "law-ana-kapanadze",
@@ -434,7 +434,7 @@ export const services: Service[] = [
       "A clear, fair prenuptial agreement drafted to protect both partners' interests before marriage.",
     description_ka:
       "ნათელი და სამართლიანი საქორწინო კონტრაქტის შედგენა, რომელიც დაიცავს ორივე პარტნიორის ინტერესებს ქორწინებამდე.",
-    price: 449,
+    price: 450,
     currency: "GEL",
     durationMinutes: null,
     lawyerId: "law-giorgi-abashidze",

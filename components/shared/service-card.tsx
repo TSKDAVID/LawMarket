@@ -19,6 +19,10 @@ type ServiceCardProps = {
   category?: Category;
   lawyer?: Lawyer;
   className?: string;
+  /** Lead card: larger title, full description, permanent burgundy strip. */
+  featured?: boolean;
+  /** Compact cards skip the clipped description entirely. */
+  showDescription?: boolean;
 };
 
 export function ServiceCard({
@@ -26,6 +30,8 @@ export function ServiceCard({
   category,
   lawyer,
   className,
+  featured = false,
+  showDescription = true,
 }: ServiceCardProps) {
   const locale = useLocale() as Locale;
   const t = useTranslations("common");
@@ -38,7 +44,10 @@ export function ServiceCard({
       <Card className="relative flex h-full flex-col overflow-hidden border-espresso/12 bg-white/85 transition-all duration-200 group-hover:border-burgundy/30 group-hover:shadow-[0_8px_24px_rgba(28,18,16,0.07)]">
         <span
           aria-hidden="true"
-          className="absolute inset-x-0 top-0 h-[2px] bg-burgundy/70 transition-colors group-hover:bg-burgundy"
+          className={cn(
+            "absolute inset-x-0 top-0 h-[2px] bg-burgundy transition-opacity",
+            featured ? "opacity-80" : "opacity-0 group-hover:opacity-80"
+          )}
         />
         <CardContent className="flex flex-1 flex-col pt-5">
           <div className="flex items-start justify-between gap-3">
@@ -51,12 +60,25 @@ export function ServiceCard({
             <ArrowUpRight className="h-5 w-5 shrink-0 text-espresso/15 transition-colors group-hover:text-burgundy" />
           </div>
 
-          <h3 className="mt-3 font-heading text-lg font-semibold text-espresso">
+          <h3
+            className={cn(
+              "mt-3 font-heading font-semibold text-espresso",
+              featured ? "text-xl sm:text-2xl" : "text-lg"
+            )}
+          >
             {localizedServiceTitle(service, locale)}
           </h3>
-          <p className="mt-2 flex-1 font-body text-sm leading-relaxed text-espresso/50 line-clamp-2">
-            {localizedServiceDescription(service, locale)}
-          </p>
+          {featured ? (
+            <p className="mt-2 max-w-xl flex-1 font-body text-sm leading-relaxed text-espresso/55">
+              {localizedServiceDescription(service, locale)}
+            </p>
+          ) : showDescription ? (
+            <p className="mt-2 flex-1 font-body text-sm leading-relaxed text-espresso/50 line-clamp-2">
+              {localizedServiceDescription(service, locale)}
+            </p>
+          ) : (
+            <span className="flex-1" />
+          )}
 
           <div className="mt-4 flex items-end justify-between gap-3 border-t border-espresso/8 pt-4">
             <div className="flex min-w-0 items-center gap-2.5">
