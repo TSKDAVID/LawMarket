@@ -5,7 +5,7 @@ import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing, type Locale } from "@/i18n/routing";
 import { getMessagesForLocale } from "@/i18n/messages";
-import { fontVariables } from "@/lib/fonts";
+import "@/lib/fonts";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { IntlProvider } from "@/components/providers/intl-provider";
@@ -59,12 +59,7 @@ export default async function LocaleLayout({
   const messages = getMessagesForLocale(locale as Locale);
 
   return (
-    <html
-      lang={locale}
-      data-locale={locale}
-      data-scroll-behavior="smooth"
-      className={fontVariables}
-    >
+    <html lang={locale} data-locale={locale} data-scroll-behavior="smooth">
       <body className="flex min-h-screen flex-col bg-cream font-body text-espresso antialiased">
         <IntlProvider locale={locale} messages={messages}>
           <Header />

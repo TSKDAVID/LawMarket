@@ -1,31 +1,16 @@
-import { Playfair_Display, Inter, Noto_Serif_Georgian, Noto_Sans_Georgian } from "next/font/google";
-
-export const playfairDisplay = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["500", "600", "700", "800", "900"],
-  variable: "--font-playfair",
-  display: "swap",
-});
-
-export const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-export const notoSerifGeorgian = Noto_Serif_Georgian({
-  subsets: ["georgian"],
-  weight: ["500", "600", "700", "800"],
-  variable: "--font-noto-serif-ka",
-  display: "swap",
-});
-
-export const notoSansGeorgian = Noto_Sans_Georgian({
-  subsets: ["georgian"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-noto-sans-ka",
-  display: "swap",
-});
-
-export const fontVariables = `${playfairDisplay.variable} ${inter.variable} ${notoSerifGeorgian.variable} ${notoSansGeorgian.variable}`;
+/**
+ * Self-hosted fonts via Fontsource (variable weight, subset by unicode-range).
+ *
+ * Previously these came from `next/font/google`, which downloads font files
+ * from Google at BUILD time — CI/Vercel builds failed whenever Google rotated
+ * the pinned file URLs (404s). Vendoring through npm makes builds
+ * deterministic and offline-safe.
+ *
+ * The CSS custom properties consumed by globals.css (--font-playfair,
+ * --font-inter, --font-noto-serif-ka, --font-noto-sans-ka) are defined on
+ * :root in app/globals.css.
+ */
+import "@fontsource-variable/playfair-display";
+import "@fontsource-variable/inter";
+import "@fontsource-variable/noto-serif-georgian";
+import "@fontsource-variable/noto-sans-georgian";
