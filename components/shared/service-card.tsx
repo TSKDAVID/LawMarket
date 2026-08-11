@@ -1,5 +1,5 @@
 import { useLocale, useTranslations } from "next-intl";
-import { Clock, ArrowUpRight } from "lucide-react";
+import { Clock } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar } from "@/components/shared/avatar";
@@ -41,7 +41,7 @@ export function ServiceCard({
       href={`/services/${service.slug}`}
       className={cn("group block h-full", className)}
     >
-      <Card className="relative flex h-full flex-col overflow-hidden border-espresso/12 bg-white/85 transition-all duration-200 group-hover:border-burgundy/30 group-hover:shadow-[0_8px_24px_rgba(28,18,16,0.07)]">
+      <Card className="relative flex h-full flex-col overflow-hidden transition-all duration-200 group-hover:border-espresso/35 group-hover:shadow-[0_6px_20px_rgba(28,18,16,0.08)]">
         <span
           aria-hidden="true"
           className={cn(
@@ -50,15 +50,12 @@ export function ServiceCard({
           )}
         />
         <CardContent className="flex flex-1 flex-col pt-5">
-          <div className="flex items-start justify-between gap-3">
-            {category && (
-              <span className="inline-flex items-center gap-1.5 pt-0.5 font-body text-[11px] font-semibold uppercase tracking-[0.12em] text-burgundy/85">
-                <CategoryIcon name={category.icon} className="h-3.5 w-3.5" />
-                {localizedCategoryName(category, locale)}
-              </span>
-            )}
-            <ArrowUpRight className="h-5 w-5 shrink-0 text-espresso/15 transition-colors group-hover:text-burgundy" />
-          </div>
+          {category && (
+            <span className="inline-flex items-center gap-1.5 font-body text-[11px] font-semibold uppercase tracking-[0.12em] text-brass">
+              <CategoryIcon name={category.icon} className="h-3.5 w-3.5" />
+              {localizedCategoryName(category, locale)}
+            </span>
+          )}
 
           <h3
             className={cn(
@@ -105,7 +102,7 @@ export function ServiceCard({
                 )}
               </div>
             </div>
-            <p className="shrink-0 font-heading text-xl font-semibold tracking-tight text-burgundy sm:text-2xl">
+            <p className="shrink-0 font-heading text-xl font-semibold tracking-tight text-espresso sm:text-2xl">
               {formatPrice(service.price)}
             </p>
           </div>
