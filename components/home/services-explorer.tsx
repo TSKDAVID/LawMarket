@@ -73,7 +73,7 @@ export function ServicesExplorer({
     : services.filter((s) => s.popular).slice(0, 6);
 
   return (
-    <section className="paper-grain relative overflow-hidden bg-cream pb-10 pt-7 sm:pb-12 sm:pt-9">
+    <section className="paper-grain relative overflow-hidden bg-cream pb-10 pt-10 sm:pb-12 sm:pt-14">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         <Image
           src="/images/hero-courthouse.png"
@@ -81,111 +81,57 @@ export function ServicesExplorer({
           fill
           priority
           sizes="100vw"
-          className="object-cover object-[78%_35%] opacity-45 sm:opacity-55"
+          className="object-cover object-[78%_35%] opacity-60 sm:opacity-70"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-cream from-10% via-cream/92 via-50% to-cream/25" />
-        <div className="absolute inset-0 bg-gradient-to-b from-cream/20 via-transparent to-cream" />
+        <div className="absolute inset-0 bg-gradient-to-r from-cream from-20% via-cream/85 via-55% to-cream/10" />
+        <div className="absolute inset-0 bg-gradient-to-b from-cream/15 via-transparent to-cream" />
       </div>
 
       <PageShell className="relative">
-        {/* Hero: one tagline, two doorways — clients and lawyers. */}
-        <div className="mx-auto max-w-3xl pt-2 text-center">
-          <h1 className="animate-fade-up font-heading text-3xl font-semibold leading-[1.12] tracking-tight text-espresso sm:text-4xl">
-            {t("heroTagline")}
+        {/* Hero: left-aligned against the courthouse; search is the action. */}
+        <div className="max-w-2xl">
+          <h1 className="animate-fade-up font-heading text-3xl font-semibold leading-[1.1] tracking-tight text-espresso [text-wrap:balance] sm:text-4xl lg:text-5xl">
+            {t("heroTitle")}
           </h1>
-        </div>
+          <p className="animate-fade-up mt-3 max-w-lg font-body text-base text-espresso/55 sm:text-lg">
+            {t("heroSubtitle")}
+          </p>
 
-        <div className="animate-fade-up mx-auto mt-6 grid max-w-4xl gap-4 sm:grid-cols-2">
-          <div className="flex flex-col items-start rounded-[var(--radius-card)] border border-espresso/12 bg-white/85 p-6 shadow-[0_4px_20px_rgba(28,18,16,0.06)] backdrop-blur-sm">
-            <span className="font-body text-xs font-semibold uppercase tracking-widest text-burgundy">
-              {t("forClientsLabel")}
-            </span>
-            <p className="mt-2 flex-1 font-body text-base text-espresso/70">
-              {t("forClientsText")}
-            </p>
-            <Link
-              href="/lawyers"
-              className="mt-5 inline-flex h-11 items-center justify-center rounded-[var(--radius-control)] bg-burgundy px-6 font-body text-sm font-semibold text-cream transition-colors hover:bg-burgundy-dark"
-            >
-              {t("findLawyer")}
-            </Link>
+          <div className="animate-fade-up relative mt-5 max-w-xl">
+            <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-espresso/35" />
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={t("searchPlaceholder")}
+              aria-label={t("searchPlaceholder")}
+              className="h-12 w-full rounded-xl border border-espresso/12 bg-white/90 pl-11 pr-11 font-body text-base text-espresso shadow-[0_4px_20px_rgba(28,18,16,0.06)] outline-none backdrop-blur-sm transition-colors placeholder:text-espresso/40 focus:border-burgundy"
+            />
+            {query && (
+              <button
+                type="button"
+                onClick={() => setQuery("")}
+                aria-label="Clear search"
+                className="absolute right-3 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-[var(--radius-control)] text-espresso/40 transition-colors hover:bg-espresso/5 hover:text-espresso"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
           </div>
 
-          <div className="flex flex-col items-start rounded-[var(--radius-card)] border border-espresso/12 bg-white/85 p-6 shadow-[0_4px_20px_rgba(28,18,16,0.06)] backdrop-blur-sm">
-            <span className="font-body text-xs font-semibold uppercase tracking-widest text-brass">
-              {t("forLawyersLabel")}
-            </span>
-            <p className="mt-2 flex-1 font-body text-base text-espresso/70">
-              {t("forLawyersText")}
-            </p>
+          {/* Attorneys are the rare visitor — a quiet annotation, not a doorway. */}
+          <p className="animate-fade-up mt-3.5 font-body text-sm text-espresso/55">
+            {t("attorneyPrompt")}{" "}
             <Link
               href="/signup"
-              className="mt-5 inline-flex h-11 items-center justify-center rounded-[var(--radius-control)] bg-espresso px-6 font-body text-sm font-semibold text-cream transition-colors hover:bg-espresso-hover"
+              className="font-semibold text-burgundy transition-colors hover:text-burgundy-dark"
             >
-              {t("applyAttorney")}
+              {t("attorneyCta")} &rarr;
             </Link>
-          </div>
+          </p>
         </div>
 
-        <div className="animate-fade-up relative mx-auto mt-5 max-w-4xl">
-          <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-espresso/35" />
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={t("searchPlaceholder")}
-            aria-label={t("searchPlaceholder")}
-            className="h-12 w-full rounded-xl border border-espresso/12 bg-white/90 pl-11 pr-11 font-body text-base text-espresso shadow-[0_4px_20px_rgba(28,18,16,0.06)] outline-none backdrop-blur-sm transition-colors placeholder:text-espresso/40 focus:border-burgundy"
-          />
-          {query && (
-            <button
-              type="button"
-              onClick={() => setQuery("")}
-              aria-label="Clear search"
-              className="absolute right-3 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-[var(--radius-control)] text-espresso/40 transition-colors hover:bg-espresso/5 hover:text-espresso"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          )}
-        </div>
-
-        <div className="mt-4 flex w-full min-w-0 flex-wrap items-center gap-1.5 border-b border-espresso/8 pb-3">
-          <button
-            type="button"
-            onClick={() => setActiveCategory(null)}
-            className={cn(
-              "inline-flex shrink-0 items-center gap-1.5 rounded-[var(--radius-control)] px-3 py-1.5 font-body text-sm font-medium transition-colors",
-              activeCategory === null
-                ? "bg-espresso text-cream"
-                : "text-espresso/60 hover:bg-espresso/5 hover:text-espresso"
-            )}
-          >
-            {tCommon("all")}
-          </button>
-          {categories.map((category) => {
-            const active = activeCategory === category.id;
-            return (
-              <button
-                key={category.id}
-                type="button"
-                onClick={() =>
-                  setActiveCategory(active ? null : category.id)
-                }
-                className={cn(
-                  "inline-flex shrink-0 items-center gap-1.5 rounded-[var(--radius-control)] px-3 py-1.5 font-body text-sm font-medium transition-colors",
-                  active
-                    ? "bg-burgundy text-cream"
-                    : "text-espresso/60 hover:bg-espresso/5 hover:text-burgundy"
-                )}
-              >
-                <CategoryIcon name={category.icon} className="h-3.5 w-3.5" />
-                {localizedCategoryName(category, locale)}
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="mt-6">
+        <div className="mt-9">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div className="brand-rule">
               <h2 className="font-heading text-2xl font-semibold text-espresso sm:text-3xl">
@@ -205,6 +151,40 @@ export function ServicesExplorer({
                 {t("viewAllServices")} &rarr;
               </Link>
             )}
+          </div>
+
+          <div className="mt-4 flex w-full min-w-0 flex-wrap items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => setActiveCategory(null)}
+              className={cn(
+                "inline-flex shrink-0 items-center gap-1.5 rounded-[var(--radius-control)] px-3 py-1.5 font-body text-sm font-medium transition-colors",
+                activeCategory === null
+                  ? "bg-espresso text-cream"
+                  : "text-espresso/60 hover:bg-espresso/5 hover:text-espresso"
+              )}
+            >
+              {tCommon("all")}
+            </button>
+            {categories.map((category) => {
+              const active = activeCategory === category.id;
+              return (
+                <button
+                  key={category.id}
+                  type="button"
+                  onClick={() => setActiveCategory(active ? null : category.id)}
+                  className={cn(
+                    "inline-flex shrink-0 items-center gap-1.5 rounded-[var(--radius-control)] px-3 py-1.5 font-body text-sm font-medium transition-colors",
+                    active
+                      ? "bg-burgundy text-cream"
+                      : "text-espresso/60 hover:bg-espresso/5 hover:text-burgundy"
+                  )}
+                >
+                  <CategoryIcon name={category.icon} className="h-3.5 w-3.5" />
+                  {localizedCategoryName(category, locale)}
+                </button>
+              );
+            })}
           </div>
 
           {displayedServices.length > 0 ? (
