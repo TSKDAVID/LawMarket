@@ -3,12 +3,17 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
+import { Search, X } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { CategoryIcon } from "@/components/shared/category-icon";
 import { ServiceCard } from "@/components/shared/service-card";
 import { PageShell } from "@/components/layout/page-shell";
 import type { Category, Lawyer, Service } from "@/data/types";
-import { localizedCategoryName } from "@/data/localize";
+import {
+  localizedCategoryName,
+  localizedServiceDescription,
+  localizedServiceTitle,
+} from "@/data/localize";
 import type { Locale } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
@@ -27,6 +32,7 @@ export function ServicesExplorer({
   const t = useTranslations("home");
   const tCommon = useTranslations("common");
   const tServices = useTranslations("services");
+  const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   const lawyerById = useMemo(
@@ -38,15 +44,29 @@ export function ServicesExplorer({
     [categories]
   );
 
-  const isFiltering = activeCategory !== null;
+  const isFiltering = query.trim().length > 0 || activeCategory !== null;
 
-  const filteredServices = useMemo(
-    () =>
-      services.filter(
-        (service) => !activeCategory || service.categoryId === activeCategory,
-      ),
-    [services, activeCategory],
-  );
+  const filteredServices = useMemo(() => {
+    const q = query.trim().toLowerCase();
+
+    return services.filter((service) => {
+      if (activeCategory && service.categoryId !== activeCategory) {
+        return false;
+      }
+      if (!q) return true;
+
+      const category = categoryById.get(service.categoryId);
+      const haystack = [
+        localizedServiceTitle(service, locale),
+        localizedServiceDescription(service, locale),
+        category ? localizedCategoryName(category, locale) : "",
+      ]
+        .join(" ")
+        .toLowerCase();
+
+      return haystack.includes(q);
+    });
+  }, [services, query, activeCategory, categoryById, locale]);
 
   const displayedServices = isFiltering
     ? filteredServices
@@ -105,6 +125,28 @@ export function ServicesExplorer({
               {t("applyAttorney")}
             </Link>
           </div>
+        </div>
+
+        <div className="animate-fade-up relative mx-auto mt-5 max-w-4xl">
+          <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-espresso/35" />
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={t("searchPlaceholder")}
+            aria-label={t("searchPlaceholder")}
+            className="h-12 w-full rounded-xl border border-espresso/12 bg-white/90 pl-11 pr-11 font-body text-base text-espresso shadow-[0_4px_20px_rgba(28,18,16,0.06)] outline-none backdrop-blur-sm transition-colors placeholder:text-espresso/40 focus:border-burgundy"
+          />
+          {query && (
+            <button
+              type="button"
+              onClick={() => setQuery("")}
+              aria-label="Clear search"
+              className="absolute right-3 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-[var(--radius-control)] text-espresso/40 transition-colors hover:bg-espresso/5 hover:text-espresso"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
         </div>
 
         <div className="mt-4 flex w-full min-w-0 flex-wrap items-center gap-1.5 border-b border-espresso/8 pb-3">
