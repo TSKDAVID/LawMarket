@@ -100,7 +100,7 @@ export function ServicesExplorer({
             </p>
             <Link
               href="/signup"
-              className="mt-5 inline-flex h-11 items-center justify-center rounded-[var(--radius-control)] border border-espresso/25 bg-white/60 px-6 font-body text-sm font-semibold text-espresso transition-colors hover:border-espresso hover:bg-espresso hover:text-cream"
+              className="mt-5 inline-flex h-11 items-center justify-center rounded-[var(--radius-control)] bg-espresso px-6 font-body text-sm font-semibold text-cream transition-colors hover:bg-espresso-hover"
             >
               {t("applyAttorney")}
             </Link>
