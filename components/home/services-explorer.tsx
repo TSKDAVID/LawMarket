@@ -15,7 +15,7 @@ import {
   localizedServiceTitle,
 } from "@/data/localize";
 import type { Locale } from "@/i18n/routing";
-import { cn, matchesQuery } from "@/lib/utils";
+import { cn, formatPrice, matchesQuery } from "@/lib/utils";
 
 type ServicesExplorerProps = {
   services: Service[];
@@ -34,6 +34,7 @@ export function ServicesExplorer({
   const tServices = useTranslations("services");
   const router = useRouter();
   const [query, setQuery] = useState("");
+  const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   const lawyerById = useMemo(
@@ -45,17 +46,16 @@ export function ServicesExplorer({
     [categories]
   );
 
-  const isFiltering = query.trim().length > 0 || activeCategory !== null;
-
-  const filteredServices = useMemo(() => {
+  /*
+   * The search answers WHERE THE EYE IS: matches surface in a typeahead
+   * panel directly under the input. The grid below is a stable "popular"
+   * shelf, filtered only by the category chips.
+   */
+  const suggestions = useMemo(() => {
     const q = query.trim();
+    if (!q) return [];
 
     return services.filter((service) => {
-      if (activeCategory && service.categoryId !== activeCategory) {
-        return false;
-      }
-      if (!q) return true;
-
       const category = categoryById.get(service.categoryId);
       const haystack = [
         localizedServiceTitle(service, locale),
@@ -65,7 +65,20 @@ export function ServicesExplorer({
 
       return matchesQuery(haystack, q);
     });
-  }, [services, query, activeCategory, categoryById, locale]);
+  }, [services, query, categoryById, locale]);
+
+  const topSuggestions = suggestions.slice(0, 6);
+  const showSuggestions = suggestionsOpen && query.trim().length > 0;
+
+  const isFiltering = activeCategory !== null;
+
+  const filteredServices = useMemo(
+    () =>
+      services.filter(
+        (service) => !activeCategory || service.categoryId === activeCategory
+      ),
+    [services, activeCategory]
+  );
 
   const displayedServices = isFiltering
     ? filteredServices
@@ -103,20 +116,36 @@ export function ServicesExplorer({
           </p>
 
           <form
-            className="animate-fade-up relative mt-6 max-w-xl"
+            className="animate-fade-up relative z-20 mt-6 max-w-xl"
             onSubmit={(e) => {
               e.preventDefault();
               const q = query.trim();
               router.push(q ? `/services?q=${encodeURIComponent(q)}` : "/services");
             }}
+            onFocus={() => setSuggestionsOpen(true)}
+            onBlur={(e) => {
+              if (!e.currentTarget.contains(e.relatedTarget)) {
+                setSuggestionsOpen(false);
+              }
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Escape") setSuggestionsOpen(false);
+            }}
           >
-            <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-espresso/35" />
+            <Search className="pointer-events-none absolute left-4 top-7 h-5 w-5 -translate-y-1/2 text-espresso/35" />
             <input
               type="text"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setSuggestionsOpen(true);
+              }}
               placeholder={t("searchPlaceholder")}
               aria-label={t("searchPlaceholder")}
+              role="combobox"
+              aria-expanded={showSuggestions}
+              aria-controls="hero-search-suggestions"
+              aria-autocomplete="list"
               className="h-14 w-full rounded-xl border border-espresso/20 bg-white/95 pl-11 pr-[8.25rem] font-body text-base text-espresso shadow-[0_4px_20px_rgba(28,18,16,0.08)] outline-none backdrop-blur-sm transition-colors placeholder:text-espresso/45 focus:border-burgundy"
             />
             {query && (
@@ -124,17 +153,69 @@ export function ServicesExplorer({
                 type="button"
                 onClick={() => setQuery("")}
                 aria-label="Clear search"
-                className="absolute right-[6.75rem] top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-[var(--radius-control)] text-espresso/40 transition-colors hover:bg-espresso/5 hover:text-espresso"
+                className="absolute right-[6.75rem] top-7 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-[var(--radius-control)] text-espresso/40 transition-colors hover:bg-espresso/5 hover:text-espresso"
               >
                 <X className="h-4 w-4" />
               </button>
             )}
             <button
               type="submit"
-              className="absolute right-2 top-1/2 inline-flex h-10 -translate-y-1/2 items-center justify-center rounded-lg bg-burgundy px-5 font-body text-sm font-semibold text-cream transition-colors hover:bg-burgundy-dark"
+              className="absolute right-2 top-7 inline-flex h-10 -translate-y-1/2 items-center justify-center rounded-lg bg-burgundy px-5 font-body text-sm font-semibold text-cream transition-colors hover:bg-burgundy-dark"
             >
               {t("searchButton")}
             </button>
+
+            {/* Typeahead: results land where the eye already is. */}
+            {showSuggestions && (
+              <div
+                id="hero-search-suggestions"
+                className="absolute inset-x-0 top-[3.75rem] overflow-hidden rounded-xl border border-espresso/15 bg-white shadow-[0_16px_40px_rgba(28,18,16,0.14)]"
+              >
+                {topSuggestions.length > 0 ? (
+                  <ul>
+                    {topSuggestions.map((service) => {
+                      const category = categoryById.get(service.categoryId);
+                      return (
+                        <li key={service.id} className="border-b border-espresso/8">
+                          <Link
+                            href={`/services/${service.slug}`}
+                            className="flex items-baseline justify-between gap-4 px-4 py-3 transition-colors hover:bg-cream/70 focus-visible:bg-cream/70"
+                          >
+                            <span className="min-w-0">
+                              <span className="block truncate font-body text-[15px] font-medium text-espresso">
+                                {localizedServiceTitle(service, locale)}
+                              </span>
+                              {category && (
+                                <span className="block font-body text-[11px] uppercase tracking-[0.1em] text-espresso/45">
+                                  {localizedCategoryName(category, locale)}
+                                </span>
+                              )}
+                            </span>
+                            <span className="shrink-0 font-heading text-base font-semibold text-burgundy">
+                              {formatPrice(service.price)}
+                            </span>
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                ) : (
+                  <p className="px-4 py-4 font-body text-sm text-espresso/50">
+                    {t("noResults")}
+                  </p>
+                )}
+                <button
+                  type="submit"
+                  className="flex w-full items-center justify-between px-4 py-3 text-left font-body text-sm font-semibold text-burgundy transition-colors hover:bg-cream/70"
+                >
+                  <span>
+                    {t("searchViewAll")}
+                    {suggestions.length > 0 ? ` (${suggestions.length})` : ""}
+                  </span>
+                  <span aria-hidden="true">&rarr;</span>
+                </button>
+              </div>
+            )}
           </form>
 
           <p className="animate-fade-up mt-3.5 font-body text-[13px] tracking-wide text-espresso/50">
