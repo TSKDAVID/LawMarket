@@ -158,7 +158,6 @@ export default async function HomePage({
               countAnnouncement: dict.ledger.countAnnouncement,
               emptyTitle: dict.ledger.emptyTitle,
               emptyAction: dict.ledger.emptyAction,
-              guaranteedMark: dict.common.guaranteedMark,
               view: dict.ledger.view,
             }}
           />

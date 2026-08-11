@@ -37,7 +37,6 @@ export interface LedgerStrings {
   countAnnouncement: string; // "{count} …"
   emptyTitle: string;
   emptyAction: string;
-  guaranteedMark: string;
   view: string;
 }
 
@@ -176,9 +175,9 @@ export function LedgerSearch({
                   {group.range}
                 </span>
               </div>
-              <ul className="divide-y divide-ink/15">
+              <ul className="mt-4 grid gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-4">
                 {group.items.map((item) => (
-                  <li key={item.slug}>
+                  <li key={item.slug} className="h-full">
                     <ServiceEntry
                       href={`${serviceHrefPrefix}/${item.slug}`}
                       clause={item.clause}
@@ -186,7 +185,6 @@ export function LedgerSearch({
                       description={item.description}
                       lawyer={item.lawyer}
                       price={item.price}
-                      guaranteedLabel={strings.guaranteedMark}
                       viewLabel={strings.view}
                     />
                   </li>
