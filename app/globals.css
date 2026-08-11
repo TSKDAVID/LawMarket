@@ -35,10 +35,24 @@
   --page-gutter: clamp(1.25rem, 4vw, 2.5rem);
 }
 
+/*
+ * ALK Sanet — the Georgian display voice (self-hosted, single regular
+ * weight). The 100–900 weight range declaration keeps browsers from
+ * synthesizing a faux bold when headings ask for 600.
+ */
+@font-face {
+  font-family: "ALK Sanet";
+  src: url("/fonts/alk-sanet.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Self-hosted variable fonts (Fontsource) — loaded in lib/fonts.ts */
 :root {
   --font-playfair: "Playfair Display Variable", Georgia, serif;
   --font-inter: "Inter Variable", system-ui, -apple-system, sans-serif;
+  --font-alk-sanet: "ALK Sanet", "Noto Serif Georgian Variable", Georgia, serif;
   --font-noto-serif-ka: "Noto Serif Georgian Variable", Georgia, serif;
   --font-noto-sans-ka: "Noto Sans Georgian Variable", system-ui, sans-serif;
 }
@@ -49,7 +63,7 @@ html[data-locale="en"] {
 }
 
 html[data-locale="ka"] {
-  --font-heading: var(--font-noto-serif-ka);
+  --font-heading: var(--font-alk-sanet);
   --font-body: var(--font-noto-sans-ka);
 }
 
