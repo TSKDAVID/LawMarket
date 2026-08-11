@@ -35,3 +35,6 @@ next-env.d.ts
 
 # local review artifacts
 screenshots/
+
+# local documents
+*.docx
