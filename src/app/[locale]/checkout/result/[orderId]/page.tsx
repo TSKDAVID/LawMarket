@@ -65,7 +65,7 @@ function FailureState({
           {primary && order ? (
             <StampButton href={primary.href}>{primary.label}</StampButton>
           ) : null}
-          <StampButton variant="secondary" href={`${localeHref(locale, "/")}#services`}>
+          <StampButton variant="secondary" href={localeHref(locale, "/services")}>
             {secondaryLabel}
           </StampButton>
         </div>
@@ -170,7 +170,7 @@ function ExecutedState({
           {dict.result.successKeepRef}
         </p>
         <div className="mt-8 flex flex-wrap gap-4">
-          <StampButton variant="secondary" href={`${localeHref(locale, "/")}#services`}>
+          <StampButton variant="secondary" href={localeHref(locale, "/services")}>
             {dict.result.backToRegister}
           </StampButton>
         </div>

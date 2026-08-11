@@ -25,6 +25,7 @@ const raw = [
     },
     priceGel: 80,
     lawyerIds: ["ketevan-shaoshvili"],
+    featured: true,
   },
   {
     id: "svc-02",
@@ -38,6 +39,7 @@ const raw = [
     },
     priceGel: 150,
     lawyerIds: ["tamta-bibiluridze"],
+    featured: true,
   },
   {
     id: "svc-03",
@@ -90,6 +92,7 @@ const raw = [
     },
     priceGel: 400,
     lawyerIds: ["liza-gikashvili"],
+    featured: true,
   },
   {
     id: "svc-07",
@@ -116,6 +119,7 @@ const raw = [
     },
     priceGel: 200,
     lawyerIds: ["liza-gikashvili"],
+    featured: true,
   },
   {
     id: "svc-09",
@@ -182,6 +186,7 @@ const raw = [
     },
     priceGel: 120,
     lawyerIds: ["mariam-zakaidze"],
+    featured: true,
   },
   // კორპორატიული სამართალი / CORPORATE LAW
   {
@@ -196,6 +201,7 @@ const raw = [
     },
     priceGel: 250,
     lawyerIds: ["mariam-zakaidze"],
+    featured: true,
   },
   {
     id: "svc-15",

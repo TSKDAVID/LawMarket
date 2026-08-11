@@ -33,6 +33,8 @@ export const ServiceSchema = z.object({
   priceGel: z.number().int().positive(),
   /** Lawyers assigned to perform this service. */
   lawyerIds: z.array(z.string().min(1)).min(1),
+  /** Shown in the homepage selection; the full register lives at /services. */
+  featured: z.boolean().optional(),
 });
 export type Service = z.infer<typeof ServiceSchema>;
 

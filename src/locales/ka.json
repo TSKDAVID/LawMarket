@@ -31,6 +31,12 @@
     "ctaConsult": "უფასო 15-წუთიანი კონსულტაცია",
     "meta": "15 SERVICES · 3 PRACTICE AREAS · FIXED PRICES IN ₾"
   },
+  "featured": {
+    "eyebrow": "SELECTED FROM THE REGISTER",
+    "title": "რჩეული მომსახურება",
+    "lede": "ყველაზე ხშირად მოთხოვნადი მომსახურება — სრული სარჩევი რეესტრშია.",
+    "viewAll": "სრული რეესტრი — 15 მომსახურება"
+  },
   "ledger": {
     "eyebrow": "INDEX OF SERVICES · § 01 — § 15",
     "title": "მომსახურების რეესტრი",
@@ -327,6 +333,8 @@
     },
     "serviceTitle": "{name} — {price} · LawMarket",
     "serviceDescription": "{description}. ფასი საბოლოოა — {price}. მომსახურებას ახლავს წერილობითი გარანტია.",
+    "servicesTitle": "მომსახურების რეესტრი · LawMarket",
+    "servicesDescription": "ყველა მომსახურება ფიქსირებული ფასით — § 01-დან § 15-მდე: ხელშეკრულებები, სარჩელები, რეგისტრაციები. ძიება რეესტრში და წერილობითი გარანტია ყოველ შეკვეთაზე.",
     "lawyersTitle": "იურისტთა რეესტრი · LawMarket",
     "lawyersDescription": "დანიშნული იურისტების საჯარო რეესტრი: სპეციალიზაცია, გამოცდილება, დასრულებული საქმეები და შეფასებები.",
     "lawyerTitle": "{name} — {specialty} · LawMarket",

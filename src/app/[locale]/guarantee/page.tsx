@@ -90,7 +90,7 @@ export default async function GuaranteePage({
             ))}
           </ol>
           <div className="mt-9">
-            <StampButton href={`${localeHref(locale, "/")}#services`}>
+            <StampButton href={localeHref(locale, "/services")}>
               {dict.guaranteePage.cta}
             </StampButton>
           </div>

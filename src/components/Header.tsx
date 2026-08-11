@@ -9,7 +9,7 @@ import { MobileNav } from "@/components/MobileNav";
 
 export function navItems(dict: Dictionary): NavItem[] {
   return [
-    { href: "/", label: dict.nav.services },
+    { href: "/services", label: dict.nav.services },
     { href: "/lawyers", label: dict.nav.lawyers },
     { href: "/guarantee", label: dict.nav.guarantee },
     { href: "/consultation", label: dict.nav.consultation },

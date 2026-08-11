@@ -5,9 +5,9 @@ import { getDictionary, isLocale } from "@/lib/i18n";
 import { localeHref } from "@/lib/routes";
 import { formatClause, formatGel } from "@/lib/format";
 import {
+  getFeaturedServices,
   getLawyers,
   getLawyersForService,
-  getLedger,
   getPriceRange,
 } from "@/lib/repository";
 import { pageMetadata, siteUrl } from "@/lib/seo";
@@ -17,10 +17,7 @@ import { Seal } from "@/components/Seal";
 import { StampButton } from "@/components/StampButton";
 import { Monogram } from "@/components/Monogram";
 import { JsonLd } from "@/components/JsonLd";
-import {
-  LedgerSearch,
-  type LedgerGroup,
-} from "@/components/LedgerSearch";
+import { ServiceEntry } from "@/components/ServiceEntry";
 
 export async function generateMetadata({
   params,
@@ -46,43 +43,9 @@ export default async function HomePage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const dict = getDictionary(locale);
-  const ledger = getLedger();
+  const featured = getFeaturedServices();
   const lawyers = getLawyers();
   const priceRange = getPriceRange();
-
-  const groups: LedgerGroup[] = ledger.map(({ area, services }) => {
-    const first = services[0];
-    const last = services[services.length - 1];
-    return {
-      id: area.id,
-      heading: area.name[locale],
-      headingLatin: locale === "ka" ? area.name.en.toUpperCase() : null,
-      range:
-        services.length > 1 && first && last
-          ? `${formatClause(first.number)} — ${formatClause(last.number)}`
-          : first
-            ? formatClause(first.number)
-            : "",
-      items: services.map((service) => ({
-        slug: service.slug,
-        clause: formatClause(service.number),
-        name: service.name[locale],
-        description: service.description[locale],
-        lawyer: getLawyersForService(service)[0]?.name[locale],
-        price: formatGel(service.priceGel, locale),
-        searchable: [
-          service.name.ka,
-          service.name.en,
-          service.description.ka,
-          service.description.en,
-          area.name.ka,
-          area.name.en,
-        ]
-          .join(" ")
-          .toLowerCase(),
-      })),
-    };
-  });
 
   const organizationLd = {
     "@context": "https://schema.org",
@@ -114,7 +77,9 @@ export default async function HomePage({
               {dict.hero.lede}
             </p>
             <div className="flex flex-col items-start gap-3">
-              <StampButton href="#services">{dict.hero.ctaPrimary}</StampButton>
+              <StampButton href={localeHref(locale, "/services")}>
+                {dict.hero.ctaPrimary}
+              </StampButton>
               <StampButton
                 variant="secondary"
                 href={localeHref(locale, "/consultation")}
@@ -135,36 +100,42 @@ export default async function HomePage({
         </div>
       </section>
 
-      {/* ——— The services ledger — the working document ——— */}
+      {/* ——— Selected services — the full register lives at /services ——— */}
       <section
         id="services"
         className="mx-auto max-w-[1200px] scroll-mt-6 px-5 pb-20 pt-12 md:px-10 md:pb-24 md:pt-14"
       >
-        <div className="mb-2 md:mb-0">
-          <Eyebrow>{dict.ledger.eyebrow}</Eyebrow>
-          <h2 className="mt-3 font-display text-display-lg md:-mb-[3.4rem] md:max-w-[46%]">
-            {dict.ledger.title}
-          </h2>
+        <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
+          <div>
+            <Eyebrow>{dict.featured.eyebrow}</Eyebrow>
+            <h2 className="mt-3 font-display text-display-lg">
+              {dict.featured.title}
+            </h2>
+          </div>
+          <p className="max-w-[38ch] text-[0.9375rem] leading-relaxed text-ink-70">
+            {dict.featured.lede}
+          </p>
         </div>
-        <div className="mt-6 md:mt-0">
-          <LedgerSearch
-            groups={groups}
-            locale={locale}
-            serviceHrefPrefix={localeHref(locale, "/services")}
-            strings={{
-              searchLabel: dict.ledger.searchLabel,
-              searchPlaceholder: dict.ledger.searchPlaceholder,
-              clear: dict.ledger.clear,
-              countAnnouncement: dict.ledger.countAnnouncement,
-              emptyTitle: dict.ledger.emptyTitle,
-              emptyAction: dict.ledger.emptyAction,
-              view: dict.ledger.view,
-            }}
-          />
+        <ul className="mt-8 grid gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-3">
+          {featured.map((service) => (
+            <li key={service.id} className="h-full">
+              <ServiceEntry
+                href={localeHref(locale, `/services/${service.slug}`)}
+                clause={formatClause(service.number)}
+                name={service.name[locale]}
+                description={service.description[locale]}
+                lawyer={getLawyersForService(service)[0]?.name[locale]}
+                price={formatGel(service.priceGel, locale)}
+                viewLabel={dict.ledger.view}
+              />
+            </li>
+          ))}
+        </ul>
+        <div className="mt-9 flex justify-center md:justify-start">
+          <StampButton variant="secondary" href={localeHref(locale, "/services")}>
+            {dict.featured.viewAll} →
+          </StampButton>
         </div>
-        <p className="mt-6 border-t border-ink pt-3 font-mono text-[0.6875rem] tracking-[0.1em] text-ink-70">
-          {dict.ledger.note}
-        </p>
       </section>
 
       {/* ——— The guarantee — numbered signed clauses ——— */}

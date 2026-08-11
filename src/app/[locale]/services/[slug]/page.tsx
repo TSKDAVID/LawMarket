@@ -234,7 +234,7 @@ export default async function ServicePage({
           <div className="flex flex-wrap items-baseline justify-between gap-4">
             <Eyebrow as="h2">{dict.service.relatedHeading}</Eyebrow>
             <Link
-              href={localeHref(locale, "/#services")}
+              href={localeHref(locale, "/services")}
               className="font-mono text-[0.75rem] tracking-[0.06em] text-stamp underline decoration-1 underline-offset-4 transition-colors duration-150 hover:text-stamp-press"
             >
               {dict.service.backToRegister} →

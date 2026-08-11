@@ -31,6 +31,12 @@
     "ctaConsult": "Free 15-minute consultation",
     "meta": "15 SERVICES · 3 PRACTICE AREAS · FIXED PRICES IN ₾"
   },
+  "featured": {
+    "eyebrow": "SELECTED FROM THE REGISTER",
+    "title": "Selected services",
+    "lede": "The most frequently requested services — the full index sits in the register.",
+    "viewAll": "The full register — 15 services"
+  },
   "ledger": {
     "eyebrow": "INDEX OF SERVICES · § 01 — § 15",
     "title": "The register of services",
@@ -327,6 +333,8 @@
     },
     "serviceTitle": "{name} — {price} · LawMarket",
     "serviceDescription": "{description}. The price is final — {price}. The service carries a written guarantee.",
+    "servicesTitle": "The register of services · LawMarket",
+    "servicesDescription": "Every service at a fixed price — § 01 to § 15: contracts, claims, registrations. Search the register; every order carries a written guarantee.",
     "lawyersTitle": "The register of lawyers · LawMarket",
     "lawyersDescription": "The public register of assigned lawyers: specialisation, experience, completed cases and reviews.",
     "lawyerTitle": "{name} — {specialty} · LawMarket",

@@ -52,7 +52,7 @@ export default async function CheckoutPage({
         </h1>
         <p className="mt-6 max-w-[44ch] text-ink-70">{dict.checkout.emptyBody}</p>
         <Rule className="my-10 max-w-[26rem]" />
-        <StampButton href={`${localeHref(locale, "/")}#services`}>
+        <StampButton href={localeHref(locale, "/services")}>
           {dict.checkout.emptyAction}
         </StampButton>
       </div>

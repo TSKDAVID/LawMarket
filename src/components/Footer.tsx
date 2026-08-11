@@ -12,7 +12,7 @@ import { Eyebrow } from "@/components/Eyebrow";
  */
 export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
   const indexLinks = [
-    { href: "/", label: dict.nav.services },
+    { href: "/services", label: dict.nav.services },
     { href: "/lawyers", label: dict.nav.lawyers },
     { href: "/consultation", label: dict.nav.consultation },
     { href: "/about", label: dict.nav.about },

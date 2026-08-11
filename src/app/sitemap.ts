@@ -9,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const barePaths = [
     "/",
+    "/services",
     "/lawyers",
     "/guarantee",
     "/consultation",

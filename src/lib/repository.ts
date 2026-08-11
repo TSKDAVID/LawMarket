@@ -33,6 +33,11 @@ export function getServicesByPracticeArea(areaId: string): Service[] {
   return getServices().filter((service) => service.practiceAreaId === areaId);
 }
 
+/** The homepage selection — curated via the `featured` flag in the data. */
+export function getFeaturedServices(): Service[] {
+  return getServices().filter((service) => service.featured);
+}
+
 /** Ledger structure: areas in order, each with its services. */
 export function getLedger(): { area: PracticeArea; services: Service[] }[] {
   return getPracticeAreas().map((area) => ({

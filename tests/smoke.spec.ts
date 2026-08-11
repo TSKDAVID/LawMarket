@@ -2,8 +2,8 @@ import { expect, test } from "@playwright/test";
 
 /** ENGINEERING.md §11 — smoke tests for the money paths. */
 
-test("homepage search filters the ledger to a known service", async ({ page }) => {
-  await page.goto("/");
+test("register search filters the ledger to a known service", async ({ page }) => {
+  await page.goto("/services");
   const search = page.getByRole("searchbox");
   await search.fill("შპს");
 
