@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { Search, X } from "lucide-react";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { CategoryIcon } from "@/components/shared/category-icon";
 import { ServiceCard } from "@/components/shared/service-card";
 import { PageShell } from "@/components/layout/page-shell";
@@ -15,7 +15,7 @@ import {
   localizedServiceTitle,
 } from "@/data/localize";
 import type { Locale } from "@/i18n/routing";
-import { cn } from "@/lib/utils";
+import { cn, matchesQuery } from "@/lib/utils";
 
 type ServicesExplorerProps = {
   services: Service[];
@@ -32,6 +32,7 @@ export function ServicesExplorer({
   const t = useTranslations("home");
   const tCommon = useTranslations("common");
   const tServices = useTranslations("services");
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
@@ -47,7 +48,7 @@ export function ServicesExplorer({
   const isFiltering = query.trim().length > 0 || activeCategory !== null;
 
   const filteredServices = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    const q = query.trim();
 
     return services.filter((service) => {
       if (activeCategory && service.categoryId !== activeCategory) {
@@ -60,11 +61,9 @@ export function ServicesExplorer({
         localizedServiceTitle(service, locale),
         localizedServiceDescription(service, locale),
         category ? localizedCategoryName(category, locale) : "",
-      ]
-        .join(" ")
-        .toLowerCase();
+      ].join(" ");
 
-      return haystack.includes(q);
+      return matchesQuery(haystack, q);
     });
   }, [services, query, activeCategory, categoryById, locale]);
 
@@ -73,7 +72,7 @@ export function ServicesExplorer({
     : services.filter((s) => s.popular).slice(0, 6);
 
   return (
-    <section className="paper-grain relative overflow-hidden bg-cream pb-10 pt-10 sm:pb-12 sm:pt-14">
+    <section className="paper-grain relative overflow-hidden bg-cream pb-10 pt-12 sm:pb-12 sm:pt-16 lg:pt-20">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         <Image
           src="/images/hero-courthouse.png"
@@ -90,14 +89,27 @@ export function ServicesExplorer({
       <PageShell className="relative">
         {/* Hero: left-aligned against the courthouse; search is the action. */}
         <div className="max-w-2xl">
-          <h1 className="animate-fade-up font-heading text-3xl font-semibold leading-[1.1] tracking-tight text-espresso [text-wrap:balance] sm:text-4xl lg:text-5xl">
-            {t("heroTitle")}
+          <h1 className="animate-fade-up font-heading text-3xl font-semibold leading-[1.12] tracking-tight text-espresso [text-wrap:balance] sm:text-4xl lg:text-5xl">
+            {t.rich("heroTitle", {
+              accent: (chunks) => (
+                <span className="underline decoration-brass/60 decoration-[3px] underline-offset-[7px]">
+                  {chunks}
+                </span>
+              ),
+            })}
           </h1>
-          <p className="animate-fade-up mt-3 max-w-lg font-body text-base text-espresso/55 sm:text-lg">
+          <p className="animate-fade-up mt-3.5 max-w-lg font-body text-base text-espresso/55 sm:text-lg">
             {t("heroSubtitle")}
           </p>
 
-          <div className="animate-fade-up relative mt-5 max-w-xl">
+          <form
+            className="animate-fade-up relative mt-6 max-w-xl"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const q = query.trim();
+              router.push(q ? `/services?q=${encodeURIComponent(q)}` : "/services");
+            }}
+          >
             <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-espresso/35" />
             <input
               type="text"
@@ -105,22 +117,35 @@ export function ServicesExplorer({
               onChange={(e) => setQuery(e.target.value)}
               placeholder={t("searchPlaceholder")}
               aria-label={t("searchPlaceholder")}
-              className="h-12 w-full rounded-xl border border-espresso/12 bg-white/90 pl-11 pr-11 font-body text-base text-espresso shadow-[0_4px_20px_rgba(28,18,16,0.06)] outline-none backdrop-blur-sm transition-colors placeholder:text-espresso/40 focus:border-burgundy"
+              className="h-14 w-full rounded-xl border border-espresso/20 bg-white/95 pl-11 pr-[8.25rem] font-body text-base text-espresso shadow-[0_4px_20px_rgba(28,18,16,0.08)] outline-none backdrop-blur-sm transition-colors placeholder:text-espresso/45 focus:border-burgundy"
             />
             {query && (
               <button
                 type="button"
                 onClick={() => setQuery("")}
                 aria-label="Clear search"
-                className="absolute right-3 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-[var(--radius-control)] text-espresso/40 transition-colors hover:bg-espresso/5 hover:text-espresso"
+                className="absolute right-[6.75rem] top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-[var(--radius-control)] text-espresso/40 transition-colors hover:bg-espresso/5 hover:text-espresso"
               >
                 <X className="h-4 w-4" />
               </button>
             )}
-          </div>
+            <button
+              type="submit"
+              className="absolute right-2 top-1/2 inline-flex h-10 -translate-y-1/2 items-center justify-center rounded-lg bg-burgundy px-5 font-body text-sm font-semibold text-cream transition-colors hover:bg-burgundy-dark"
+            >
+              {t("searchButton")}
+            </button>
+          </form>
+
+          <p className="animate-fade-up mt-3.5 font-body text-[13px] tracking-wide text-espresso/50">
+            {t("proofLine", {
+              services: services.length,
+              lawyers: lawyers.length,
+            })}
+          </p>
 
           {/* Attorneys are the rare visitor — a quiet annotation, not a doorway. */}
-          <p className="animate-fade-up mt-3.5 font-body text-sm text-espresso/55">
+          <p className="animate-fade-up mt-1.5 font-body text-sm text-espresso/55">
             {t("attorneyPrompt")}{" "}
             <Link
               href="/signup"
@@ -131,7 +156,7 @@ export function ServicesExplorer({
           </p>
         </div>
 
-        <div className="mt-9">
+        <div className="mt-12 sm:mt-16">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div className="brand-rule">
               <h2 className="font-heading text-2xl font-semibold text-espresso sm:text-3xl">

@@ -13,7 +13,7 @@ import {
   localizedServiceTitle,
 } from "@/data/localize";
 import type { Locale } from "@/i18n/routing";
-import { cn } from "@/lib/utils";
+import { cn, matchesQuery } from "@/lib/utils";
 
 type SortOption = "popular" | "price-asc" | "price-desc";
 
@@ -96,13 +96,14 @@ export function ServicesCatalog({
   const tCommon = useTranslations("common");
   const searchParams = useSearchParams();
   const categorySlug = searchParams.get("category");
-  const [query, setQuery] = useState("");
+  const queryParam = searchParams.get("q") ?? "";
+  const [query, setQuery] = useState(queryParam);
   const [activeCategory, setActiveCategory] = useState<string | null>(
     () => categories.find((c) => c.slug === categorySlug)?.id ?? null,
   );
   const [sort, setSort] = useState<SortOption>("popular");
 
-  // Sync the active category when the ?category= URL param changes —
+  // Sync filters when the ?category= / ?q= URL params change —
   // state is adjusted during render instead of inside an effect.
   const [syncedSlug, setSyncedSlug] = useState(categorySlug);
   if (categorySlug !== syncedSlug) {
@@ -111,6 +112,11 @@ export function ServicesCatalog({
       ? categories.find((c) => c.slug === categorySlug)
       : undefined;
     if (match) setActiveCategory(match.id);
+  }
+  const [syncedQuery, setSyncedQuery] = useState(queryParam);
+  if (queryParam !== syncedQuery) {
+    setSyncedQuery(queryParam);
+    setQuery(queryParam);
   }
 
   const lawyerById = useMemo(
@@ -123,7 +129,7 @@ export function ServicesCatalog({
   );
 
   const filteredServices = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    const q = query.trim();
 
     const filtered = services.filter((service) => {
       if (activeCategory && service.categoryId !== activeCategory) {
@@ -136,11 +142,9 @@ export function ServicesCatalog({
         localizedServiceTitle(service, locale),
         localizedServiceDescription(service, locale),
         category ? localizedCategoryName(category, locale) : "",
-      ]
-        .join(" ")
-        .toLowerCase();
+      ].join(" ");
 
-      return haystack.includes(q);
+      return matchesQuery(haystack, q);
     });
 
     return [...filtered].sort((a, b) => {

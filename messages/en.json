@@ -36,8 +36,10 @@
     "backToLawyers": "Back to lawyers"
   },
   "home": {
-    "heroTitle": "Fixed-price legal help in Georgia",
+    "heroTitle": "<accent>Fixed-price</accent> legal help in Georgia",
     "heroSubtitle": "Browse verified lawyers, compare services, and book with a satisfaction guarantee.",
+    "searchButton": "Search",
+    "proofLine": "{services} services · {lawyers} verified lawyers · prices upfront, in GEL",
     "attorneyPrompt": "Are you an attorney?",
     "attorneyCta": "Apply and grow your practice",
     "searchPlaceholder": "What legal service do you need?",

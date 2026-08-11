@@ -1,7 +1,6 @@
 import { useLocale, useTranslations } from "next-intl";
 import { Star } from "lucide-react";
 import { Link } from "@/i18n/navigation";
-import { Card, CardContent } from "@/components/ui/card";
 import { Avatar } from "@/components/shared/avatar";
 import type { Lawyer, Review, Service } from "@/data/types";
 import {
@@ -158,44 +157,45 @@ export function ReviewsSection({
             )}
           </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:col-span-7">
-            {secondary.map((review) => {
-              const lawyer = review.lawyerId
-                ? lawyerById.get(review.lawyerId)
-                : undefined;
+          {/* A quiet ledger of further reviews — hairlines, not card clones. */}
+          <div className="lg:col-span-7">
+            {secondary.map((review, index) => {
               const service = review.serviceId
                 ? serviceById.get(review.serviceId)
                 : undefined;
               return (
-                <Card key={review.id} className="bg-white/80">
-                  <CardContent>
-                    <Stars rating={review.rating} />
-                    <p className="mt-3 font-body text-sm leading-relaxed text-espresso/70">
-                      &ldquo;{localizedReviewQuote(review, locale)}&rdquo;
-                    </p>
-                    <div className="mt-4 flex items-center gap-2.5 border-t border-espresso/8 pt-4">
-                      <ReviewAvatar review={review} lawyer={lawyer} size="sm" />
-                      <div>
-                        <p className="font-heading text-sm font-semibold text-espresso">
-                          {review.authorName}
-                        </p>
-                        <p className="font-body text-xs text-espresso/50">
-                          {localizedReviewRole(review, locale)}
-                        </p>
-                        {service && (
-                          <Link
-                            href={`/services/${service.slug}`}
-                            className="mt-0.5 block font-body text-xs text-burgundy hover:text-burgundy-dark"
-                          >
-                            {t("viaService", {
-                              service: localizedServiceTitle(service, locale),
-                            })}
-                          </Link>
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                <div
+                  key={review.id}
+                  className={cn(
+                    "py-5",
+                    index > 0 && "border-t border-espresso/10"
+                  )}
+                >
+                  <p className="font-body text-[15px] leading-relaxed text-espresso/75">
+                    &ldquo;{localizedReviewQuote(review, locale)}&rdquo;
+                  </p>
+                  <div className="mt-2.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                    <span className="font-heading text-sm font-semibold text-espresso">
+                      {review.authorName}
+                    </span>
+                    <span className="font-body text-xs text-espresso/45">
+                      · {localizedReviewRole(review, locale)}
+                    </span>
+                    {service && (
+                      <Link
+                        href={`/services/${service.slug}`}
+                        className="font-body text-xs text-burgundy hover:text-burgundy-dark"
+                      >
+                        · {t("viaService", {
+                          service: localizedServiceTitle(service, locale),
+                        })}
+                      </Link>
+                    )}
+                    <span className="ml-auto">
+                      <Stars rating={review.rating} />
+                    </span>
+                  </div>
+                </div>
               );
             })}
           </div>

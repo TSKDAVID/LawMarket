@@ -2,7 +2,6 @@ import { useLocale, useTranslations } from "next-intl";
 import { Clock, ArrowUpRight } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/shared/avatar";
 import { CategoryIcon } from "@/components/shared/category-icon";
 import type { Category, Lawyer, Service } from "@/data/types";
@@ -44,10 +43,10 @@ export function ServiceCard({
         <CardContent className="flex flex-1 flex-col pt-5">
           <div className="flex items-start justify-between gap-3">
             {category && (
-              <Badge variant="burgundy">
+              <span className="inline-flex items-center gap-1.5 pt-0.5 font-body text-[11px] font-semibold uppercase tracking-[0.12em] text-burgundy/85">
                 <CategoryIcon name={category.icon} className="h-3.5 w-3.5" />
                 {localizedCategoryName(category, locale)}
-              </Badge>
+              </span>
             )}
             <ArrowUpRight className="h-5 w-5 shrink-0 text-espresso/15 transition-colors group-hover:text-burgundy" />
           </div>
