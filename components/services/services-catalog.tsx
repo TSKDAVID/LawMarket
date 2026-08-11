@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Search, X } from "lucide-react";
@@ -95,16 +95,23 @@ export function ServicesCatalog({
   const t = useTranslations("services");
   const tCommon = useTranslations("common");
   const searchParams = useSearchParams();
+  const categorySlug = searchParams.get("category");
   const [query, setQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState<string | null>(
+    () => categories.find((c) => c.slug === categorySlug)?.id ?? null,
+  );
   const [sort, setSort] = useState<SortOption>("popular");
 
-  useEffect(() => {
-    const slug = searchParams.get("category");
-    if (!slug) return;
-    const match = categories.find((c) => c.slug === slug);
+  // Sync the active category when the ?category= URL param changes —
+  // state is adjusted during render instead of inside an effect.
+  const [syncedSlug, setSyncedSlug] = useState(categorySlug);
+  if (categorySlug !== syncedSlug) {
+    setSyncedSlug(categorySlug);
+    const match = categorySlug
+      ? categories.find((c) => c.slug === categorySlug)
+      : undefined;
     if (match) setActiveCategory(match.id);
-  }, [searchParams, categories]);
+  }
 
   const lawyerById = useMemo(
     () => new Map(lawyers.map((l) => [l.id, l])),

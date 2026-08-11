@@ -3,18 +3,12 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
-import { Search, X } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { CategoryIcon } from "@/components/shared/category-icon";
 import { ServiceCard } from "@/components/shared/service-card";
-import { LogoMark } from "@/components/brand/logo-mark";
 import { PageShell } from "@/components/layout/page-shell";
 import type { Category, Lawyer, Service } from "@/data/types";
-import {
-  localizedCategoryName,
-  localizedServiceDescription,
-  localizedServiceTitle,
-} from "@/data/localize";
+import { localizedCategoryName } from "@/data/localize";
 import type { Locale } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
@@ -33,7 +27,6 @@ export function ServicesExplorer({
   const t = useTranslations("home");
   const tCommon = useTranslations("common");
   const tServices = useTranslations("services");
-  const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   const lawyerById = useMemo(
@@ -45,29 +38,15 @@ export function ServicesExplorer({
     [categories]
   );
 
-  const isFiltering = query.trim().length > 0 || activeCategory !== null;
+  const isFiltering = activeCategory !== null;
 
-  const filteredServices = useMemo(() => {
-    const q = query.trim().toLowerCase();
-
-    return services.filter((service) => {
-      if (activeCategory && service.categoryId !== activeCategory) {
-        return false;
-      }
-      if (!q) return true;
-
-      const category = categoryById.get(service.categoryId);
-      const haystack = [
-        localizedServiceTitle(service, locale),
-        localizedServiceDescription(service, locale),
-        category ? localizedCategoryName(category, locale) : "",
-      ]
-        .join(" ")
-        .toLowerCase();
-
-      return haystack.includes(q);
-    });
-  }, [services, query, activeCategory, categoryById, locale]);
+  const filteredServices = useMemo(
+    () =>
+      services.filter(
+        (service) => !activeCategory || service.categoryId === activeCategory,
+      ),
+    [services, activeCategory],
+  );
 
   const displayedServices = isFiltering
     ? filteredServices
@@ -89,40 +68,42 @@ export function ServicesExplorer({
       </div>
 
       <PageShell className="relative">
-        <div className="max-w-2xl">
-          <div className="mb-3 flex items-center gap-2">
-            <LogoMark className="h-5 w-5 text-burgundy" />
-            <span className="font-body text-xs font-medium uppercase tracking-widest text-espresso/45">
-              {tCommon("tagline")}
-            </span>
-          </div>
-          <h1 className="animate-fade-up font-heading text-3xl font-semibold leading-[1.08] tracking-tight text-espresso sm:text-4xl lg:text-5xl">
-            {t("heroTitle")}
+        {/* Hero: one tagline, two doorways — clients and lawyers. */}
+        <div className="mx-auto max-w-3xl pt-2 text-center">
+          <h1 className="animate-fade-up font-heading text-3xl font-semibold leading-[1.12] tracking-tight text-espresso sm:text-4xl">
+            {t("heroTagline")}
           </h1>
-          <p className="animate-fade-up mt-2.5 max-w-lg font-body text-base text-espresso/50 sm:text-lg">
-            {t("heroSubtitle")}
-          </p>
+        </div>
 
-          <div className="animate-fade-up relative mt-4 max-w-xl">
-            <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-espresso/35" />
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder={t("searchPlaceholder")}
-              aria-label={t("searchPlaceholder")}
-              className="h-12 w-full rounded-xl border border-espresso/12 bg-white/90 pl-11 pr-11 font-body text-base text-espresso shadow-[0_4px_20px_rgba(28,18,16,0.06)] outline-none backdrop-blur-sm transition-colors placeholder:text-espresso/40 focus:border-burgundy"
-            />
-            {query && (
-              <button
-                type="button"
-                onClick={() => setQuery("")}
-                aria-label="Clear search"
-                className="absolute right-3 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-[var(--radius-control)] text-espresso/40 transition-colors hover:bg-espresso/5 hover:text-espresso"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            )}
+        <div className="animate-fade-up mx-auto mt-6 grid max-w-4xl gap-4 sm:grid-cols-2">
+          <div className="flex flex-col items-start rounded-[var(--radius-card)] border border-espresso/12 bg-white/85 p-6 shadow-[0_4px_20px_rgba(28,18,16,0.06)] backdrop-blur-sm">
+            <span className="font-body text-xs font-semibold uppercase tracking-widest text-burgundy">
+              {t("forClientsLabel")}
+            </span>
+            <p className="mt-2 flex-1 font-body text-base text-espresso/70">
+              {t("forClientsText")}
+            </p>
+            <Link
+              href="/lawyers"
+              className="mt-5 inline-flex h-11 items-center justify-center rounded-[var(--radius-control)] bg-burgundy px-6 font-body text-sm font-semibold text-cream transition-colors hover:bg-burgundy-dark"
+            >
+              {t("findLawyer")}
+            </Link>
+          </div>
+
+          <div className="flex flex-col items-start rounded-[var(--radius-card)] border border-espresso/12 bg-white/85 p-6 shadow-[0_4px_20px_rgba(28,18,16,0.06)] backdrop-blur-sm">
+            <span className="font-body text-xs font-semibold uppercase tracking-widest text-brass">
+              {t("forLawyersLabel")}
+            </span>
+            <p className="mt-2 flex-1 font-body text-base text-espresso/70">
+              {t("forLawyersText")}
+            </p>
+            <Link
+              href="/signup"
+              className="mt-5 inline-flex h-11 items-center justify-center rounded-[var(--radius-control)] border border-espresso/25 bg-white/60 px-6 font-body text-sm font-semibold text-espresso transition-colors hover:border-espresso hover:bg-espresso hover:text-cream"
+            >
+              {t("applyAttorney")}
+            </Link>
           </div>
         </div>
 

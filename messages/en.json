@@ -38,6 +38,13 @@
   "home": {
     "heroTitle": "Fixed-price legal help in Georgia",
     "heroSubtitle": "Browse verified lawyers, compare services, and book with a satisfaction guarantee.",
+    "heroTagline": "Connecting clients with experienced legal professionals",
+    "forClientsLabel": "For clients",
+    "forClientsText": "Hire a lawyer for your project or legal dispute.",
+    "findLawyer": "Find a lawyer",
+    "forLawyersLabel": "For lawyers",
+    "forLawyersText": "Find new clients and grow your practice.",
+    "applyAttorney": "Apply as an attorney",
     "searchPlaceholder": "What legal service do you need?",
     "categoriesLabel": "Browse by category",
     "popularServicesTitle": "Popular services",
