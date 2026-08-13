@@ -10,19 +10,21 @@ permissions:
   pages: write
   id-token: write
 
+# Queue deployments instead of cancelling them: a run killed mid-deploy leaves
+# the Pages deployment stuck in progress, which makes the next run fail with 400.
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: "22"
           cache: npm
@@ -36,8 +38,19 @@ jobs:
           CUSTOM_DOMAIN: "true"
         run: npm run build
 
+      - name: Verify export
+        run: |
+          set -e
+          for f in out/index.html out/services/index.html out/en/index.html out/CNAME; do
+            test -s "$f" || { echo "missing or empty: $f"; exit 1; }
+          done
+          if grep -q '__next_error__' out/index.html; then
+            echo "out/index.html is the error shell — the ka hoist did not run"
+            exit 1
+          fi
+
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: out
 
@@ -50,4 +63,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
