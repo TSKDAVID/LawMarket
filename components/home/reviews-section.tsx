@@ -1,5 +1,4 @@
 import { useLocale, useTranslations } from "next-intl";
-import { Star } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Avatar } from "@/components/shared/avatar";
 import type { Lawyer, Review, Service } from "@/data/types";
@@ -27,21 +26,31 @@ function initialsFromName(name: string) {
     .toUpperCase();
 }
 
-function Stars({ rating }: { rating: number }) {
+/*
+ * Typographic rating — a technical mono mark instead of an SVG widget.
+ * Reads like an entry in a grading ledger: [ ★★★★★ ].
+ */
+function RatingMark({
+  rating,
+  className,
+}: {
+  rating: number;
+  className?: string;
+}) {
+  const filled = Math.max(0, Math.min(5, Math.round(rating)));
   return (
-    <div className="flex gap-0.5">
-      {Array.from({ length: 5 }).map((_, i) => (
-        <Star
-          key={i}
-          className={cn(
-            "h-4 w-4",
-            i < rating
-              ? "fill-brass text-brass"
-              : "fill-espresso/10 text-espresso/10"
-          )}
-        />
-      ))}
-    </div>
+    <span
+      className={cn(
+        "font-mono text-xs tracking-tight text-espresso",
+        className
+      )}
+    >
+      <span aria-hidden="true">
+        [ {"★".repeat(filled)}
+        {"☆".repeat(5 - filled)} ]
+      </span>
+      <span className="sr-only">{rating}/5</span>
+    </span>
   );
 }
 
@@ -62,6 +71,7 @@ function ReviewAvatar({
         photoUrl={lawyer.photoUrl}
         alt={lawyer.name}
         size={size}
+        className="aspect-square rounded-none border border-espresso"
       />
     );
   }
@@ -71,6 +81,7 @@ function ReviewAvatar({
       initials={initialsFromName(review.authorName)}
       color="#1c1210"
       size={size}
+      className="aspect-square rounded-none border border-espresso"
     />
   );
 }
@@ -111,53 +122,52 @@ export function ReviewsSection({
         </div>
 
         <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">
+          {/* Case file — the featured testimony sealed in a 1px ink frame */}
           <div className="lg:col-span-5">
-            <span
-              aria-hidden="true"
-              className="font-heading text-6xl leading-none text-burgundy/25"
-            >
-              &ldquo;
-            </span>
-            <Stars rating={featured.rating} />
-            <p className="mt-5 font-heading text-2xl font-medium leading-snug text-espresso sm:text-3xl">
-              {localizedReviewQuote(featured, locale)}
-            </p>
-            <div className="mt-8 flex items-center gap-3">
-              <ReviewAvatar
-                review={featured}
-                lawyer={featuredLawyer}
-                size="md"
-              />
-              <div>
-                <p className="font-heading text-sm font-semibold text-espresso">
-                  {featured.authorName}
-                </p>
-                <p className="font-body text-xs text-espresso/50">
-                  {localizedReviewRole(featured, locale)}
-                </p>
-                {featuredService && (
-                  <Link
-                    href={`/services/${featuredService.slug}`}
-                    className="mt-0.5 block font-body text-xs text-burgundy hover:text-burgundy-dark"
-                  >
-                    {t("viaService", {
-                      service: localizedServiceTitle(featuredService, locale),
-                    })}
-                  </Link>
-                )}
+            <div className="rounded-none border border-espresso bg-parchment p-8 sm:p-10">
+              <RatingMark rating={featured.rating} />
+              <p className="mt-5 font-heading text-2xl font-medium leading-snug text-espresso sm:text-3xl">
+                {localizedReviewQuote(featured, locale)}
+              </p>
+
+              <div className="mt-8 flex items-center gap-3 border-t border-espresso/20 pt-6">
+                <ReviewAvatar
+                  review={featured}
+                  lawyer={featuredLawyer}
+                  size="md"
+                />
+                <div>
+                  <p className="font-heading text-sm font-semibold text-espresso">
+                    {featured.authorName}
+                  </p>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-espresso/50">
+                    {localizedReviewRole(featured, locale)}
+                  </p>
+                  {featuredService && (
+                    <Link
+                      href={`/services/${featuredService.slug}`}
+                      className="mt-0.5 block font-body text-xs text-burgundy hover:text-burgundy-dark"
+                    >
+                      {t("viaService", {
+                        service: localizedServiceTitle(featuredService, locale),
+                      })}
+                    </Link>
+                  )}
+                </div>
               </div>
+
+              {featuredLawyer && (
+                <Link
+                  href={`/lawyers/${featuredLawyer.slug}`}
+                  className="mt-6 inline-block font-mono text-xs uppercase tracking-[0.16em] text-burgundy transition-colors hover:text-burgundy-dark"
+                >
+                  {t("viewLawyerProfile")} &rarr;
+                </Link>
+              )}
             </div>
-            {featuredLawyer && (
-              <Link
-                href={`/lawyers/${featuredLawyer.slug}`}
-                className="mt-4 inline-block font-body text-sm font-semibold text-burgundy hover:text-burgundy-dark"
-              >
-                {t("viewLawyerProfile")} &rarr;
-              </Link>
-            )}
           </div>
 
-          {/* A quiet ledger of further reviews — hairlines, not card clones. */}
+          {/* Review ledger — hard 1px ink rules between entries */}
           <div className="lg:col-span-7">
             {secondary.map((review, index) => {
               const service = review.serviceId
@@ -166,34 +176,31 @@ export function ReviewsSection({
               return (
                 <div
                   key={review.id}
-                  className={cn(
-                    "py-5",
-                    index > 0 && "border-t border-espresso/10"
-                  )}
+                  className={cn("py-5", index > 0 && "border-t border-espresso")}
                 >
-                  <p className="font-body text-[15px] leading-relaxed text-espresso/75">
-                    &ldquo;{localizedReviewQuote(review, locale)}&rdquo;
-                  </p>
-                  <div className="mt-2.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-                    <span className="font-heading text-sm font-semibold text-espresso">
+                  <div className="flex items-start justify-between gap-4">
+                    <p className="font-body text-[15px] leading-relaxed text-espresso/75">
+                      &ldquo;{localizedReviewQuote(review, locale)}&rdquo;
+                    </p>
+                    <RatingMark rating={review.rating} className="shrink-0" />
+                  </div>
+                  <div className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1 font-mono text-xs uppercase tracking-widest">
+                    <span className="font-semibold text-espresso">
                       {review.authorName}
                     </span>
-                    <span className="font-body text-xs text-espresso/45">
-                      · {localizedReviewRole(review, locale)}
+                    <span className="text-espresso/50">
+                      {localizedReviewRole(review, locale)}
                     </span>
                     {service && (
                       <Link
                         href={`/services/${service.slug}`}
-                        className="font-body text-xs text-burgundy hover:text-burgundy-dark"
+                        className="text-burgundy transition-colors hover:text-burgundy-dark"
                       >
-                        · {t("viaService", {
+                        {t("viaService", {
                           service: localizedServiceTitle(service, locale),
                         })}
                       </Link>
                     )}
-                    <span className="ml-auto">
-                      <Stars rating={review.rating} />
-                    </span>
                   </div>
                 </div>
               );
