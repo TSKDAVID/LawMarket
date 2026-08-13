@@ -544,38 +544,43 @@ export function ServicesExplorer({
             )}
           </div>
 
-          <div className="mt-4 flex w-full min-w-0 items-center gap-1.5 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            <button
-              type="button"
-              onClick={() => setActiveCategory(null)}
-              className={cn(
-                "inline-flex shrink-0 items-center gap-1.5 rounded-[var(--radius-control)] px-3 py-1.5 font-body text-sm font-medium transition-colors",
-                activeCategory === null
-                  ? "bg-espresso text-cream"
-                  : "text-espresso/60 hover:bg-espresso/5 hover:text-espresso"
-              )}
-            >
-              {tCommon("all")}
-            </button>
-            {categories.map((category) => {
-              const active = activeCategory === category.id;
-              return (
-                <button
-                  key={category.id}
-                  type="button"
-                  onClick={() => setActiveCategory(active ? null : category.id)}
-                  className={cn(
-                    "inline-flex shrink-0 items-center gap-1.5 rounded-[var(--radius-control)] px-3 py-1.5 font-body text-sm font-medium transition-colors",
-                    active
-                      ? "bg-burgundy text-cream"
-                      : "text-espresso/60 hover:bg-espresso/5 hover:text-burgundy"
-                  )}
-                >
-                  <CategoryIcon name={category.icon} className="h-3.5 w-3.5" />
-                  {localizedCategoryName(category, locale)}
-                </button>
-              );
-            })}
+          {/* Filter ledger: one contiguous ruled strip, options split by 1px verticals */}
+          <div className="no-scrollbar mt-5 w-full overflow-x-auto">
+            <div className="flex w-max min-w-full items-stretch divide-x divide-espresso/20 border-y border-espresso">
+              <button
+                type="button"
+                onClick={() => setActiveCategory(null)}
+                aria-pressed={activeCategory === null}
+                className={cn(
+                  "inline-flex shrink-0 items-center gap-1.5 rounded-none px-4 py-2.5 font-body text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-burgundy",
+                  activeCategory === null
+                    ? "bg-espresso text-cream"
+                    : "text-espresso/60 hover:bg-espresso/5 hover:text-espresso"
+                )}
+              >
+                {tCommon("all")}
+              </button>
+              {categories.map((category) => {
+                const active = activeCategory === category.id;
+                return (
+                  <button
+                    key={category.id}
+                    type="button"
+                    onClick={() => setActiveCategory(active ? null : category.id)}
+                    aria-pressed={active}
+                    className={cn(
+                      "inline-flex shrink-0 items-center gap-1.5 rounded-none px-4 py-2.5 font-body text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-burgundy",
+                      active
+                        ? "bg-espresso text-cream"
+                        : "text-espresso/60 hover:bg-espresso/5 hover:text-espresso"
+                    )}
+                  >
+                    <CategoryIcon name={category.icon} className="h-3.5 w-3.5" />
+                    {localizedCategoryName(category, locale)}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {displayedServices.length > 0 ? (
@@ -596,7 +601,7 @@ export function ServicesExplorer({
               })}
             </div>
           ) : (
-            <div className="mt-5 rounded-[var(--radius-card)] border border-dashed border-espresso/15 bg-white/50 px-6 py-14 text-center">
+            <div className="mt-5 rounded-none border border-espresso/20 bg-parchment px-6 py-14 text-center">
               <p className="font-body text-espresso/50">{t("noResults")}</p>
             </div>
           )}

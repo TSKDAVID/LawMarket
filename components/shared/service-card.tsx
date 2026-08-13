@@ -1,7 +1,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { Clock } from "lucide-react";
 import { Link } from "@/i18n/navigation";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Avatar } from "@/components/shared/avatar";
 import { CategoryIcon } from "@/components/shared/category-icon";
 import type { Category, Lawyer, Service } from "@/data/types";
@@ -39,27 +39,43 @@ export function ServiceCard({
   return (
     <Link
       href={`/services/${service.slug}`}
-      className={cn("group block h-full", className)}
+      className={cn(
+        "group block h-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy",
+        className
+      )}
     >
-      <Card className="relative flex h-full flex-col overflow-hidden transition-all duration-200 group-hover:border-espresso/35 group-hover:shadow-[0_6px_20px_rgba(28,18,16,0.08)]">
-        <span
-          aria-hidden="true"
-          className={cn(
-            "absolute inset-x-0 top-0 h-[2px] bg-burgundy transition-opacity",
-            featured ? "opacity-80" : "opacity-0 group-hover:opacity-80"
-          )}
-        />
-        <CardContent className="flex flex-1 flex-col pt-5">
-          {category && (
-            <span className="inline-flex items-center gap-1.5 font-body text-[11px] font-semibold uppercase tracking-[0.12em] text-brass">
-              <CategoryIcon name={category.icon} className="h-3.5 w-3.5" />
-              {localizedCategoryName(category, locale)}
-            </span>
-          )}
+      {/*
+       * Ledger block: strict 1px ink frame, three ruled zones, and a
+       * mechanical hover — the card lifts toward the cursor and casts a
+       * hard offset shadow, like a stamped file pulled off the stack.
+       */}
+      <Card className="relative flex h-full flex-col rounded-none border-espresso bg-parchment shadow-none transition-transform duration-150 group-hover:-translate-x-1 group-hover:-translate-y-1 group-hover:shadow-[4px_4px_0_0_#1c1210]">
+        {featured && (
+          <span
+            aria-hidden="true"
+            className="absolute inset-x-0 top-0 h-[2px] bg-burgundy"
+          />
+        )}
 
+        {/* Zone 1 — dossier header: category label */}
+        <div className="border-b border-espresso/20 px-5 py-3">
+          <span className="inline-flex items-center gap-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-brass">
+            {category ? (
+              <>
+                <CategoryIcon name={category.icon} className="h-3.5 w-3.5" />
+                {localizedCategoryName(category, locale)}
+              </>
+            ) : (
+              <>&nbsp;</>
+            )}
+          </span>
+        </div>
+
+        {/* Zone 2 — title and description */}
+        <div className="flex flex-1 flex-col px-5 py-4">
           <h3
             className={cn(
-              "mt-3 font-heading font-semibold text-espresso",
+              "font-heading font-semibold text-espresso",
               featured ? "text-xl sm:text-2xl" : "text-lg"
             )}
           >
@@ -76,37 +92,38 @@ export function ServiceCard({
           ) : (
             <span className="flex-1" />
           )}
+        </div>
 
-          <div className="mt-4 flex items-end justify-between gap-3 border-t border-espresso/8 pt-4">
-            <div className="flex min-w-0 items-center gap-2.5">
+        {/* Zone 3 — footer ledger row: provider left, price right */}
+        <div className="flex items-center justify-between gap-3 border-t border-espresso/20 px-5 py-3.5">
+          <div className="flex min-w-0 items-center gap-2.5">
+            {lawyer && (
+              <Avatar
+                initials={lawyer.initials}
+                color={lawyer.avatarColor}
+                photoUrl={lawyer.photoUrl}
+                alt={lawyer.name}
+                size="sm"
+              />
+            )}
+            <div className="min-w-0 font-body text-xs text-espresso/50">
               {lawyer && (
-                <Avatar
-                  initials={lawyer.initials}
-                  color={lawyer.avatarColor}
-                  photoUrl={lawyer.photoUrl}
-                  alt={lawyer.name}
-                  size="sm"
-                />
+                <span className="block truncate font-medium text-espresso/70">
+                  {lawyer.name}
+                </span>
               )}
-              <div className="min-w-0 font-body text-xs text-espresso/50">
-                {lawyer && (
-                  <span className="block truncate font-medium text-espresso/70">
-                    {lawyer.name}
-                  </span>
-                )}
-                {service.durationMinutes && (
-                  <span className="inline-flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    {service.durationMinutes} {t("minutes")}
-                  </span>
-                )}
-              </div>
+              {service.durationMinutes && (
+                <span className="inline-flex items-center gap-1">
+                  <Clock className="h-3 w-3" />
+                  {service.durationMinutes} {t("minutes")}
+                </span>
+              )}
             </div>
-            <p className="shrink-0 font-heading text-xl font-semibold tracking-tight text-espresso sm:text-2xl">
-              {formatPrice(service.price)}
-            </p>
           </div>
-        </CardContent>
+          <p className="shrink-0 text-right font-heading text-xl font-bold tracking-tight text-espresso sm:text-2xl">
+            {formatPrice(service.price)}
+          </p>
+        </div>
       </Card>
     </Link>
   );
