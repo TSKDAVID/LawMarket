@@ -8,6 +8,9 @@
   --color-burgundy: #6b1423;
   --color-burgundy-dark: #4a0e1f;
   --color-burgundy-tint: #f3e4e6;
+  /* Brand burgundy scores 1.5:1 on espresso — unreadable. This is the
+     accent to use for burgundy-coded text on dark surfaces (5.2:1). */
+  --color-burgundy-light: #c4707f;
   --color-brass: #8a6d3b;
 
   --accent-action: #6b1423;

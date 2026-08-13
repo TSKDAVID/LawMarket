@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { getCategories, getLawyers, getServices } from "@/data/queries";
+import { getCategories, getServices } from "@/data/queries";
 import { ServicesCatalog } from "@/components/services/services-catalog";
 import type { Locale } from "@/i18n/routing";
 import { setRequestLocale } from "next-intl/server";
@@ -24,20 +24,15 @@ export default async function ServicesPage({
   const { locale } = await params;
   setRequestLocale(locale as Locale);
 
-  const [categories, services, lawyers] = await Promise.all([
+  const [categories, services] = await Promise.all([
     getCategories(),
     getServices(),
-    getLawyers(),
   ]);
 
   return (
     <div className="paper-grain page-shell py-10 lg:py-12">
       <Suspense fallback={null}>
-        <ServicesCatalog
-          services={services}
-          categories={categories}
-          lawyers={lawyers}
-        />
+        <ServicesCatalog services={services} categories={categories} />
       </Suspense>
     </div>
   );

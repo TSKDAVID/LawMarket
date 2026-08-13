@@ -592,7 +592,6 @@ export function ServicesExplorer({
                     key={service.id}
                     service={service}
                     category={categoryById.get(service.categoryId)}
-                    lawyer={lawyerById.get(service.lawyerId)}
                     featured={isLead}
                     className={isLead ? "sm:col-span-2" : undefined}
                   />

@@ -28,7 +28,7 @@ export function LawyerCard({ lawyer, rating }: LawyerCardProps) {
             photoUrl={lawyer.photoUrl}
             alt={lawyer.name}
             size="lg"
-            className="ring-2 ring-espresso/8 transition-all group-hover:ring-burgundy/40"
+            className="border border-espresso/20 transition-colors group-hover:border-burgundy"
           />
           <div className="min-w-0 flex-1 text-left">
             <div className="flex flex-wrap items-center gap-2">

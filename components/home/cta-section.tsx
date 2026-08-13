@@ -19,9 +19,17 @@ export function CtaSection() {
             {t("ctaSubtitle")}
           </p>
           <div className="mt-6 flex flex-wrap items-center gap-4">
+            {/*
+             * Stamped block: no radius, no blur. The hover lifts the button
+             * off a hard 4px cream slab and the press seats it back down —
+             * the same mechanical move the service cards make.
+             */}
             <Link
               href="/services"
-              className={cn(buttonVariants({ variant: "primary", size: "lg" }))}
+              className={cn(
+                buttonVariants({ variant: "primary", size: "lg" }),
+                "rounded-none transition-transform duration-150 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[4px_4px_0_0_var(--color-cream)] focus-visible:ring-offset-espresso active:translate-x-0 active:translate-y-0 active:shadow-none"
+              )}
             >
               {t("ctaButton")}
             </Link>

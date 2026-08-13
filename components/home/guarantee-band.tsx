@@ -7,10 +7,15 @@ export function GuaranteeBand() {
   const t = useTranslations("home");
 
   return (
-    <section className="border-y border-espresso/8 bg-cream-muted/50">
+    /*
+     * Transition strip: full-bleed ink rules top and bottom. The bottom rule
+     * meets the espresso roster below it, so the two read as one seam rather
+     * than two stacked sections.
+     */
+    <section className="border-y border-espresso bg-cream-muted">
       <PageShell className="flex flex-col items-start gap-3 py-6 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:py-7">
         <div className="flex items-center gap-3.5">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[var(--radius-control)] bg-espresso">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-none bg-espresso">
             <GuaranteeSeal className="h-7 w-7 text-brass" />
           </div>
           <div>

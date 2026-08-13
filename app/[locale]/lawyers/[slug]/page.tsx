@@ -85,7 +85,7 @@ export default async function LawyerProfilePage({
               photoUrl={lawyer.photoUrl}
               alt={lawyer.name}
               size="xl"
-              className="ring-2 ring-cream/15"
+              className="border border-cream/70"
             />
             <div>
               <div className="flex flex-wrap items-center gap-3">

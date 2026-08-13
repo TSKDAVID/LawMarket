@@ -124,7 +124,7 @@ export function ReviewsSection({
         <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">
           {/* Case file — the featured testimony sealed in a 1px ink frame */}
           <div className="lg:col-span-5">
-            <div className="rounded-none border border-espresso bg-parchment p-8 sm:p-10">
+            <div className="rounded-none border border-espresso bg-parchment p-8 sm:p-10 lg:p-12">
               <RatingMark rating={featured.rating} />
               <p className="mt-5 font-heading text-2xl font-medium leading-snug text-espresso sm:text-3xl">
                 {localizedReviewQuote(featured, locale)}
@@ -178,29 +178,38 @@ export function ReviewsSection({
                   key={review.id}
                   className={cn("py-5", index > 0 && "border-t border-espresso")}
                 >
-                  <div className="flex items-start justify-between gap-4">
-                    <p className="font-body text-[15px] leading-relaxed text-espresso/75">
-                      &ldquo;{localizedReviewQuote(review, locale)}&rdquo;
-                    </p>
-                    <RatingMark rating={review.rating} className="shrink-0" />
-                  </div>
-                  <div className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1 font-mono text-xs uppercase tracking-widest">
-                    <span className="font-semibold text-espresso">
-                      {review.authorName}
-                    </span>
-                    <span className="text-espresso/50">
-                      {localizedReviewRole(review, locale)}
-                    </span>
-                    {service && (
-                      <Link
-                        href={`/services/${service.slug}`}
-                        className="text-burgundy transition-colors hover:text-burgundy-dark"
-                      >
-                        {t("viaService", {
-                          service: localizedServiceTitle(service, locale),
-                        })}
-                      </Link>
-                    )}
+                  <p className="font-body text-[15px] leading-relaxed text-espresso/75">
+                    &ldquo;{localizedReviewQuote(review, locale)}&rdquo;
+                  </p>
+                  {/*
+                   * Signature line: attribution left, grade right. Burgundy is
+                   * reserved for the one interactive token — the service link —
+                   * so the name and role stay full-strength ink. ml-auto keeps
+                   * the grade right-aligned even after the line wraps.
+                   */}
+                  <div className="mt-3 flex w-full flex-wrap items-center justify-between gap-x-4 gap-y-2">
+                    <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-3 gap-y-1 font-mono text-xs uppercase tracking-widest">
+                      <span className="font-semibold text-espresso">
+                        {review.authorName}
+                      </span>
+                      <span className="text-espresso">
+                        {localizedReviewRole(review, locale)}
+                      </span>
+                      {service && (
+                        <Link
+                          href={`/services/${service.slug}`}
+                          className="text-burgundy transition-colors hover:text-burgundy-dark"
+                        >
+                          {t("viaService", {
+                            service: localizedServiceTitle(service, locale),
+                          })}
+                        </Link>
+                      )}
+                    </div>
+                    <RatingMark
+                      rating={review.rating}
+                      className="ml-auto shrink-0"
+                    />
                   </div>
                 </div>
               );

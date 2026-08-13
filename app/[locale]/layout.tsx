@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { routing, type Locale } from "@/i18n/routing";
 import { getMessagesForLocale } from "@/i18n/messages";
 import "@/lib/fonts";
+import { GlobalBanner } from "@/components/layout/global-banner";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { IntlProvider } from "@/components/providers/intl-provider";
@@ -71,6 +72,7 @@ export default async function LocaleLayout({
       )}
       <body className="flex min-h-screen flex-col bg-cream font-body text-espresso antialiased">
         <IntlProvider locale={locale} messages={messages}>
+          <GlobalBanner />
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />

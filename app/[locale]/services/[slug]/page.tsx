@@ -61,15 +61,13 @@ export default async function ServiceDetailPage({
   const service = await getServiceBySlug(slug);
   if (!service) notFound();
 
-  const [category, lawyer, related, allLawyers, t, tCommon] = await Promise.all([
+  const [category, lawyer, related, t, tCommon] = await Promise.all([
     getCategoryById(service.categoryId),
     getLawyerById(service.lawyerId),
     getRelatedServices(service, 3),
-    getLawyers(),
     getTranslations("serviceDetail"),
     getTranslations("common"),
   ]);
-  const lawyerById = new Map(allLawyers.map((l) => [l.id, l]));
   const includes = localizedServiceIncludes(service, loc);
   const faq = localizedServiceFaq(service, loc);
 
@@ -163,6 +161,7 @@ export default async function ServiceDetailPage({
                     photoUrl={lawyer.photoUrl}
                     alt={lawyer.name}
                     size="md"
+                    className="border border-espresso/20 transition-colors group-hover:border-burgundy"
                   />
                   <div>
                     <p className="font-body text-xs text-espresso/45">
@@ -214,7 +213,6 @@ export default async function ServiceDetailPage({
                 key={relatedService.id}
                 service={relatedService}
                 category={category}
-                lawyer={lawyerById.get(relatedService.lawyerId)}
               />
             ))}
           </div>

@@ -17,6 +17,14 @@ const sizeClasses: Record<NonNullable<AvatarProps["size"]>, string> = {
   xl: "h-28 w-28 text-2xl",
 };
 
+/* lg and xl cover the roster plates, which stretch past their box to column width. */
+const imageSizes: Record<NonNullable<AvatarProps["size"]>, string> = {
+  sm: "48px",
+  md: "64px",
+  lg: "(max-width: 768px) 160px, 240px",
+  xl: "(max-width: 768px) 160px, 240px",
+};
+
 export function Avatar({
   initials,
   color,
@@ -29,7 +37,7 @@ export function Avatar({
     return (
       <div
         className={cn(
-          "relative shrink-0 overflow-hidden rounded-full bg-cream-muted",
+          "relative shrink-0 overflow-hidden rounded-none bg-cream-muted",
           sizeClasses[size],
           className
         )}
@@ -38,7 +46,7 @@ export function Avatar({
           src={photoUrl}
           alt={alt ?? initials}
           fill
-          sizes="(max-width: 768px) 80px, 112px"
+          sizes={imageSizes[size]}
           className="object-cover object-top"
         />
       </div>
@@ -48,7 +56,7 @@ export function Avatar({
   return (
     <div
       className={cn(
-        "flex shrink-0 items-center justify-center rounded-full font-heading font-semibold text-cream",
+        "flex shrink-0 items-center justify-center rounded-none font-heading font-semibold text-cream",
         sizeClasses[size],
         className
       )}

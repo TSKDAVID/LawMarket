@@ -1,9 +1,8 @@
 import { useLocale, useTranslations } from "next-intl";
-import { Clock } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Card } from "@/components/ui/card";
 import { CategoryIcon } from "@/components/shared/category-icon";
-import type { Category, Lawyer, Service } from "@/data/types";
+import type { Category, Service } from "@/data/types";
 import {
   localizedCategoryName,
   localizedServiceDescription,
@@ -16,7 +15,6 @@ import { cn } from "@/lib/utils";
 type ServiceCardProps = {
   service: Service;
   category?: Category;
-  lawyer?: Lawyer;
   className?: string;
   /** Lead card: larger title, permanent burgundy strip. */
   featured?: boolean;
@@ -25,7 +23,6 @@ type ServiceCardProps = {
 export function ServiceCard({
   service,
   category,
-  lawyer,
   className,
   featured = false,
 }: ServiceCardProps) {
@@ -90,24 +87,15 @@ export function ServiceCard({
         </div>
 
         {/*
-         * Zone 3 — ledger row: provider left, price right. Both columns use
-         * fixed line heights (h-8 column, leading-8 price) so the footer is
-         * exactly the same height on every card and its rules line up.
+         * Zone 3 — ledger row: consultation note left, price right. The note is
+         * capped at 60% so it breaks under itself instead of crowding the
+         * price, and both columns resolve to 2rem (min-h-8 / leading-8) so the
+         * footer keeps identical height across the row however the note wraps.
          */}
         <div className="flex items-center justify-between gap-3 border-t border-espresso/20 px-5 py-3.5">
-          <div className="flex h-8 min-w-0 flex-col justify-center font-body text-xs text-espresso/50">
-            {lawyer && (
-              <span className="block truncate font-medium leading-4 text-espresso/70">
-                {lawyer.name}
-              </span>
-            )}
-            {service.durationMinutes && (
-              <span className="flex items-center gap-1 leading-4">
-                <Clock className="h-3 w-3" />
-                {service.durationMinutes} {t("minutes")}
-              </span>
-            )}
-          </div>
+          <p className="flex min-h-8 min-w-0 max-w-[60%] items-center font-mono text-xs leading-4 tracking-[0.08em] text-espresso/55">
+            {t("freeConsultation")}
+          </p>
           <p className="shrink-0 text-right font-heading text-xl font-bold leading-8 tracking-tight text-espresso sm:text-2xl">
             {formatPrice(service.price)}
           </p>

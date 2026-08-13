@@ -6,7 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Search, X } from "lucide-react";
 import { CategoryIcon } from "@/components/shared/category-icon";
 import { ServiceCard } from "@/components/shared/service-card";
-import type { Category, Lawyer, Service } from "@/data/types";
+import type { Category, Service } from "@/data/types";
 import {
   localizedCategoryName,
   localizedServiceDescription,
@@ -20,7 +20,6 @@ type SortOption = "popular" | "price-asc" | "price-desc";
 type ServicesCatalogProps = {
   services: Service[];
   categories: Category[];
-  lawyers: Lawyer[];
 };
 
 function CategoryFilters({
@@ -89,7 +88,6 @@ function CategoryFilters({
 export function ServicesCatalog({
   services,
   categories,
-  lawyers,
 }: ServicesCatalogProps) {
   const locale = useLocale() as Locale;
   const t = useTranslations("services");
@@ -119,10 +117,6 @@ export function ServicesCatalog({
     setQuery(queryParam);
   }
 
-  const lawyerById = useMemo(
-    () => new Map(lawyers.map((l) => [l.id, l])),
-    [lawyers]
-  );
   const categoryById = useMemo(
     () => new Map(categories.map((c) => [c.id, c])),
     [categories]
@@ -243,7 +237,6 @@ export function ServicesCatalog({
                   key={service.id}
                   service={service}
                   category={categoryById.get(service.categoryId)}
-                  lawyer={lawyerById.get(service.lawyerId)}
                 />
               ))}
             </div>

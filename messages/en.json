@@ -2,6 +2,8 @@
   "common": {
     "appName": "Law Market",
     "tagline": "Legal help, guaranteed.",
+    "banner": "Free 15-minute consultation on every service",
+    "freeConsultation": "Free 15-minute consultation",
     "nav": {
       "services": "Services",
       "lawyers": "Lawyers",
