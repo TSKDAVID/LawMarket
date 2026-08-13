@@ -2,7 +2,6 @@ import { useLocale, useTranslations } from "next-intl";
 import { Clock } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Card } from "@/components/ui/card";
-import { Avatar } from "@/components/shared/avatar";
 import { CategoryIcon } from "@/components/shared/category-icon";
 import type { Category, Lawyer, Service } from "@/data/types";
 import {
@@ -19,10 +18,8 @@ type ServiceCardProps = {
   category?: Category;
   lawyer?: Lawyer;
   className?: string;
-  /** Lead card: larger title, full description, permanent burgundy strip. */
+  /** Lead card: larger title, permanent burgundy strip. */
   featured?: boolean;
-  /** Compact cards skip the clipped description entirely. */
-  showDescription?: boolean;
 };
 
 export function ServiceCard({
@@ -31,7 +28,6 @@ export function ServiceCard({
   lawyer,
   className,
   featured = false,
-  showDescription = true,
 }: ServiceCardProps) {
   const locale = useLocale() as Locale;
   const t = useTranslations("common");
@@ -45,9 +41,9 @@ export function ServiceCard({
       )}
     >
       {/*
-       * Ledger block: strict 1px ink frame, three ruled zones, and a
-       * mechanical hover — the card lifts toward the cursor and casts a
-       * hard offset shadow, like a stamped file pulled off the stack.
+       * Ledger block: strict 1px ink frame, ruled zones, and a mechanical
+       * hover — the card lifts toward the cursor and casts a hard offset
+       * shadow, like a stamped file pulled off the stack.
        */}
       <Card className="relative flex h-full flex-col rounded-none border-espresso bg-parchment shadow-none transition-transform duration-150 group-hover:-translate-x-1 group-hover:-translate-y-1 group-hover:shadow-[4px_4px_0_0_#1c1210]">
         {featured && (
@@ -71,7 +67,7 @@ export function ServiceCard({
           </span>
         </div>
 
-        {/* Zone 2 — title and description */}
+        {/* Zone 2 — title and clamped ledger note */}
         <div className="flex flex-1 flex-col px-5 py-4">
           <h3
             className={cn(
@@ -81,48 +77,49 @@ export function ServiceCard({
           >
             {localizedServiceTitle(service, locale)}
           </h3>
-          {featured ? (
-            <p className="mt-2 max-w-xl flex-1 font-body text-sm leading-relaxed text-espresso/55">
+          {/*
+           * Layout lock: min-height reserves exactly two lines
+           * (2 × 0.875rem × 1.625 ≈ 2.85rem) so a one-line description
+           * cannot pull the footer rule out of alignment with row siblings.
+           */}
+          <div className="mt-2 min-h-[2.85rem] flex-1">
+            <p className="line-clamp-2 font-body text-sm leading-relaxed text-espresso/70">
               {localizedServiceDescription(service, locale)}
             </p>
-          ) : showDescription ? (
-            <p className="mt-2 flex-1 font-body text-sm leading-relaxed text-espresso/50 line-clamp-2">
-              {localizedServiceDescription(service, locale)}
-            </p>
-          ) : (
-            <span className="flex-1" />
-          )}
+          </div>
         </div>
 
-        {/* Zone 3 — footer ledger row: provider left, price right */}
+        {/*
+         * Zone 3 — ledger row: provider left, price right. Both columns use
+         * fixed line heights (h-8 column, leading-8 price) so the footer is
+         * exactly the same height on every card and its rules line up.
+         */}
         <div className="flex items-center justify-between gap-3 border-t border-espresso/20 px-5 py-3.5">
-          <div className="flex min-w-0 items-center gap-2.5">
+          <div className="flex h-8 min-w-0 flex-col justify-center font-body text-xs text-espresso/50">
             {lawyer && (
-              <Avatar
-                initials={lawyer.initials}
-                color={lawyer.avatarColor}
-                photoUrl={lawyer.photoUrl}
-                alt={lawyer.name}
-                size="sm"
-              />
+              <span className="block truncate font-medium leading-4 text-espresso/70">
+                {lawyer.name}
+              </span>
             )}
-            <div className="min-w-0 font-body text-xs text-espresso/50">
-              {lawyer && (
-                <span className="block truncate font-medium text-espresso/70">
-                  {lawyer.name}
-                </span>
-              )}
-              {service.durationMinutes && (
-                <span className="inline-flex items-center gap-1">
-                  <Clock className="h-3 w-3" />
-                  {service.durationMinutes} {t("minutes")}
-                </span>
-              )}
-            </div>
+            {service.durationMinutes && (
+              <span className="flex items-center gap-1 leading-4">
+                <Clock className="h-3 w-3" />
+                {service.durationMinutes} {t("minutes")}
+              </span>
+            )}
           </div>
-          <p className="shrink-0 text-right font-heading text-xl font-bold tracking-tight text-espresso sm:text-2xl">
+          <p className="shrink-0 text-right font-heading text-xl font-bold leading-8 tracking-tight text-espresso sm:text-2xl">
             {formatPrice(service.price)}
           </p>
+        </div>
+
+        {/* Zone 4 — action strip: inverts hard on hover */}
+        <div
+          aria-hidden="true"
+          className="flex items-center justify-between border-t border-espresso/20 px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.16em] text-burgundy transition-colors group-hover:bg-burgundy group-hover:text-cream"
+        >
+          <span>{t("viewDetails")}</span>
+          <span>&rarr;</span>
         </div>
       </Card>
     </Link>

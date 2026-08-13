@@ -594,7 +594,6 @@ export function ServicesExplorer({
                     category={categoryById.get(service.categoryId)}
                     lawyer={lawyerById.get(service.lawyerId)}
                     featured={isLead}
-                    showDescription={isLead}
                     className={isLead ? "sm:col-span-2" : undefined}
                   />
                 );
