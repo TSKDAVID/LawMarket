@@ -29,9 +29,6 @@ type ServicesExplorerProps = {
   lawyers: Lawyer[];
 };
 
-/* Price ceilings for the budget quick-filter (service prices run ₾150–₾900). */
-const PRICE_CEILINGS = [300, 500, 800] as const;
-
 type FilterOption = {
   value: string;
   label: string;
@@ -238,10 +235,9 @@ export function ServicesExplorer({
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
-  /* Quick filters — exactly three: practice area, city, budget. */
+  /* Quick filters — practice area and city. */
   const [heroCategory, setHeroCategory] = useState("");
   const [heroCity, setHeroCity] = useState("");
-  const [heroMaxPrice, setHeroMaxPrice] = useState("");
 
   const lawyerById = useMemo(
     () => new Map(lawyers.map((l) => [l.id, l])),
@@ -259,10 +255,9 @@ export function ServicesExplorer({
   /*
    * The search answers WHERE THE EYE IS: matches surface in a panel
    * directly under the search console. Quick filters work without typing —
-   * picking a practice area, city, or budget refines the list on the fly.
+   * picking a practice area or city refines the list on the fly.
    */
-  const filtersActive =
-    heroCategory !== "" || heroCity !== "" || heroMaxPrice !== "";
+  const filtersActive = heroCategory !== "" || heroCity !== "";
 
   const suggestions = useMemo(() => {
     const q = query.trim();
@@ -273,7 +268,6 @@ export function ServicesExplorer({
       if (heroCity && lawyerById.get(service.lawyerId)?.city !== heroCity) {
         return false;
       }
-      if (heroMaxPrice && service.price > Number(heroMaxPrice)) return false;
       if (!q) return true;
 
       const category = categoryById.get(service.categoryId);
@@ -291,7 +285,6 @@ export function ServicesExplorer({
     filtersActive,
     heroCategory,
     heroCity,
-    heroMaxPrice,
     lawyerById,
     categoryById,
     locale,
@@ -429,7 +422,7 @@ export function ServicesExplorer({
                     </div>
 
                     {/* Quick filters — choose on the fly, no typing required */}
-                    <div className="grid grid-cols-1 divide-y divide-espresso/20 border-t border-espresso sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+                    <div className="grid grid-cols-1 divide-y divide-espresso/20 border-t border-espresso sm:grid-cols-2 sm:divide-x sm:divide-y-0">
                       <FilterDropdown
                         label={tLawyers("filterByPracticeArea")}
                         value={heroCategory}
@@ -457,21 +450,6 @@ export function ServicesExplorer({
                         ]}
                         onChange={(v) => {
                           setHeroCity(v);
-                          setSuggestionsOpen(true);
-                        }}
-                      />
-                      <FilterDropdown
-                        label={t("filterByPrice")}
-                        value={heroMaxPrice}
-                        options={[
-                          { value: "", label: tCommon("all") },
-                          ...PRICE_CEILINGS.map((ceiling) => ({
-                            value: String(ceiling),
-                            label: `\u2264 ${formatPrice(ceiling)}`,
-                          })),
-                        ]}
-                        onChange={(v) => {
-                          setHeroMaxPrice(v);
                           setSuggestionsOpen(true);
                         }}
                       />
