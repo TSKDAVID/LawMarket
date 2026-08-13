@@ -1,8 +1,8 @@
 name: Deploy to GitHub Pages
 
+# Vercel serves lawmarket.ge; this publishes an optional preview at
+# tskdavid.github.io/LawMarket, so it runs on request rather than on push.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -35,13 +35,12 @@ jobs:
       - name: Build static site
         env:
           GITHUB_PAGES: "true"
-          CUSTOM_DOMAIN: "true"
         run: npm run build
 
       - name: Verify export
         run: |
           set -e
-          for f in out/index.html out/services/index.html out/en/index.html out/CNAME; do
+          for f in out/index.html out/services/index.html out/en/index.html; do
             test -s "$f" || { echo "missing or empty: $f"; exit 1; }
           done
           if grep -q '__next_error__' out/index.html; then
