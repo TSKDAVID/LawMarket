@@ -61,9 +61,10 @@ export function Header() {
           >
             {t("login")}
           </Link>
+          {/* Burgundy = primary interactivity; hover snaps hard to ink. */}
           <Link
             href="/signup"
-            className="ml-6 inline-flex h-10 items-center rounded-none border border-espresso bg-espresso px-5 font-mono text-xs uppercase tracking-[0.16em] text-cream transition-colors hover:bg-cream hover:text-espresso focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy"
+            className="ml-6 inline-flex h-10 items-center rounded-none border border-burgundy bg-burgundy px-5 font-mono text-xs uppercase tracking-[0.16em] text-cream transition-colors hover:border-espresso hover:bg-espresso focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy"
           >
             {t("getStarted")}
           </Link>
@@ -112,7 +113,7 @@ export function Header() {
             <Link
               href="/signup"
               onClick={() => setOpen(false)}
-              className="mt-5 flex h-12 items-center justify-center rounded-none border border-espresso bg-espresso px-5 font-mono text-xs uppercase tracking-[0.16em] text-cream transition-colors hover:bg-cream hover:text-espresso"
+              className="mt-5 flex h-12 items-center justify-center rounded-none border border-burgundy bg-burgundy px-5 font-mono text-xs uppercase tracking-[0.16em] text-cream transition-colors hover:border-espresso hover:bg-espresso"
             >
               {t("getStarted")}
             </Link>

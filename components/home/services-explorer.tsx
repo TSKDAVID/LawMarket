@@ -344,11 +344,10 @@ export function ServicesExplorer({
 
             {/* Row 2 — the oversized serif headline */}
             <div className="border-b border-espresso/15 px-4 py-10 sm:px-6 sm:py-14 lg:py-16">
+              {/* One uniform ink — burgundy is reserved for interactivity. */}
               <h1 className="animate-fade-up font-heading text-[clamp(2.75rem,7.2vw,6.75rem)] font-semibold leading-[1.02] tracking-[-0.03em] text-espresso">
                 {t.rich("heroTitle", {
-                  accent: (chunks) => (
-                    <span className="text-burgundy">{chunks}</span>
-                  ),
+                  accent: (chunks) => <>{chunks}</>,
                 })}
               </h1>
               <p className="animate-fade-up mt-6 max-w-xl border-l border-espresso/25 pl-4 font-body text-base text-espresso/60 sm:text-lg">
