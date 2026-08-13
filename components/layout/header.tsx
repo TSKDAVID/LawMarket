@@ -8,7 +8,6 @@ import { Link } from "@/i18n/navigation";
 import { LogoLockup } from "@/components/brand/logo-lockup";
 import { LanguageSwitcher } from "./language-switcher";
 import { PageShell } from "@/components/layout/page-shell";
-import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export function Header() {
@@ -26,20 +25,27 @@ export function Header() {
     pathname === href || pathname.startsWith(`${href}/`);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-cream/10 bg-espresso">
-      <PageShell className="flex h-16 items-center justify-between gap-3">
-        <LogoLockup className="shrink-0 text-xl text-cream sm:text-2xl" />
+    /* Sits on the hero's cream paper; the single 1px espresso rule below
+       spans the full viewport and doubles as the first grid line. */
+    <header className="sticky top-0 z-50 border-b border-espresso bg-cream">
+      <PageShell className="relative flex h-16 items-center justify-between gap-3">
+        <LogoLockup className="shrink-0 text-xl text-espresso sm:text-2xl" />
 
-        <nav className="hidden items-center gap-8 lg:flex">
+        {/* Dead-center navigation, independent of logo/action widths. */}
+        <nav
+          aria-label="Primary"
+          className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-9 lg:flex"
+        >
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
+              aria-current={isActive(item.href) ? "page" : undefined}
               className={cn(
-                "border-b-2 pb-0.5 font-body text-sm font-medium transition-colors",
+                "font-mono text-xs uppercase tracking-[0.16em] transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-burgundy",
                 isActive(item.href)
-                  ? "border-burgundy text-cream"
-                  : "border-transparent text-cream/60 hover:text-cream"
+                  ? "text-espresso underline decoration-burgundy decoration-2 underline-offset-8"
+                  : "text-espresso/55 hover:text-espresso"
               )}
             >
               {item.label}
@@ -47,17 +53,17 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-4 lg:flex">
-          <LanguageSwitcher tone="dark" />
+        <div className="hidden items-center lg:flex">
+          <LanguageSwitcher />
           <Link
             href="/login"
-            className="font-body text-sm font-medium text-cream/60 transition-colors hover:text-cream"
+            className="ml-6 font-mono text-xs uppercase tracking-[0.16em] text-espresso/60 transition-colors hover:text-espresso focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-burgundy"
           >
             {t("login")}
           </Link>
           <Link
             href="/signup"
-            className={cn(buttonVariants({ variant: "primary", size: "sm" }))}
+            className="ml-6 inline-flex h-10 items-center rounded-none border border-espresso bg-espresso px-5 font-mono text-xs uppercase tracking-[0.16em] text-cream transition-colors hover:bg-cream hover:text-espresso focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy"
           >
             {t("getStarted")}
           </Link>
@@ -65,53 +71,51 @@ export function Header() {
 
         <button
           type="button"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-[var(--radius-control)] text-cream lg:hidden"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-none border border-espresso/25 text-espresso transition-colors hover:border-espresso focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy lg:hidden"
           onClick={() => setOpen((v) => !v)}
           aria-label="Toggle menu"
           aria-expanded={open}
         >
-          {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
       </PageShell>
 
       {open && (
-        <div className="border-t border-cream/10 bg-espresso px-4 py-6 sm:px-6 lg:hidden">
-          <nav className="flex flex-col gap-5">
+        <div className="border-t border-espresso/20 bg-cream lg:hidden">
+          <nav aria-label="Primary" className="divide-y divide-espresso/15">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
+                aria-current={isActive(item.href) ? "page" : undefined}
                 className={cn(
-                  "font-body text-base font-medium",
-                  isActive(item.href) ? "text-cream" : "text-cream/75"
+                  "block px-[var(--page-gutter)] py-4 font-mono text-sm uppercase tracking-[0.14em]",
+                  isActive(item.href) ? "text-espresso" : "text-espresso/60"
                 )}
               >
                 {item.label}
               </Link>
             ))}
           </nav>
-          <div className="mt-6 flex flex-col gap-4 border-t border-cream/10 pt-6">
-            <LanguageSwitcher tone="dark" />
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
+          <div className="border-t border-espresso/15 px-[var(--page-gutter)] py-5">
+            <div className="flex items-center justify-between gap-4">
+              <LanguageSwitcher />
               <Link
                 href="/login"
                 onClick={() => setOpen(false)}
-                className="font-body text-center text-sm font-medium text-cream/60 sm:text-left"
+                className="font-mono text-xs uppercase tracking-[0.16em] text-espresso/60"
               >
                 {t("login")}
               </Link>
-              <Link
-                href="/signup"
-                onClick={() => setOpen(false)}
-                className={cn(
-                  buttonVariants({ variant: "primary", size: "sm" }),
-                  "justify-center sm:w-auto"
-                )}
-              >
-                {t("getStarted")}
-              </Link>
             </div>
+            <Link
+              href="/signup"
+              onClick={() => setOpen(false)}
+              className="mt-5 flex h-12 items-center justify-center rounded-none border border-espresso bg-espresso px-5 font-mono text-xs uppercase tracking-[0.16em] text-cream transition-colors hover:bg-cream hover:text-espresso"
+            >
+              {t("getStarted")}
+            </Link>
           </div>
         </div>
       )}

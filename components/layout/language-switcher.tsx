@@ -23,13 +23,15 @@ export function LanguageSwitcher({
   const pathname = usePathname();
   const router = useRouter();
 
+  const dark = tone === "dark";
+
   return (
     <div
       className={cn(
-        "inline-flex items-center rounded-full border p-0.5 font-body text-xs font-medium",
-        tone === "dark"
-          ? "border-cream/25 text-cream/70"
-          : "border-espresso/15 text-espresso/60",
+        "inline-flex items-stretch divide-x border font-mono text-[11px] uppercase tracking-[0.12em]",
+        dark
+          ? "divide-cream/30 border-cream/30"
+          : "divide-espresso/25 border-espresso/25",
         className
       )}
       role="group"
@@ -44,12 +46,14 @@ export function LanguageSwitcher({
             onClick={() => router.replace(pathname, { locale: loc })}
             aria-current={active}
             className={cn(
-              "rounded-full px-3 py-1.5 transition-colors",
+              "rounded-none px-3 py-1.5 transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-burgundy",
               active
-                ? tone === "dark"
+                ? dark
                   ? "bg-cream text-espresso"
                   : "bg-espresso text-cream"
-                : "hover:text-inherit"
+                : dark
+                  ? "text-cream/60 hover:text-cream"
+                  : "text-espresso/55 hover:text-espresso"
             )}
           >
             {labels[loc] ?? loc.toUpperCase()}
