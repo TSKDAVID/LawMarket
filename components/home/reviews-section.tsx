@@ -126,7 +126,7 @@ export function ReviewsSection({
           <div className="lg:col-span-5">
             <div className="rounded-none border border-espresso bg-parchment p-8 sm:p-10 lg:p-12">
               <RatingMark rating={featured.rating} />
-              <p className="mt-5 font-heading text-2xl font-medium leading-snug text-espresso sm:text-3xl">
+              <p className="mt-5 font-heading text-xl font-medium leading-normal text-espresso sm:text-2xl">
                 {localizedReviewQuote(featured, locale)}
               </p>
 
@@ -176,7 +176,7 @@ export function ReviewsSection({
               return (
                 <div
                   key={review.id}
-                  className={cn("py-5", index > 0 && "border-t border-espresso")}
+                  className={cn("py-5", index > 0 && "border-t border-espresso/25")}
                 >
                   <p className="font-body text-[15px] leading-relaxed text-espresso/85">
                     &ldquo;{localizedReviewQuote(review, locale)}&rdquo;

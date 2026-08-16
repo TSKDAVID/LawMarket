@@ -75,12 +75,19 @@ export function TrustBand({ lawyers }: TrustBandProps) {
           {t("verifiedLawyersSubtitle")}
         </p>
 
-        <ul className="mt-6 grid grid-cols-2 gap-px bg-brass/40 sm:grid-cols-4 lg:grid-cols-8">
+        {/* Tiles carry their own hairline so unused columns stay invisible. */}
+        <ul className="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-[repeat(auto-fill,minmax(9.5rem,11rem))]">
           {lawyers.map((lawyer, index) => {
             const isActive = lawyer.id === active.id;
 
             return (
-              <li key={lawyer.id} className="bg-espresso">
+              <li
+                key={lawyer.id}
+                className={cn(
+                  "border bg-espresso transition-colors",
+                  isActive ? "border-brass/60" : "border-brass/25"
+                )}
+              >
                 <button
                   type="button"
                   onClick={() => setActiveId(lawyer.id)}
@@ -119,7 +126,7 @@ export function TrustBand({ lawyers }: TrustBandProps) {
                   >
                     <span
                       className={cn(
-                        "relative inline-block pb-0.5 font-heading text-xs font-medium leading-snug sm:text-[13px]",
+                        "relative inline-block pb-0.5 font-heading text-[13px] font-medium leading-snug sm:text-sm",
                         "after:absolute after:bottom-0 after:left-0 after:h-px after:w-full after:origin-left after:bg-brass",
                         "after:transition-transform after:duration-300 after:ease-out",
                         isActive

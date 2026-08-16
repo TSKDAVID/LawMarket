@@ -32,8 +32,9 @@
 
   --color-parchment: #fbf6eb;
 
-  --radius-card: 0.5rem;
-  --radius-control: 0.625rem;
+  /* Square edges everywhere — the ledger look is the brand. */
+  --radius-card: 0;
+  --radius-control: 0;
   --radius-pill: 9999px;
 
   --section-sm: 2.5rem;

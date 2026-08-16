@@ -77,7 +77,7 @@ export function Header({ signedIn, role, label }: HeaderProps) {
               href={item.href}
               aria-current={isActive(item.href) ? "page" : undefined}
               className={cn(
-                "whitespace-nowrap font-mono text-sm leading-none tracking-wide transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-burgundy",
+                "whitespace-nowrap font-mono text-[15px] leading-none tracking-wide transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-burgundy",
                 isActive(item.href)
                   ? "text-espresso underline decoration-burgundy decoration-2 underline-offset-[10px]"
                   : "text-espresso/80 hover:text-espresso"

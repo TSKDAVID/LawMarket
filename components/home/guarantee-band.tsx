@@ -29,7 +29,7 @@ export function GuaranteeBand() {
         </div>
         <Link
           href="/how-it-works"
-          className="shrink-0 font-body text-sm font-semibold text-burgundy transition-colors hover:text-burgundy-dark"
+          className="shrink-0 border border-espresso/20 bg-white px-4 py-2 font-body text-sm font-semibold text-burgundy transition-colors hover:border-burgundy hover:bg-burgundy hover:text-cream"
         >
           {t("guaranteeLink")} &rarr;
         </Link>

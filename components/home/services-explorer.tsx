@@ -167,7 +167,7 @@ function FilterDropdown({
       >
         <span
           id={labelId}
-          className="block font-mono text-[10px] uppercase tracking-[0.16em] text-espresso/65"
+          className="block font-mono text-[11px] uppercase tracking-[0.16em] text-espresso/65"
         >
           {label}
         </span>
@@ -337,10 +337,10 @@ export function ServicesExplorer({
           <div className="border-x border-espresso/15">
             {/* Row 1 — file header: tagline left, attorney annotation right */}
             <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-1 border-b border-espresso/15 px-4 py-3 sm:px-6">
-              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-espresso/70">
+              <p className="font-mono text-xs uppercase tracking-[0.18em] text-espresso/70">
                 {tCommon("tagline")}
               </p>
-              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-espresso/70">
+              <p className="font-mono text-xs uppercase tracking-[0.18em] text-espresso/70">
                 {t("attorneyPrompt")}{" "}
                 <Link
                   href="/signup"
@@ -351,15 +351,19 @@ export function ServicesExplorer({
               </p>
             </div>
 
-            {/* Row 2 — headline left, media slot right */}
-            <div className="border-b border-espresso/15 lg:grid lg:grid-cols-2 lg:items-stretch">
-              <div className="flex flex-col justify-center px-4 py-10 sm:px-6 sm:py-12 lg:py-14">
-                <h1 className="animate-fade-up max-w-2xl font-heading text-[clamp(2.25rem,4.5vw,4.5rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-espresso">
+            {/* Row 2 — headline left, media slot right (fixed text slots, not fixed hero height) */}
+            <div className="border-b border-espresso/15 lg:grid lg:grid-cols-2 lg:items-stretch lg:min-h-[26rem] xl:min-h-[30rem]">
+              <div className="flex flex-col justify-center px-4 py-10 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
+                <h1
+                  className="animate-fade-up line-clamp-2 max-w-2xl min-h-[4.75rem] font-heading text-[clamp(2.25rem,4vw,3.5rem)] font-semibold leading-[1.08] tracking-[-0.03em] text-espresso sm:min-h-[5.5rem]"
+                >
                   {t.rich("heroTitle", {
                     accent: (chunks) => <>{chunks}</>,
                   })}
                 </h1>
-                <p className="animate-fade-up mt-6 max-w-lg border-l border-espresso/25 pl-4 font-body text-base text-espresso/75 sm:text-lg">
+                <p
+                  className="animate-fade-up mt-5 max-w-lg line-clamp-3 min-h-[4.25rem] font-body text-base leading-relaxed text-espresso/75 sm:min-h-[5rem] sm:text-lg"
+                >
                   {t("heroSubtitle")}
                 </p>
               </div>
@@ -420,8 +424,8 @@ export function ServicesExplorer({
             </div>
 
             {/* Row 4 — search console, full hero width */}
-            <div className="px-4 py-8 sm:px-6 sm:py-10">
-              <p className="animate-fade-up mb-3 font-mono text-xs uppercase tracking-[0.16em] text-espresso/75">
+            <div className="border-t border-burgundy/15 bg-burgundy-tint/35 px-4 py-8 sm:px-6 sm:py-10">
+              <p className="animate-fade-up mb-4 font-mono text-xs font-medium uppercase tracking-[0.18em] text-burgundy sm:text-[13px]">
                 {t("proofLine", {
                   services: services.length,
                   lawyers: lawyers.length,
@@ -444,8 +448,16 @@ export function ServicesExplorer({
                     if (e.key === "Escape") setSuggestionsOpen(false);
                   }}
                 >
-                  <div className="border border-espresso bg-parchment">
-                    <div className="flex items-stretch">
+                  <div
+                    className="overflow-hidden border-2 border-burgundy/20 bg-white shadow-[0_16px_48px_-20px_rgba(107,20,35,0.28)] ring-1 ring-espresso/5"
+                  >
+                    <div className="flex items-stretch border-b border-espresso/10 bg-parchment/60">
+                      <div
+                        className="flex shrink-0 items-center pl-4 sm:pl-5"
+                        aria-hidden="true"
+                      >
+                        <Search className="h-5 w-5 text-burgundy sm:h-6 sm:w-6" />
+                      </div>
                       <input
                         type="text"
                         value={query}
@@ -459,32 +471,31 @@ export function ServicesExplorer({
                         aria-expanded={showSuggestions}
                         aria-controls="hero-search-suggestions"
                         aria-autocomplete="list"
-                        className="h-16 w-full min-w-0 rounded-none border-0 bg-transparent px-4 font-body text-base text-espresso outline-none placeholder:text-espresso/55 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-burgundy sm:px-5 sm:text-lg"
+                        className="h-[4.25rem] w-full min-w-0 border-0 bg-transparent pl-2 pr-2 font-body text-base text-espresso outline-none placeholder:text-espresso/50 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-burgundy sm:h-[4.75rem] sm:pl-3 sm:text-lg"
                       />
                       {query && (
                         <button
                           type="button"
                           onClick={() => setQuery("")}
                           aria-label="Clear search"
-                          className="flex w-10 shrink-0 items-center justify-center rounded-none text-espresso/55 transition-colors hover:text-espresso focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-burgundy"
+                          className="flex w-11 shrink-0 items-center justify-center text-espresso/50 transition-colors hover:text-espresso focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-burgundy"
                         >
                           <X className="h-4 w-4" />
                         </button>
                       )}
-                      {/* The seal: a blocky square stamped onto the input's right edge */}
                       <button
                         type="submit"
-                        className="flex h-16 w-16 shrink-0 flex-col items-center justify-center gap-1 rounded-none border-l border-espresso bg-burgundy text-cream transition-colors hover:bg-espresso focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-cream"
+                        className="flex h-[4.25rem] w-[4.75rem] shrink-0 flex-col items-center justify-center gap-1 border-l border-burgundy/25 bg-burgundy text-cream transition-[background-color,transform] duration-200 hover:bg-espresso sm:h-[4.75rem] sm:w-24 focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-cream"
                       >
                         <Search className="h-5 w-5" aria-hidden="true" />
-                        <span className="font-mono text-[9px] uppercase tracking-[0.14em]">
+                        <span className="font-mono text-[9px] uppercase tracking-[0.14em] sm:text-[10px]">
                           {t("searchButton")}
                         </span>
                       </button>
                     </div>
 
                     {/* Quick filters — choose on the fly, no typing required */}
-                    <div className="grid grid-cols-1 divide-y divide-espresso/20 border-t border-espresso sm:grid-cols-2 sm:divide-x sm:divide-y-0">
+                    <div className="grid grid-cols-1 divide-y divide-espresso/12 border-t border-espresso/10 bg-white sm:grid-cols-2 sm:divide-x sm:divide-y-0">
                       <FilterDropdown
                         label={tLawyers("filterByPracticeArea")}
                         value={heroCategory}
@@ -522,7 +533,7 @@ export function ServicesExplorer({
                   {showSuggestions && (
                     <div
                       id="hero-search-suggestions"
-                      className="absolute inset-x-0 top-full z-30 -mt-px border border-espresso bg-white shadow-[0_16px_40px_rgba(28,18,16,0.14)]"
+                      className="absolute inset-x-0 top-full z-30 -mt-px overflow-hidden border-2 border-burgundy/20 bg-white shadow-[0_20px_48px_-16px_rgba(28,18,16,0.2)] ring-1 ring-burgundy/10"
                     >
                       {topSuggestions.length > 0 ? (
                         <ul className="divide-y divide-espresso/10">

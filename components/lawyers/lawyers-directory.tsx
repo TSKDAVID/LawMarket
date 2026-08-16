@@ -119,7 +119,7 @@ export function LawyersDirectory({
   );
 
   return (
-    <div className="lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-10">
+    <div className="lg:grid lg:grid-cols-[19rem_minmax(0,1fr)] lg:gap-10">
       <aside className="hidden lg:block">
         <div className="sticky top-24 rounded-[var(--radius-card)] border border-espresso/12 bg-white/80 p-5">
           <p className="font-body text-xs font-medium uppercase tracking-widest text-espresso/60">
@@ -147,7 +147,7 @@ export function LawyersDirectory({
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t("searchPlaceholder")}
             aria-label={t("searchPlaceholder")}
-            className="h-12 w-full rounded-xl border border-espresso/12 bg-white/90 pl-11 pr-11 font-body text-base text-espresso shadow-sm outline-none transition-colors placeholder:text-espresso/55 focus:border-burgundy"
+            className="h-12 w-full rounded-none border border-espresso/20 bg-white pl-11 pr-11 font-body text-base text-espresso outline-none transition-colors placeholder:text-espresso/55 hover:border-espresso/35 focus:border-burgundy"
           />
           {query && (
             <button

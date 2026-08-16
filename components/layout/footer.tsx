@@ -49,7 +49,7 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-5">
           <div className="sm:col-span-2 lg:col-span-2">
             <LogoLockup className="text-cream" />
-            <p className="mt-4 max-w-sm font-body text-sm leading-relaxed text-cream/70">
+            <p className="mt-4 max-w-sm font-body text-sm leading-relaxed text-cream/85">
               {t("footer.description")}
             </p>
             <p className="mt-3 font-body text-xs text-cream/55">
@@ -84,7 +84,7 @@ export function Footer() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="font-body text-sm text-cream/75 transition-colors hover:text-cream"
+                    className="font-body text-sm text-cream/88 transition-colors hover:text-cream"
                   >
                     {item.label}
                   </Link>
@@ -102,7 +102,7 @@ export function Footer() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="font-body text-sm text-cream/75 transition-colors hover:text-cream"
+                    className="font-body text-sm text-cream/88 transition-colors hover:text-cream"
                   >
                     {item.label}
                   </Link>
@@ -117,7 +117,7 @@ export function Footer() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="font-body text-sm text-cream/75 transition-colors hover:text-cream"
+                    className="font-body text-sm text-cream/88 transition-colors hover:text-cream"
                   >
                     {item.label}
                   </Link>
@@ -131,7 +131,7 @@ export function Footer() {
               {t("footer.contact")}
             </h3>
             {/* Field labels, not pictograms: the prefix carries the meaning. */}
-            <ul className="mt-4 space-y-3 font-body text-sm text-cream/75">
+            <ul className="mt-4 space-y-3 font-body text-sm text-cream/88">
               {contactEntries.map((entry) => (
                 <li
                   key={entry.prefix}
