@@ -13,7 +13,7 @@ export function Field({
     <div>
       <label
         htmlFor={id}
-        className="mb-2 block font-body text-sm font-medium text-espresso/80"
+        className="mb-2 block font-mono text-sm text-espresso"
       >
         {label}
       </label>

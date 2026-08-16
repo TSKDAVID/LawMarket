@@ -39,7 +39,7 @@ export function SignupForm() {
       <div>
         <label
           htmlFor="signup-name"
-          className="mb-2 block font-body text-sm font-medium text-espresso/80"
+          className="mb-2 block font-mono text-sm text-espresso"
         >
           {t("fullNameLabel")}
         </label>
@@ -48,7 +48,7 @@ export function SignupForm() {
       <div>
         <label
           htmlFor="signup-email"
-          className="mb-2 block font-body text-sm font-medium text-espresso/80"
+          className="mb-2 block font-mono text-sm text-espresso"
         >
           {t("emailLabel")}
         </label>
@@ -63,7 +63,7 @@ export function SignupForm() {
       <div>
         <label
           htmlFor="signup-password"
-          className="mb-2 block font-body text-sm font-medium text-espresso/80"
+          className="mb-2 block font-mono text-sm text-espresso"
         >
           {t("passwordLabel")}
         </label>
@@ -79,7 +79,7 @@ export function SignupForm() {
       <div>
         <label
           htmlFor="signup-confirm-password"
-          className="mb-2 block font-body text-sm font-medium text-espresso/80"
+          className="mb-2 block font-mono text-sm text-espresso"
         >
           {t("confirmPasswordLabel")}
         </label>

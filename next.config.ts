@@ -44,6 +44,12 @@ const nextConfig: NextConfig = {
         }
       : {},
   trailingSlash: true,
+  experimental: {
+    serverActions: {
+      // Portraits may be up to 5 MB; leave headroom for multipart encoding.
+      bodySizeLimit: "6mb",
+    },
+  },
   images: {
     remotePatterns: [
       {

@@ -28,7 +28,7 @@ export function LanguageSwitcher({
   return (
     <div
       className={cn(
-        "inline-flex items-stretch divide-x border font-mono text-[11px] uppercase tracking-[0.12em]",
+        "inline-flex items-stretch divide-x border font-mono text-sm tracking-wide",
         dark
           ? "divide-cream/30 border-cream/30"
           : "divide-espresso/25 border-espresso/25",
@@ -46,7 +46,7 @@ export function LanguageSwitcher({
             onClick={() => router.replace(pathname, { locale: loc })}
             aria-current={active}
             className={cn(
-              "rounded-none px-3 py-1.5 transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-burgundy",
+              "inline-flex h-full items-center rounded-none px-3 transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-burgundy",
               active
                 ? dark
                   ? "bg-cream text-espresso"

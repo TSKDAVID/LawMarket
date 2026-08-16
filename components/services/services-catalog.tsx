@@ -14,6 +14,7 @@ import {
 } from "@/data/localize";
 import type { Locale } from "@/i18n/routing";
 import { cn, matchesQuery } from "@/lib/utils";
+import { popularityScore } from "@/data/popularity";
 
 type SortOption = "popular" | "price-asc" | "price-desc";
 
@@ -144,9 +145,8 @@ export function ServicesCatalog({
     return [...filtered].sort((a, b) => {
       if (sort === "price-asc") return a.price - b.price;
       if (sort === "price-desc") return b.price - a.price;
-      if (a.popular && !b.popular) return -1;
-      if (!a.popular && b.popular) return 1;
-      return a.price - b.price;
+      const byDemand = popularityScore(b) - popularityScore(a);
+      return byDemand !== 0 ? byDemand : a.price - b.price;
     });
   }, [services, query, activeCategory, categoryById, locale, sort]);
 

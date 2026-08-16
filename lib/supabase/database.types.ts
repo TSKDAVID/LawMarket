@@ -66,6 +66,7 @@ export type LawyerRow = Timestamps & {
   years_experience: number;
   verified: boolean;
   published: boolean;
+  suspended: boolean;
   sort_order: number;
   phone: string | null;
   contact_email: string | null;
@@ -126,6 +127,8 @@ export type ServiceRow = Timestamps & {
   faq_en: Json;
   faq_ka: Json;
   sort_order: number;
+  view_count: number;
+  purchase_count: number;
 };
 
 export type ReviewRow = Timestamps & {
@@ -245,6 +248,7 @@ export type Database = {
         | "years_experience"
         | "verified"
         | "published"
+        | "suspended"
         | "sort_order"
         | "avatar_color"
         | "phone"
@@ -295,6 +299,8 @@ export type Database = {
         | "sort_order"
         | "description_en"
         | "description_ka"
+        | "view_count"
+        | "purchase_count"
       >;
       reviews: TableOf<
         ReviewRow,
@@ -379,6 +385,7 @@ export type Database = {
       is_admin: { Args: Record<string, never>; Returns: boolean };
       is_staff: { Args: Record<string, never>; Returns: boolean };
       current_lawyer_id: { Args: Record<string, never>; Returns: string | null };
+      record_service_view: { Args: { p_service_id: string }; Returns: undefined };
     };
     Enums: {
       user_role: UserRole;

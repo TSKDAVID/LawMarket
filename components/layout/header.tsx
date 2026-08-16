@@ -26,27 +26,42 @@ export function Header({ signedIn, role, label }: HeaderProps) {
   const [open, setOpen] = useState(false);
 
   const navItems = [
+    { href: "/", label: t("home") },
     { href: "/services", label: t("services") },
     { href: "/lawyers", label: t("lawyers") },
     { href: "/how-it-works", label: t("howItWorks") },
   ] as const;
 
-  const workspaceHref = role === "admin" ? "/admin" : "/portal";
-  const workspaceLabel = role === "admin" ? "Admin" : role === "lawyer" ? "Portal" : null;
+  const workspaceHref = role === "admin" ? "/admin" : "/portal/profile";
+  const workspaceLabel =
+    role === "admin" ? t("admin") : role === "lawyer" ? t("portal") : null;
 
   const isActive = (href: string) =>
-    pathname === href || pathname.startsWith(`${href}/`);
+    href === "/"
+      ? pathname === "/"
+      : pathname === href || pathname.startsWith(`${href}/`);
 
   const ctaHref = "/start";
 
+  const navBtn =
+    "inline-flex h-10 shrink-0 items-center justify-center rounded-none px-3.5 font-mono text-sm tracking-wide transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy";
+  const navBtnOutline = cn(
+    navBtn,
+    "border border-burgundy text-burgundy hover:bg-burgundy hover:text-cream"
+  );
+  const navBtnPrimary = cn(
+    navBtn,
+    "border border-burgundy bg-burgundy px-4 text-cream hover:border-espresso hover:bg-espresso"
+  );
+
   return (
     <header className="sticky top-0 z-50 border-b border-espresso bg-cream">
-      <PageShell className="relative flex h-16 items-center justify-between gap-3">
-        <LogoLockup className="shrink-0 text-xl text-espresso sm:text-2xl" />
+      <PageShell className="flex h-[4.25rem] items-center gap-4">
+        <LogoLockup className="shrink-0 text-[1.35rem] leading-none text-espresso sm:text-2xl" />
 
         <nav
           aria-label="Primary"
-          className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-9 lg:flex"
+          className="hidden min-w-0 flex-1 items-center justify-center gap-5 xl:gap-8 lg:flex"
         >
           {navItems.map((item) => (
             <Link
@@ -54,10 +69,10 @@ export function Header({ signedIn, role, label }: HeaderProps) {
               href={item.href}
               aria-current={isActive(item.href) ? "page" : undefined}
               className={cn(
-                "font-mono text-xs uppercase tracking-[0.16em] transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-burgundy",
+                "whitespace-nowrap font-mono text-sm leading-none tracking-wide transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-burgundy",
                 isActive(item.href)
-                  ? "text-espresso underline decoration-burgundy decoration-2 underline-offset-8"
-                  : "text-espresso/70 hover:text-espresso"
+                  ? "text-espresso underline decoration-burgundy decoration-2 underline-offset-[10px]"
+                  : "text-espresso/80 hover:text-espresso"
               )}
             >
               {item.label}
@@ -65,47 +80,39 @@ export function Header({ signedIn, role, label }: HeaderProps) {
           ))}
         </nav>
 
-        <div className="hidden items-center lg:flex">
-          <LanguageSwitcher />
+        <div className="ml-auto hidden shrink-0 items-center gap-2 lg:flex">
+          <LanguageSwitcher className="h-10" />
           {signedIn ? (
             <>
               {workspaceLabel && (
                 <Link
                   href={workspaceHref}
-                  className="ml-6 font-mono text-xs uppercase tracking-[0.16em] text-espresso/75 transition-colors hover:text-espresso"
+                  title={label ?? undefined}
+                  className={navBtnOutline}
                 >
                   {workspaceLabel}
                 </Link>
               )}
-              <form action={signOut} className="ml-6">
+              <form action={signOut} className="flex">
                 <input type="hidden" name="locale" value={locale} />
-                <button
-                  type="submit"
-                  className="font-mono text-xs uppercase tracking-[0.16em] text-espresso/75 transition-colors hover:text-espresso"
-                >
+                <button type="submit" className={navBtnOutline}>
                   {tAuth("logout")}
                 </button>
               </form>
             </>
           ) : (
-            <Link
-              href="/login"
-              className="ml-6 font-mono text-xs uppercase tracking-[0.16em] text-espresso/75 transition-colors hover:text-espresso focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-burgundy"
-            >
+            <Link href="/login" className={navBtnOutline}>
               {t("login")}
             </Link>
           )}
-          <Link
-            href={ctaHref}
-            className="ml-6 inline-flex h-10 items-center rounded-none border border-burgundy bg-burgundy px-5 font-mono text-xs uppercase tracking-[0.16em] text-cream transition-colors hover:border-espresso hover:bg-espresso focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy"
-          >
+          <Link href={ctaHref} className={navBtnPrimary}>
             {t("getStarted")}
           </Link>
         </div>
 
         <button
           type="button"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-none border border-espresso/25 text-espresso transition-colors hover:border-espresso focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy lg:hidden"
+          className="ml-auto inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-none border border-espresso/25 text-espresso transition-colors hover:border-espresso focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy lg:hidden"
           onClick={() => setOpen((v) => !v)}
           aria-label="Toggle menu"
           aria-expanded={open}
@@ -124,8 +131,8 @@ export function Header({ signedIn, role, label }: HeaderProps) {
                 onClick={() => setOpen(false)}
                 aria-current={isActive(item.href) ? "page" : undefined}
                 className={cn(
-                  "block px-[var(--page-gutter)] py-4 font-mono text-sm uppercase tracking-[0.14em]",
-                  isActive(item.href) ? "text-espresso" : "text-espresso/75"
+                  "block px-[var(--page-gutter)] py-4 font-mono text-base tracking-wide",
+                  isActive(item.href) ? "text-espresso" : "text-espresso/80"
                 )}
               >
                 {item.label}
@@ -133,24 +140,34 @@ export function Header({ signedIn, role, label }: HeaderProps) {
             ))}
           </nav>
           <div className="border-t border-espresso/15 px-[var(--page-gutter)] py-5">
-            <div className="flex items-center justify-between gap-4">
-              <LanguageSwitcher />
+            <LanguageSwitcher className="h-10" />
+            <div className="mt-4 grid grid-cols-2 gap-3">
               {signedIn ? (
-                <form action={signOut}>
-                  <input type="hidden" name="locale" value={locale} />
-                  <button
-                    type="submit"
-                    className="font-mono text-xs uppercase tracking-[0.16em] text-espresso/75"
-                  >
-                    {tAuth("logout")}
-                    {label ? ` · ${label}` : ""}
-                  </button>
-                </form>
+                <>
+                  {workspaceLabel ? (
+                    <Link
+                      href={workspaceHref}
+                      title={label ?? undefined}
+                      onClick={() => setOpen(false)}
+                      className={cn(navBtnOutline, "w-full")}
+                    >
+                      {workspaceLabel}
+                    </Link>
+                  ) : (
+                    <span />
+                  )}
+                  <form action={signOut} className="w-full">
+                    <input type="hidden" name="locale" value={locale} />
+                    <button type="submit" className={cn(navBtnOutline, "w-full")}>
+                      {tAuth("logout")}
+                    </button>
+                  </form>
+                </>
               ) : (
                 <Link
                   href="/login"
                   onClick={() => setOpen(false)}
-                  className="font-mono text-xs uppercase tracking-[0.16em] text-espresso/75"
+                  className={cn(navBtnOutline, "col-span-2")}
                 >
                   {t("login")}
                 </Link>
@@ -159,7 +176,7 @@ export function Header({ signedIn, role, label }: HeaderProps) {
             <Link
               href={ctaHref}
               onClick={() => setOpen(false)}
-              className="mt-5 flex h-12 items-center justify-center rounded-none border border-burgundy bg-burgundy px-5 font-mono text-xs uppercase tracking-[0.16em] text-cream transition-colors hover:border-espresso hover:bg-espresso"
+              className={cn(navBtnPrimary, "mt-3 h-12 w-full")}
             >
               {t("getStarted")}
             </Link>

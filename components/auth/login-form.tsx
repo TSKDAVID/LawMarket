@@ -40,7 +40,7 @@ export function LoginForm({ next }: { next?: string }) {
       <div>
         <label
           htmlFor="login-email"
-          className="mb-2 block font-body text-sm font-medium text-espresso/80"
+          className="mb-2 block font-mono text-sm text-espresso"
         >
           {t("emailLabel")}
         </label>
@@ -55,7 +55,7 @@ export function LoginForm({ next }: { next?: string }) {
       <div>
         <label
           htmlFor="login-password"
-          className="mb-2 block font-body text-sm font-medium text-espresso/80"
+          className="mb-2 block font-mono text-sm text-espresso"
         >
           {t("passwordLabel")}
         </label>

@@ -74,7 +74,7 @@ export default async function StartPage({
               {t("lawyerBody")}
             </p>
             <Link
-              href={`/login?next=/${locale}/portal/`}
+              href={`/login?next=/${locale}/portal/profile/`}
               className="mt-8 inline-flex h-12 items-center justify-center rounded-none border border-cream bg-cream px-5 font-mono text-xs uppercase tracking-[0.16em] text-espresso transition-colors hover:bg-burgundy hover:text-cream"
             >
               {t("lawyerCta")}

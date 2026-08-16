@@ -28,6 +28,7 @@
 
   --font-heading: var(--font-inter);
   --font-body: var(--font-inter);
+  --font-mono: "ALK Rex Bold", "Noto Sans Georgian Variable", ui-sans-serif, system-ui, sans-serif;
 
   --color-parchment: #fbf6eb;
 
@@ -56,11 +57,20 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "ALK Rex Bold";
+  src: url("/fonts/alk-rex-bold.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Self-hosted variable fonts (Fontsource) — loaded in lib/fonts.ts */
 :root {
   --font-playfair: "Playfair Display Variable", Georgia, serif;
   --font-inter: "Inter Variable", system-ui, -apple-system, sans-serif;
   --font-alk-sanet: "ALK Sanet", "Noto Serif Georgian Variable", Georgia, serif;
+  --font-alk-rex: "ALK Rex Bold", "Noto Sans Georgian Variable", system-ui, sans-serif;
   --font-noto-serif-ka: "Noto Serif Georgian Variable", Georgia, serif;
   --font-noto-sans-ka: "Noto Sans Georgian Variable", system-ui, sans-serif;
 }
@@ -78,6 +88,11 @@ html[data-locale="ka"] {
 body {
   @apply bg-cream text-espresso antialiased;
   font-family: var(--font-body);
+}
+
+.font-mono {
+  font-family: var(--font-alk-rex);
+  font-weight: 700;
 }
 
 /* Soft paper grain — signature Law Market texture on cream surfaces */

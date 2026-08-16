@@ -3,9 +3,8 @@ import { getOwnLawyer } from "@/lib/auth";
 import { getCategories } from "@/data/queries";
 import { createClient } from "@/lib/supabase/server";
 import { ServiceRequestForm } from "@/components/workspace/portal-forms";
-import { localizedServiceTitle } from "@/data/localize";
-import { formatPrice } from "@/lib/utils";
-import { Link } from "@/i18n/navigation";
+import { ServiceManageCard } from "@/components/workspace/listing-editors";
+import { WorkspaceHeading } from "@/components/workspace/workspace-shell";
 import type { Locale } from "@/i18n/routing";
 
 export default async function PortalServicesPage({
@@ -15,7 +14,6 @@ export default async function PortalServicesPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale as Locale);
-  const loc = locale as Locale;
   const t = await getTranslations("portal");
   const lawyer = await getOwnLawyer();
   const categories = await getCategories();
@@ -35,45 +33,17 @@ export default async function PortalServicesPage({
 
   return (
     <div>
-      <h1 className="font-heading text-3xl font-semibold text-espresso">
-        {t("servicesTitle")}
-      </h1>
+      <WorkspaceHeading title={t("servicesTitle")} />
       {services.length === 0 ? (
-        <p className="mt-4 font-body text-sm text-espresso/75">{t("noServices")}</p>
+        <p className="mb-8 font-body text-sm text-espresso/60">{t("noServices")}</p>
       ) : (
-        <ul className="mt-6 divide-y divide-espresso/15 border border-espresso/20 bg-white/70">
+        <ul className="divide-y divide-espresso/10 border border-espresso/12 border-t-[3px] border-t-burgundy bg-white">
           {services.map((service) => (
-            <li key={service.id} className="flex items-center justify-between gap-4 px-5 py-4">
-              <div>
-                <p className="font-heading font-semibold text-espresso">
-                  {localizedServiceTitle(
-                    {
-                      id: service.id,
-                      slug: service.slug,
-                      categoryId: service.category_id,
-                      lawyerId: service.lawyer_id,
-                      title_en: service.title_en,
-                      title_ka: service.title_ka,
-                      description_en: service.description_en,
-                      description_ka: service.description_ka,
-                      price: Number(service.price),
-                      currency: "GEL",
-                      durationMinutes: service.duration_minutes,
-                    },
-                    loc
-                  )}
-                </p>
-                <p className="mt-1 font-body text-xs text-espresso/65">
-                  {formatPrice(Number(service.price))}
-                </p>
-              </div>
-              <Link
-                href={`/services/${service.slug}`}
-                className="font-mono text-[11px] uppercase tracking-[0.14em] text-espresso/70"
-              >
-                {t("publicProfile")}
-              </Link>
-            </li>
+            <ServiceManageCard
+              key={service.id}
+              service={service}
+              categories={categories}
+            />
           ))}
         </ul>
       )}

@@ -51,7 +51,7 @@ export default async function AdminReviewPage({
       <dl className="mt-4 space-y-3 border border-espresso/20 bg-white/70 p-5">
         {payloadLines(request.payload).map((line) => (
           <div key={line.label}>
-            <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-espresso/55">
+            <dt className="font-mono text-sm text-espresso">
               {line.label}
             </dt>
             <dd className="mt-1 whitespace-pre-wrap font-body text-sm text-espresso">

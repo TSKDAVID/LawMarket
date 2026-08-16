@@ -1,6 +1,8 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { CreateLawyerForm } from "@/components/workspace/admin-forms";
+import { LawyerRoster } from "@/components/workspace/lawyer-roster";
+import type { RosterLawyer } from "@/app/[locale]/admin/actions";
 import type { Locale } from "@/i18n/routing";
 
 export default async function AdminLawyersPage({
@@ -13,12 +15,62 @@ export default async function AdminLawyersPage({
   const t = await getTranslations("admin");
   const supabase = await createClient();
 
-  const { data } = await supabase
+  let { data, error } = await supabase
     .from("lawyers")
-    .select("id, name, slug, verified, published, profiles(email)")
+    .select(
+      "id, name, slug, city, verified, published, suspended, profile_id, profiles(email)"
+    )
     .order("created_at", { ascending: false });
 
-  const lawyers = data ?? [];
+  if (error) {
+    const fallback = await supabase
+      .from("lawyers")
+      .select(
+        "id, name, slug, city, verified, published, profile_id, profiles(email)"
+      )
+      .order("created_at", { ascending: false });
+    data = (fallback.data ?? []).map((lawyer) => ({
+      ...lawyer,
+      suspended: false,
+    }));
+  }
+
+  const rows = data ?? [];
+  const ids = rows.map((lawyer) => lawyer.id);
+  const { data: serviceRows } =
+    ids.length > 0
+      ? await supabase.from("services").select("lawyer_id").in("lawyer_id", ids)
+      : { data: [] };
+
+  const serviceCountByLawyer = new Map<string, number>();
+  for (const row of serviceRows ?? []) {
+    serviceCountByLawyer.set(
+      row.lawyer_id,
+      (serviceCountByLawyer.get(row.lawyer_id) ?? 0) + 1
+    );
+  }
+
+  const lawyers: RosterLawyer[] = rows.map((lawyer) => {
+    const profile = Array.isArray(lawyer.profiles)
+      ? lawyer.profiles[0]
+      : lawyer.profiles;
+    const email =
+      profile && typeof profile === "object" && "email" in profile
+        ? (profile.email as string | null)
+        : null;
+    return {
+      id: lawyer.id,
+      name: lawyer.name,
+      slug: lawyer.slug,
+      city: lawyer.city,
+      verified: lawyer.verified,
+      published: lawyer.published,
+      suspended: lawyer.suspended,
+      email,
+      hasLogin: Boolean(lawyer.profile_id),
+      serviceCount: serviceCountByLawyer.get(lawyer.id) ?? 0,
+    };
+  });
 
   return (
     <div>
@@ -35,27 +87,10 @@ export default async function AdminLawyersPage({
       <h2 className="mt-12 font-heading text-xl font-semibold text-espresso">
         {t("existingLawyers")}
       </h2>
-      <ul className="mt-4 divide-y divide-espresso/15 border border-espresso/20 bg-white/70">
-        {lawyers.map((lawyer) => {
-          const profile = Array.isArray(lawyer.profiles)
-            ? lawyer.profiles[0]
-            : lawyer.profiles;
-          const email =
-            profile && typeof profile === "object" && "email" in profile
-              ? profile.email
-              : null;
-          return (
-            <li key={lawyer.id} className="px-5 py-4">
-              <p className="font-heading font-semibold text-espresso">
-                {lawyer.name}
-              </p>
-              <p className="mt-1 font-body text-xs text-espresso/65">
-                {email ?? lawyer.slug}
-              </p>
-            </li>
-          );
-        })}
-      </ul>
+      <p className="mt-2 max-w-2xl font-body text-sm leading-relaxed text-espresso/75">
+        {t("manageLawyersBody")}
+      </p>
+      <LawyerRoster lawyers={lawyers} />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,11 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Field } from "@/components/workspace/field";
-import { FormMessage } from "@/components/workspace/workspace-shell";
+import {
+  FormMessage,
+  WorkspacePanel,
+} from "@/components/workspace/workspace-shell";
+import { Avatar } from "@/components/shared/avatar";
 import {
   submitCaseRequest,
   submitServiceRequest,
@@ -22,7 +26,12 @@ import type { LawyerRow } from "@/lib/supabase/database.types";
 function SubmitButton({ label }: { label: string }) {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" size="lg" disabled={pending}>
+    <Button
+      type="submit"
+      size="lg"
+      disabled={pending}
+      className="h-12 w-full rounded-none sm:w-auto"
+    >
       {label}
     </Button>
   );
@@ -33,6 +42,56 @@ function LocaleFields() {
   return <input type="hidden" name="locale" value={locale} />;
 }
 
+function PhotoPicker({ lawyer }: { lawyer: LawyerRow }) {
+  const t = useTranslations("portal");
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+
+  return (
+    <div className="flex w-full shrink-0 flex-col items-start gap-4 lg:w-44">
+      <p className="font-mono text-sm text-espresso">
+        {t("photoLabel")}
+      </p>
+      <Avatar
+        initials={lawyer.initials}
+        color={lawyer.avatar_color}
+        photoUrl={preview ?? lawyer.photo_url ?? undefined}
+        alt={lawyer.name}
+        size="xl"
+        className="h-36 w-36 border border-espresso/15"
+      />
+      <div>
+        <input type="hidden" name="photo_url" value={lawyer.photo_url ?? ""} />
+        <input
+          ref={inputRef}
+          id="photo"
+          type="file"
+          name="photo"
+          accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
+          className="sr-only"
+          onChange={(event) => {
+            const file = event.target.files?.[0];
+            setPreview((current) => {
+              if (current) URL.revokeObjectURL(current);
+              return file ? URL.createObjectURL(file) : null;
+            });
+          }}
+        />
+        <button
+          type="button"
+          onClick={() => inputRef.current?.click()}
+          className="inline-flex h-11 w-full max-w-xs items-center justify-center border border-burgundy px-4 font-mono text-sm tracking-wide text-burgundy transition-colors hover:bg-burgundy hover:text-cream"
+        >
+          {t("choosePhoto")}
+        </button>
+        <p className="mt-2 max-w-[12rem] font-body text-xs leading-relaxed text-espresso/55">
+          {t("photoHint")}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export function ProfileForm({ lawyer }: { lawyer: LawyerRow }) {
   const t = useTranslations("portal");
   const [state, action] = useActionState<PortalState, FormData>(
@@ -41,91 +100,104 @@ export function ProfileForm({ lawyer }: { lawyer: LawyerRow }) {
   );
 
   return (
-    <form action={action} className="space-y-5">
+    <form action={action} className="space-y-6">
       <LocaleFields />
       <FormMessage
         error={state.error ? t(state.error) : null}
         ok={state.ok}
         okText={t("profileSaved")}
       />
-      <Field id="name" label={t("nameLabel")}>
-        <Input id="name" name="name" required defaultValue={lawyer.name} />
-      </Field>
-      <Field id="headline_ka" label={t("headlineKa")}>
-        <Input
-          id="headline_ka"
-          name="headline_ka"
-          required
-          defaultValue={lawyer.headline_ka}
-        />
-      </Field>
-      <Field id="headline_en" label={t("headlineEn")}>
-        <Input
-          id="headline_en"
-          name="headline_en"
-          defaultValue={
-            lawyer.headline_en === lawyer.headline_ka ? "" : lawyer.headline_en
-          }
-        />
-      </Field>
-      <Field id="bio_ka" label={t("bioKa")}>
-        <Textarea
-          id="bio_ka"
-          name="bio_ka"
-          rows={6}
-          defaultValue={lawyer.bio_ka}
-        />
-      </Field>
-      <Field id="bio_en" label={t("bioEn")}>
-        <Textarea
-          id="bio_en"
-          name="bio_en"
-          rows={6}
-          defaultValue={lawyer.bio_en === lawyer.bio_ka ? "" : lawyer.bio_en}
-        />
-      </Field>
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-        <Field id="city" label={t("cityLabel")}>
-          <Input id="city" name="city" defaultValue={lawyer.city} />
-        </Field>
-        <Field id="years" label={t("yearsLabel")}>
-          <Input
-            id="years"
-            name="years"
-            type="number"
-            min={0}
-            defaultValue={lawyer.years_experience}
+
+      <WorkspacePanel>
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-10">
+          <PhotoPicker lawyer={lawyer} />
+          <div className="min-w-0 flex-1 space-y-5">
+            <Field id="name" label={t("nameLabel")}>
+              <Input id="name" name="name" required defaultValue={lawyer.name} />
+            </Field>
+            <Field id="headline_ka" label={t("headlineKa")}>
+              <Input
+                id="headline_ka"
+                name="headline_ka"
+                required
+                defaultValue={lawyer.headline_ka}
+              />
+            </Field>
+            <Field id="headline_en" label={t("headlineEn")}>
+              <Input
+                id="headline_en"
+                name="headline_en"
+                defaultValue={
+                  lawyer.headline_en === lawyer.headline_ka
+                    ? ""
+                    : lawyer.headline_en
+                }
+              />
+            </Field>
+          </div>
+        </div>
+      </WorkspacePanel>
+
+      <WorkspacePanel className="space-y-6">
+        <h2 className="font-heading text-lg font-semibold text-espresso">
+          {t("profileAbout")}
+        </h2>
+        <Field id="bio_ka" label={t("bioKa")}>
+          <Textarea
+            id="bio_ka"
+            name="bio_ka"
+            rows={6}
+            defaultValue={lawyer.bio_ka}
           />
         </Field>
-      </div>
-      <Field id="languages" label={t("languagesLabel")}>
-        <Input
-          id="languages"
-          name="languages"
-          defaultValue={(lawyer.languages ?? []).join(", ")}
-        />
-      </Field>
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-        <Field id="phone" label={t("phoneLabel")}>
-          <Input id="phone" name="phone" defaultValue={lawyer.phone ?? ""} />
-        </Field>
-        <Field id="contact_email" label={t("emailLabel")}>
-          <Input
-            id="contact_email"
-            name="contact_email"
-            type="email"
-            defaultValue={lawyer.contact_email ?? ""}
+        <Field id="bio_en" label={t("bioEn")}>
+          <Textarea
+            id="bio_en"
+            name="bio_en"
+            rows={5}
+            defaultValue={lawyer.bio_en === lawyer.bio_ka ? "" : lawyer.bio_en}
           />
         </Field>
-      </div>
-      <Field id="photo_url" label={t("photoLabel")}>
-        <Input
-          id="photo_url"
-          name="photo_url"
-          defaultValue={lawyer.photo_url ?? ""}
-        />
-      </Field>
-      <SubmitButton label={t("saveProfile")} />
+      </WorkspacePanel>
+
+      <WorkspacePanel className="space-y-6">
+        <h2 className="font-heading text-lg font-semibold text-espresso">
+          {t("profileDetails")}
+        </h2>
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <Field id="city" label={t("cityLabel")}>
+            <Input id="city" name="city" defaultValue={lawyer.city} />
+          </Field>
+          <Field id="years" label={t("yearsLabel")}>
+            <Input
+              id="years"
+              name="years"
+              type="number"
+              min={0}
+              defaultValue={lawyer.years_experience}
+            />
+          </Field>
+          <Field id="languages" label={t("languagesLabel")}>
+            <Input
+              id="languages"
+              name="languages"
+              defaultValue={(lawyer.languages ?? []).join(", ")}
+            />
+          </Field>
+          <Field id="phone" label={t("phoneLabel")}>
+            <Input id="phone" name="phone" defaultValue={lawyer.phone ?? ""} />
+          </Field>
+          <Field id="contact_email" label={t("emailLabel")}>
+            <Input
+              id="contact_email"
+              name="contact_email"
+              type="email"
+              defaultValue={lawyer.contact_email ?? ""}
+            />
+          </Field>
+        </div>
+        <SubmitButton label={t("saveProfile")} />
+      </WorkspacePanel>
     </form>
   );
 }
@@ -138,47 +210,47 @@ export function PasswordForm() {
   );
 
   return (
-    <form action={action} className="mt-12 space-y-5 border-t border-espresso/15 pt-10">
-      <LocaleFields />
-      <h2 className="font-heading text-xl font-semibold text-espresso">
-        {t("passwordTitle")}
-      </h2>
-      <p className="font-body text-sm text-espresso/75">{t("passwordBody")}</p>
-      <FormMessage
-        error={state.error ? t(state.error) : null}
-        ok={state.ok}
-        okText={t("passwordChanged")}
-      />
-      <Field id="current_password" label={t("currentPassword")}>
-        <Input
-          id="current_password"
-          name="current_password"
-          type="password"
-          autoComplete="current-password"
-          required
+    <form action={action} className="space-y-5">
+      <WorkspacePanel className="space-y-5">
+        <LocaleFields />
+        <FormMessage
+          error={state.error ? t(state.error) : null}
+          ok={state.ok}
+          okText={t("passwordChanged")}
         />
-      </Field>
-      <Field id="new_password" label={t("newPassword")}>
-        <Input
-          id="new_password"
-          name="new_password"
-          type="password"
-          autoComplete="new-password"
-          minLength={8}
-          required
-        />
-      </Field>
-      <Field id="confirm_password" label={t("confirmPassword")}>
-        <Input
-          id="confirm_password"
-          name="confirm_password"
-          type="password"
-          autoComplete="new-password"
-          minLength={8}
-          required
-        />
-      </Field>
-      <SubmitButton label={t("savePassword")} />
+        <div className="max-w-md space-y-5">
+          <Field id="current_password" label={t("currentPassword")}>
+            <Input
+              id="current_password"
+              name="current_password"
+              type="password"
+              autoComplete="current-password"
+              required
+            />
+          </Field>
+          <Field id="new_password" label={t("newPassword")}>
+            <Input
+              id="new_password"
+              name="new_password"
+              type="password"
+              autoComplete="new-password"
+              minLength={8}
+              required
+            />
+          </Field>
+          <Field id="confirm_password" label={t("confirmPassword")}>
+            <Input
+              id="confirm_password"
+              name="confirm_password"
+              type="password"
+              autoComplete="new-password"
+              minLength={8}
+              required
+            />
+          </Field>
+          <SubmitButton label={t("savePassword")} />
+        </div>
+      </WorkspacePanel>
     </form>
   );
 }
@@ -191,7 +263,8 @@ export function ServiceRequestForm({ categories }: { categories: Category[] }) {
   );
 
   return (
-    <form action={action} className="mt-8 space-y-5 border border-espresso/20 bg-parchment p-6">
+    <form action={action} className="mt-8 space-y-5">
+      <WorkspacePanel className="space-y-5">
       <LocaleFields />
       <h2 className="font-heading text-lg font-semibold text-espresso">
         {t("addService")}
@@ -240,6 +313,7 @@ export function ServiceRequestForm({ categories }: { categories: Category[] }) {
         <Textarea id="includes_en" name="includes_en" rows={4} />
       </Field>
       <SubmitButton label={t("submitForReview")} />
+      </WorkspacePanel>
     </form>
   );
 }
@@ -252,7 +326,8 @@ export function CaseRequestForm({ categories }: { categories: Category[] }) {
   );
 
   return (
-    <form action={action} className="mt-8 space-y-5 border border-espresso/20 bg-parchment p-6">
+    <form action={action} className="mt-8 space-y-5">
+      <WorkspacePanel className="space-y-5">
       <LocaleFields />
       <h2 className="font-heading text-lg font-semibold text-espresso">
         {t("addCase")}
@@ -301,6 +376,7 @@ export function CaseRequestForm({ categories }: { categories: Category[] }) {
         <Input id="outcome_en" name="outcome_en" />
       </Field>
       <SubmitButton label={t("submitForReview")} />
+      </WorkspacePanel>
     </form>
   );
 }

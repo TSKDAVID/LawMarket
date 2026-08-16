@@ -3,7 +3,7 @@ import type { UserRole } from "@/lib/supabase/database.types";
 /** Where a user belongs after signing in. Safe for client and server. */
 export function homePathForRole(role: UserRole | null | undefined) {
   if (role === "admin") return "/admin";
-  if (role === "lawyer") return "/portal";
+  if (role === "lawyer") return "/portal/profile";
   return "/";
 }
 
@@ -15,6 +15,13 @@ export function mapAuthError(error: { message: string; code?: string }) {
   }
   if (code === "invalid_login_credentials" || message.includes("invalid login")) {
     return "invalidCredentials";
+  }
+  if (
+    code === "user_banned" ||
+    message.includes("banned") ||
+    message.includes("disabled")
+  ) {
+    return "accountSuspended";
   }
   if (
     message.includes("fetch") ||

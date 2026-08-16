@@ -237,3 +237,168 @@ export async function reviewChangeRequest(
   revalidatePath(`/${locale}/admin/`);
   return { error: null, ok: true, decision: "approved" };
 }
+
+export type RosterLawyer = {
+  id: string;
+  name: string;
+  slug: string;
+  city: string;
+  verified: boolean;
+  published: boolean;
+  suspended: boolean;
+  email: string | null;
+  hasLogin: boolean;
+  serviceCount: number;
+};
+
+const MANAGE_INTENTS = [
+  "hide",
+  "show",
+  "verify",
+  "unverify",
+  "suspend",
+  "restore",
+  "delete",
+  "resetPassword",
+] as const;
+
+type ManageIntent = (typeof MANAGE_INTENTS)[number];
+
+function isManageIntent(value: string): value is ManageIntent {
+  return (MANAGE_INTENTS as readonly string[]).includes(value);
+}
+
+function revalidateLawyer(locale: string, slug: string) {
+  revalidatePath("/", "layout");
+  revalidatePath(`/${locale}/admin/lawyers/`);
+  revalidatePath(`/${locale}/lawyers/`);
+  revalidatePath(`/${locale}/lawyers/${slug}/`);
+  revalidatePath(`/${locale}/services/`);
+}
+
+async function setListingsPublished(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  lawyerId: string,
+  published: boolean
+) {
+  await supabase.from("services").update({ published }).eq("lawyer_id", lawyerId);
+}
+
+async function setAuthBanned(profileId: string | null, banned: boolean) {
+  if (!profileId || !process.env.SUPABASE_SERVICE_ROLE_KEY) return;
+  const admin = createAdminClient();
+  await admin.auth.admin.updateUserById(profileId, {
+    ban_duration: banned ? "876600h" : "none",
+  });
+}
+
+export async function manageLawyer(
+  _prev: AdminState,
+  formData: FormData
+): Promise<AdminState> {
+  const locale = localeOf(formData);
+  const adminUser = await requireAdmin(locale);
+  const id = String(formData.get("id") ?? "");
+  const intent = String(formData.get("intent") ?? "");
+  if (!id || !isManageIntent(intent)) return { error: "manageFailed" };
+
+  const supabase = await createClient();
+  const { data: lawyer, error } = await supabase
+    .from("lawyers")
+    .select("id, slug, name, profile_id, profiles(role)")
+    .eq("id", id)
+    .maybeSingle();
+  if (error || !lawyer) return { error: "manageFailed" };
+
+  const profile = Array.isArray(lawyer.profiles)
+    ? lawyer.profiles[0]
+    : lawyer.profiles;
+  const profileRole =
+    profile && typeof profile === "object" && "role" in profile
+      ? profile.role
+      : null;
+
+  if (profileRole === "admin") return { error: "cannotModifyAdmin" };
+  if (lawyer.profile_id && lawyer.profile_id === adminUser.id) {
+    return { error: "cannotModifySelf" };
+  }
+
+  if (intent === "resetPassword") {
+    const password = String(formData.get("password") ?? "");
+    if (!lawyer.profile_id) return { error: "noLogin" };
+    if (password.length < 8) return { error: "weakPassword" };
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      return { error: "missingServiceRole" };
+    }
+    const admin = createAdminClient();
+    const { error: passwordError } = await admin.auth.admin.updateUserById(
+      lawyer.profile_id,
+      { password }
+    );
+    if (passwordError) return { error: "manageFailed" };
+    revalidateLawyer(locale, lawyer.slug);
+    return { error: null, ok: true };
+  }
+
+  if (intent === "delete") {
+    await supabase.from("bookings").delete().eq("lawyer_id", id);
+    await supabase.from("orders").delete().eq("lawyer_id", id);
+    await supabase.from("services").delete().eq("lawyer_id", id);
+    const { error: deleteError } = await supabase
+      .from("lawyers")
+      .delete()
+      .eq("id", id);
+    if (deleteError) return { error: "manageFailed" };
+    if (lawyer.profile_id && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      const admin = createAdminClient();
+      await admin.auth.admin.deleteUser(lawyer.profile_id);
+    }
+    revalidateLawyer(locale, lawyer.slug);
+    return { error: null, ok: true };
+  }
+
+  if (intent === "verify" || intent === "unverify") {
+    const { error: updateError } = await supabase
+      .from("lawyers")
+      .update({ verified: intent === "verify" })
+      .eq("id", id);
+    if (updateError) return { error: "manageFailed" };
+    revalidateLawyer(locale, lawyer.slug);
+    return { error: null, ok: true };
+  }
+
+  if (intent === "hide" || intent === "show") {
+    const published = intent === "show";
+    const { error: updateError } = await supabase
+      .from("lawyers")
+      .update({ published })
+      .eq("id", id);
+    if (updateError) return { error: "manageFailed" };
+    await setListingsPublished(supabase, id, published);
+    revalidateLawyer(locale, lawyer.slug);
+    return { error: null, ok: true };
+  }
+
+  if (intent === "suspend") {
+    const { error: updateError } = await supabase
+      .from("lawyers")
+      .update({ suspended: true, published: false })
+      .eq("id", id);
+    if (updateError) return { error: "manageFailed" };
+    await setListingsPublished(supabase, id, false);
+    await setAuthBanned(lawyer.profile_id, true);
+    revalidateLawyer(locale, lawyer.slug);
+    return { error: null, ok: true };
+  }
+
+  const { error: updateError } = await supabase
+    .from("lawyers")
+    .update({ suspended: false, published: true })
+    .eq("id", id);
+  if (updateError) return { error: "manageFailed" };
+  await setListingsPublished(supabase, id, true);
+  await setAuthBanned(lawyer.profile_id, false);
+  revalidateLawyer(locale, lawyer.slug);
+  return { error: null, ok: true };
+}
+

@@ -33,8 +33,8 @@ export default async function PortalLayout({
     <WorkspaceShell
       title={t("title")}
       items={[
-        { href: "/portal", label: t("welcome") },
         { href: "/portal/profile", label: t("navProfile") },
+        { href: "/portal/password", label: t("navPassword") },
         { href: "/portal/services", label: t("navServices") },
         { href: "/portal/cases", label: t("navCases") },
         {

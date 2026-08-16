@@ -16,6 +16,7 @@ import {
   getLawyerById,
   getRelatedServices,
   getServiceBySlug,
+  recordServiceView,
 } from "@/data/queries";
 import {
   localizedCategoryName,
@@ -56,6 +57,7 @@ export default async function ServiceDetailPage({
 
   const service = await getServiceBySlug(slug);
   if (!service) notFound();
+  void recordServiceView(service.id);
 
   const [category, lawyer, related, t, tCommon] = await Promise.all([
     getCategoryById(service.categoryId),

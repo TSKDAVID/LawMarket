@@ -22,6 +22,7 @@ import {
 } from "@/data/localize";
 import type { Locale } from "@/i18n/routing";
 import { cn, formatPrice, matchesQuery } from "@/lib/utils";
+import { sortByPopularity } from "@/data/popularity";
 
 type ServicesExplorerProps = {
   services: Service[];
@@ -306,7 +307,7 @@ export function ServicesExplorer({
 
   const displayedServices = isFiltering
     ? filteredServices
-    : services.filter((s) => s.popular).slice(0, 6);
+    : sortByPopularity(services).slice(0, 6);
 
   const submitSearch = () => {
     const params = new URLSearchParams();

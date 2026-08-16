@@ -70,14 +70,23 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} data-locale={locale} data-scroll-behavior="smooth">
-      {locale === "ka" && (
-        <link
-          rel="preload"
-          href="/fonts/alk-sanet.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
+        {locale === "ka" && (
+        <>
+          <link
+            rel="preload"
+            href="/fonts/alk-sanet.woff2"
+            as="font"
+            type="font/woff2"
+            crossOrigin="anonymous"
+          />
+          <link
+            rel="preload"
+            href="/fonts/alk-rex-bold.woff2"
+            as="font"
+            type="font/woff2"
+            crossOrigin="anonymous"
+          />
+        </>
       )}
       <body className="flex min-h-screen flex-col bg-cream font-body text-espresso antialiased">
         <IntlProvider locale={locale} messages={messages}>

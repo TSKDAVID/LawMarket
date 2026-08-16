@@ -1,6 +1,8 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { getOwnLawyer } from "@/lib/auth";
-import { ProfileForm, PasswordForm } from "@/components/workspace/portal-forms";
+import { ProfileForm } from "@/components/workspace/portal-forms";
+import { WorkspaceHeading } from "@/components/workspace/workspace-shell";
 import type { Locale } from "@/i18n/routing";
 
 export default async function PortalProfilePage({
@@ -19,11 +21,19 @@ export default async function PortalProfilePage({
 
   return (
     <div>
-      <h1 className="mb-6 font-heading text-3xl font-semibold text-espresso">
-        {t("profileTitle")}
-      </h1>
+      <WorkspaceHeading
+        title={t("profileTitle")}
+        description={t("profileLead")}
+        action={
+          <Link
+            href={`/lawyers/${lawyer.slug}`}
+            className="inline-flex h-11 w-full items-center justify-center border border-burgundy px-4 font-mono text-sm tracking-wide text-burgundy transition-colors hover:bg-burgundy hover:text-cream sm:w-auto"
+          >
+            {t("publicProfile")}
+          </Link>
+        }
+      />
       <ProfileForm lawyer={lawyer} />
-      <PasswordForm />
     </div>
   );
 }

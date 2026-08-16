@@ -36,7 +36,7 @@ export function ContactForm() {
         <div>
           <label
             htmlFor="contact-name"
-            className="mb-2 block font-body text-sm font-medium text-espresso/80"
+            className="mb-2 block font-mono text-sm text-espresso"
           >
             {t("nameLabel")}
           </label>
@@ -45,7 +45,7 @@ export function ContactForm() {
         <div>
           <label
             htmlFor="contact-email"
-            className="mb-2 block font-body text-sm font-medium text-espresso/80"
+            className="mb-2 block font-mono text-sm text-espresso"
           >
             {t("emailLabel")}
           </label>
@@ -62,7 +62,7 @@ export function ContactForm() {
       <div>
         <label
           htmlFor="contact-subject"
-          className="mb-2 block font-body text-sm font-medium text-espresso/80"
+          className="mb-2 block font-mono text-sm text-espresso"
         >
           {t("subjectLabel")}
         </label>
@@ -72,7 +72,7 @@ export function ContactForm() {
       <div>
         <label
           htmlFor="contact-message"
-          className="mb-2 block font-body text-sm font-medium text-espresso/80"
+          className="mb-2 block font-mono text-sm text-espresso"
         >
           {t("messageLabel")}
         </label>

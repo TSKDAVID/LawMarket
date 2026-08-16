@@ -25,6 +25,7 @@ export function Footer() {
   const tNav = useTranslations("common.nav");
 
   const platformLinks = [
+    { href: "/", label: tNav("home") },
     { href: "/services", label: tNav("services") },
     { href: "/lawyers", label: tNav("lawyers") },
     { href: "/how-it-works", label: tNav("howItWorks") },

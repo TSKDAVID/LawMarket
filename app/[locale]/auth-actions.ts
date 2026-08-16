@@ -39,11 +39,24 @@ export async function signIn(
     return { error: mapAuthError(error) };
   }
 
+  const userId = (await supabase.auth.getUser()).data.user?.id ?? "";
   const { data } = await supabase
     .from("profiles")
     .select("role")
-    .eq("id", (await supabase.auth.getUser()).data.user?.id ?? "")
+    .eq("id", userId)
     .maybeSingle();
+
+  if (data?.role === "lawyer") {
+    const { data: lawyer } = await supabase
+      .from("lawyers")
+      .select("suspended")
+      .eq("profile_id", userId)
+      .maybeSingle();
+    if (lawyer?.suspended) {
+      await supabase.auth.signOut();
+      return { error: "accountSuspended" };
+    }
+  }
 
   revalidatePath("/", "layout");
   redirect(

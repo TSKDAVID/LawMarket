@@ -60,6 +60,10 @@ export async function requireLawyer(locale: string): Promise<SessionUser> {
   if (!user) redirect(`/${locale}/login/`);
   const role = user.profile?.role;
   if (role !== "lawyer" && role !== "admin") redirect(`/${locale}/`);
+  if (role === "lawyer") {
+    const lawyer = await getOwnLawyer();
+    if (lawyer?.suspended) redirect(`/${locale}/login/`);
+  }
   return user;
 }
 

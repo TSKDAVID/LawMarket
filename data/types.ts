@@ -26,6 +26,8 @@ export type Service = {
   durationMinutes: number | null;
   lawyerId: string;
   popular?: boolean;
+  viewCount?: number;
+  purchaseCount?: number;
   includes_en?: string[];
   includes_ka?: string[];
   faq_en?: ServiceFaq[];

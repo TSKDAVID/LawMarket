@@ -1,6 +1,7 @@
 import "server-only";
 
 import { createAnonClient } from "@/lib/supabase/server";
+import { sortByPopularity } from "@/data/popularity";
 import type {
   Category,
   Lawyer,
@@ -94,6 +95,8 @@ function mapService(row: ServiceRow): Service {
     currency: "GEL",
     durationMinutes: row.duration_minutes,
     popular: row.popular,
+    viewCount: Number(row.view_count ?? 0),
+    purchaseCount: Number(row.purchase_count ?? 0),
     includes_en: row.includes_en?.length ? row.includes_en : undefined,
     includes_ka: row.includes_ka?.length ? row.includes_ka : undefined,
     faq_en: mapFaq(row.faq_en),
@@ -164,15 +167,31 @@ export async function getServices(): Promise<Service[]> {
   return (data ?? []).map(mapService);
 }
 
-export async function getPopularServices(): Promise<Service[]> {
+export async function getPopularServices(limit = 6): Promise<Service[]> {
   const supabase = createAnonClient();
-  const { data } = await supabase
+  const ranked = await supabase
     .from("services")
     .select("*")
     .eq("published", true)
-    .eq("popular", true)
-    .order("sort_order");
-  return (data ?? []).map(mapService);
+    .order("purchase_count", { ascending: false })
+    .order("view_count", { ascending: false })
+    .order("sort_order", { ascending: true })
+    .limit(limit);
+
+  if (!ranked.error) {
+    return (ranked.data ?? []).map(mapService);
+  }
+
+  return sortByPopularity(await getServices()).slice(0, limit);
+}
+
+export async function recordServiceView(serviceId: string) {
+  try {
+    const supabase = createAnonClient();
+    await supabase.rpc("record_service_view", { p_service_id: serviceId });
+  } catch {
+    // Ranking still works from purchases; a missing RPC must not break the page.
+  }
 }
 
 export async function getServiceBySlug(
