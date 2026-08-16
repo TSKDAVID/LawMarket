@@ -30,8 +30,12 @@ import { formatPrice } from "@/lib/utils";
 import type { Locale } from "@/i18n/routing";
 
 export async function generateStaticParams() {
-  const services = await getServices();
-  return services.map((service) => ({ slug: service.slug }));
+  try {
+    const services = await getServices();
+    return services.map((service) => ({ slug: service.slug }));
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({

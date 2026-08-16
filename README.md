@@ -60,12 +60,19 @@ signups stay clients. Lawyer logins are created from `/admin/lawyers`.
 
 ## Deployment
 
-Vercel builds and serves the app on every push to `main`. Set the same three
-environment variables in **Project → Settings → Environment Variables**.
+Vercel builds and serves the app on every push to `main`. In the Vercel
+project:
+
+1. Framework Preset must be **Next.js**
+2. Output Directory must be **empty** (not `out` — that was the old static export)
+3. Set the same three environment variables for Production and Preview
 
 The site is server-rendered rather than statically exported, so content edited
 in Supabase appears without a rebuild, and admin routes are authorized before
 any HTML is sent.
+
+In Supabase → Authentication → URL configuration, set the site URL to
+`https://lawmarket.ge` and add `https://lawmarket.ge/**` to redirect URLs.
 
 ## Stack
 

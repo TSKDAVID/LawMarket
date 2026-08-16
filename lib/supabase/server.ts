@@ -7,12 +7,25 @@ import type { Database } from "@/lib/supabase/database.types";
  * Server Supabase client bound to the request cookies. Use this in server
  * components, server actions, and route handlers.
  */
+function publicEnv() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !key) {
+    throw new Error(
+      "Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY"
+    );
+  }
+  return { url, key };
+}
+
+/** Cookie-bound client for server components, actions, and route handlers. */
 export async function createClient() {
   const cookieStore = await cookies();
+  const { url, key } = publicEnv();
 
   return createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    url,
+    key,
     {
       cookies: {
         getAll() {
@@ -38,9 +51,10 @@ export async function createClient() {
  * (generateStaticParams, sitemap, revalidated pages). Never sees a session.
  */
 export function createAnonClient() {
+  const { url, key } = publicEnv();
   return createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    url,
+    key,
     {
       cookies: {
         getAll() {

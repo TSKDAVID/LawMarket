@@ -3,6 +3,16 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
+if (
+  process.env.VERCEL &&
+  (!process.env.NEXT_PUBLIC_SUPABASE_URL ||
+    !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+) {
+  throw new Error(
+    "Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in Vercel → Project Settings → Environment Variables (Production + Preview), then redeploy. Do not set Output Directory to `out` — this is a Next.js server app, not a static export."
+  );
+}
+
 /**
  * Server-rendered on Vercel. Content lives in Supabase and has to be editable
  * without a rebuild, and admin authorization has to be enforced before any

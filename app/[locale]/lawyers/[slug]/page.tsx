@@ -30,8 +30,12 @@ import type { Locale } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
 export async function generateStaticParams() {
-  const lawyers = await getLawyers();
-  return lawyers.map((lawyer) => ({ slug: lawyer.slug }));
+  try {
+    const lawyers = await getLawyers();
+    return lawyers.map((lawyer) => ({ slug: lawyer.slug }));
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({
