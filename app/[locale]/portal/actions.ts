@@ -89,6 +89,38 @@ export async function updateOwnProfile(
   return { error: null, ok: true };
 }
 
+export async function updatePassword(
+  _prev: PortalState,
+  formData: FormData
+): Promise<PortalState> {
+  const locale = localeOf(formData);
+  await requireLawyer(locale);
+
+  const current = String(formData.get("current_password") ?? "");
+  const next = String(formData.get("new_password") ?? "");
+  const confirm = String(formData.get("confirm_password") ?? "");
+  if (!current || !next || !confirm) return { error: "missingFields" };
+  if (next.length < 8) return { error: "weakPassword" };
+  if (next !== confirm) return { error: "passwordMismatch" };
+  if (next === current) return { error: "passwordUnchanged" };
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user?.email) return { error: "saveFailed" };
+
+  const { error: check } = await supabase.auth.signInWithPassword({
+    email: user.email,
+    password: current,
+  });
+  if (check) return { error: "currentPasswordWrong" };
+
+  const { error } = await supabase.auth.updateUser({ password: next });
+  if (error) return { error: "saveFailed" };
+  return { error: null, ok: true };
+}
+
 export async function submitServiceRequest(
   _prev: PortalState,
   formData: FormData

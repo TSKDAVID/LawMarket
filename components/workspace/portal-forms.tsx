@@ -13,6 +13,7 @@ import {
   submitCaseRequest,
   submitServiceRequest,
   updateOwnProfile,
+  updatePassword,
   type PortalState,
 } from "@/app/[locale]/portal/actions";
 import type { Category } from "@/data/types";
@@ -125,6 +126,59 @@ export function ProfileForm({ lawyer }: { lawyer: LawyerRow }) {
         />
       </Field>
       <SubmitButton label={t("saveProfile")} />
+    </form>
+  );
+}
+
+export function PasswordForm() {
+  const t = useTranslations("portal");
+  const [state, action] = useActionState<PortalState, FormData>(
+    updatePassword,
+    { error: null }
+  );
+
+  return (
+    <form action={action} className="mt-12 space-y-5 border-t border-espresso/15 pt-10">
+      <LocaleFields />
+      <h2 className="font-heading text-xl font-semibold text-espresso">
+        {t("passwordTitle")}
+      </h2>
+      <p className="font-body text-sm text-espresso/75">{t("passwordBody")}</p>
+      <FormMessage
+        error={state.error ? t(state.error) : null}
+        ok={state.ok}
+        okText={t("passwordChanged")}
+      />
+      <Field id="current_password" label={t("currentPassword")}>
+        <Input
+          id="current_password"
+          name="current_password"
+          type="password"
+          autoComplete="current-password"
+          required
+        />
+      </Field>
+      <Field id="new_password" label={t("newPassword")}>
+        <Input
+          id="new_password"
+          name="new_password"
+          type="password"
+          autoComplete="new-password"
+          minLength={8}
+          required
+        />
+      </Field>
+      <Field id="confirm_password" label={t("confirmPassword")}>
+        <Input
+          id="confirm_password"
+          name="confirm_password"
+          type="password"
+          autoComplete="new-password"
+          minLength={8}
+          required
+        />
+      </Field>
+      <SubmitButton label={t("savePassword")} />
     </form>
   );
 }

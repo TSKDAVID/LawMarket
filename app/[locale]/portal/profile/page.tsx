@@ -1,6 +1,6 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getOwnLawyer } from "@/lib/auth";
-import { ProfileForm } from "@/components/workspace/portal-forms";
+import { ProfileForm, PasswordForm } from "@/components/workspace/portal-forms";
 import type { Locale } from "@/i18n/routing";
 
 export default async function PortalProfilePage({
@@ -23,6 +23,7 @@ export default async function PortalProfilePage({
         {t("profileTitle")}
       </h1>
       <ProfileForm lawyer={lawyer} />
+      <PasswordForm />
     </div>
   );
 }
