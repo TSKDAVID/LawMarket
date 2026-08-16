@@ -3,6 +3,10 @@ import "server-only";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { ProfileRow, UserRole } from "@/lib/supabase/database.types";
+import { homePathForRole } from "@/lib/auth-paths";
+
+export type { UserRole };
+export { homePathForRole };
 
 export type SessionUser = {
   id: string;
@@ -76,9 +80,3 @@ export async function getOwnLawyer() {
   return data;
 }
 
-/** Where a user belongs after signing in. */
-export function homePathForRole(role: UserRole | null | undefined) {
-  if (role === "admin") return "/admin";
-  if (role === "lawyer") return "/portal";
-  return "/";
-}

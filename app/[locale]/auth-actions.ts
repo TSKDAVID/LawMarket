@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { homePathForRole } from "@/lib/auth";
+import { homePathForRole, mapAuthError, pathFromNextParam } from "@/lib/auth-paths";
 import { routing } from "@/i18n/routing";
 
 export type AuthState = { error: string | null };
@@ -15,13 +15,9 @@ function safeLocale(value: FormDataEntryValue | null) {
     : routing.defaultLocale;
 }
 
-/**
- * `next` comes from a query string, so it is only honoured when it is a
- * relative path — otherwise it is an open redirect waiting to happen.
- */
-function safeNext(value: FormDataEntryValue | null) {
-  const next = String(value ?? "");
-  return next.startsWith("/") && !next.startsWith("//") ? next : null;
+function localePath(locale: string, path: string) {
+  if (path === "/") return `/${locale}/`;
+  return `/${locale}${path.endsWith("/") ? path : `${path}/`}`;
 }
 
 export async function signIn(
@@ -29,7 +25,7 @@ export async function signIn(
   formData: FormData
 ): Promise<AuthState> {
   const locale = safeLocale(formData.get("locale"));
-  const email = String(formData.get("email") ?? "").trim();
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const password = String(formData.get("password") ?? "");
 
   if (!email || !password) {
@@ -39,7 +35,7 @@ export async function signIn(
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) {
-    return { error: "invalidCredentials" };
+    return { error: mapAuthError(error) };
   }
 
   const { data } = await supabase
@@ -50,8 +46,11 @@ export async function signIn(
 
   revalidatePath("/", "layout");
   redirect(
-    safeNext(formData.get("next")) ??
-      `/${locale}${homePathForRole(data?.role)}`.replace(/\/+$/, "/")
+    localePath(
+      locale,
+      pathFromNextParam(String(formData.get("next") ?? "")) ??
+        homePathForRole(data?.role)
+    )
   );
 }
 
@@ -61,13 +60,13 @@ export async function signUp(
 ): Promise<AuthState> {
   const locale = safeLocale(formData.get("locale"));
   const fullName = String(formData.get("name") ?? "").trim();
-  const email = String(formData.get("email") ?? "").trim();
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const password = String(formData.get("password") ?? "");
 
   if (!email || !password || !fullName) {
     return { error: "missingFields" };
   }
-    if (password.length < 8) {
+  if (password.length < 8) {
     return { error: "weakPassword" };
   }
   if (password !== String(formData.get("confirmPassword") ?? "")) {
@@ -75,8 +74,6 @@ export async function signUp(
   }
 
   const supabase = await createClient();
-  // Role is deliberately absent from the payload. The database trigger
-  // assigns 'client', except the first account which becomes admin.
   const { error } = await supabase.auth.signUp({
     email,
     password,
@@ -98,9 +95,7 @@ export async function signUp(
     .maybeSingle();
 
   revalidatePath("/", "layout");
-  redirect(
-    `/${locale}${homePathForRole(data?.role)}`.replace(/\/+$/, "/")
-  );
+  redirect(localePath(locale, homePathForRole(data?.role)));
 }
 
 export async function signOut(formData: FormData) {

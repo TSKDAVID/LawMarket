@@ -229,7 +229,9 @@
       "weakPassword": "Use at least 8 characters.",
       "passwordMismatch": "The two passwords don't match.",
       "emailTaken": "An account with that email already exists.",
-      "signUpFailed": "We couldn't create the account. Please try again."
+      "signUpFailed": "We couldn't create the account. Please try again.",
+      "emailNotConfirmed": "This email is not confirmed yet. In Supabase open Authentication → Users, select the user, and confirm the email — or turn off Confirm email under Providers → Email.",
+      "signInFailed": "Sign in failed. Try again."
     }
   },
   "start": {
