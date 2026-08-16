@@ -11,12 +11,15 @@
   /* Brand burgundy scores 1.5:1 on espresso — unreadable. This is the
      accent to use for burgundy-coded text on dark surfaces (5.2:1). */
   --color-burgundy-light: #c4707f;
-  --color-brass: #8a6d3b;
+  /* Deepened from #8a6d3b: the lighter brass scored 4.4:1 on parchment,
+     which small-caps mono labels failed. This clears 5.7:1. */
+  --color-brass: #7a5c2c;
 
   --accent-action: #6b1423;
-  --accent-trust: #8a6d3b;
+  --accent-trust: #7a5c2c;
   --surface-dark: #1c1210;
-  --text-muted: rgba(28, 18, 16, 0.5);
+  /* Secondary ink: 5.5:1 on cream — the floor for muted body copy. */
+  --text-muted: rgba(28, 18, 16, 0.65);
 
   --text-display: 3rem;
   --text-title: 1.875rem;

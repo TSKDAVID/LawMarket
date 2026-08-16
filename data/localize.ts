@@ -1,4 +1,4 @@
-import type { Category, Lawyer, Locale, Review, Service, ServiceFaq } from "./types";
+import type { Category, Lawyer, LawyerCase, Locale, Review, Service, ServiceFaq } from "./types";
 
 export function localizedCategoryName(category: Category, locale: Locale) {
   return locale === "ka" ? category.name_ka : category.name_en;
@@ -42,4 +42,25 @@ export function localizedServiceFaq(
   locale: Locale
 ): ServiceFaq[] {
   return locale === "ka" ? (service.faq_ka ?? []) : (service.faq_en ?? []);
+}
+
+function pickLocalized(
+  locale: Locale,
+  ka: string,
+  en: string
+) {
+  if (locale === "ka") return ka;
+  return en.trim() ? en : ka;
+}
+
+export function localizedCaseTitle(item: LawyerCase, locale: Locale) {
+  return pickLocalized(locale, item.title_ka, item.title_en);
+}
+
+export function localizedCaseDescription(item: LawyerCase, locale: Locale) {
+  return pickLocalized(locale, item.description_ka, item.description_en);
+}
+
+export function localizedCaseOutcome(item: LawyerCase, locale: Locale) {
+  return pickLocalized(locale, item.outcome_ka, item.outcome_en);
 }

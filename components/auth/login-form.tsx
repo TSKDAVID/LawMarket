@@ -1,23 +1,46 @@
 "use client";
 
-import { type FormEvent } from "react";
-import { useTranslations } from "next-intl";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
+import { useLocale, useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { signIn, type AuthState } from "@/app/[locale]/auth-actions";
 
-export function LoginForm() {
+function SubmitButton({ label }: { label: string }) {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" size="lg" className="w-full" disabled={pending}>
+      {label}
+    </Button>
+  );
+}
+
+export function LoginForm({ next }: { next?: string }) {
   const t = useTranslations("auth");
-
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-  }
+  const locale = useLocale();
+  const [state, formAction] = useActionState<AuthState, FormData>(signIn, {
+    error: null,
+  });
 
   return (
-    <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+    <form action={formAction} className="mt-8 space-y-5">
+      <input type="hidden" name="locale" value={locale} />
+      {next && <input type="hidden" name="next" value={next} />}
+
+      {state.error && (
+        <p
+          role="alert"
+          className="border-l-[3px] border-burgundy bg-burgundy-tint px-4 py-3 font-body text-sm text-burgundy-dark"
+        >
+          {t(`errors.${state.error}`)}
+        </p>
+      )}
+
       <div>
         <label
           htmlFor="login-email"
-          className="mb-2 block font-body text-sm font-medium text-espresso/70"
+          className="mb-2 block font-body text-sm font-medium text-espresso/80"
         >
           {t("emailLabel")}
         </label>
@@ -32,7 +55,7 @@ export function LoginForm() {
       <div>
         <label
           htmlFor="login-password"
-          className="mb-2 block font-body text-sm font-medium text-espresso/70"
+          className="mb-2 block font-body text-sm font-medium text-espresso/80"
         >
           {t("passwordLabel")}
         </label>
@@ -45,9 +68,7 @@ export function LoginForm() {
         />
       </div>
 
-      <Button type="submit" size="lg" className="w-full">
-        {t("loginButton")}
-      </Button>
+      <SubmitButton label={t("loginButton")} />
     </form>
   );
 }

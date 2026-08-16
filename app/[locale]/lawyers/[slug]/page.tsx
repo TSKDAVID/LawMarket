@@ -10,6 +10,7 @@ import { CategoryIcon } from "@/components/shared/category-icon";
 import { CompactServiceList } from "@/components/shared/compact-service-list";
 import {
   getCategoryById,
+  getCasesByLawyer,
   getLawyerBySlug,
   getLawyers,
   getReviewsByLawyer,
@@ -17,6 +18,9 @@ import {
 } from "@/data/queries";
 import {
   localizedCategoryName,
+  localizedCaseDescription,
+  localizedCaseOutcome,
+  localizedCaseTitle,
   localizedLawyerBio,
   localizedLawyerHeadline,
   localizedReviewQuote,
@@ -57,9 +61,10 @@ export default async function LawyerProfilePage({
   const lawyer = await getLawyerBySlug(slug);
   if (!lawyer) notFound();
 
-  const [services, reviews, categoryList, t, tCommon] = await Promise.all([
+  const [services, reviews, cases, categoryList, t, tCommon] = await Promise.all([
     getServicesByLawyer(lawyer.id),
     getReviewsByLawyer(lawyer.id),
+    getCasesByLawyer(lawyer.id),
     Promise.all(lawyer.practiceAreaIds.map((id) => getCategoryById(id))),
     getTranslations("lawyerProfile"),
     getTranslations("common"),
@@ -72,7 +77,7 @@ export default async function LawyerProfilePage({
         <div className="page-shell py-10">
           <Link
             href="/lawyers"
-            className="inline-flex items-center gap-2 font-body text-sm font-medium text-cream/50 transition-colors hover:text-cream"
+            className="inline-flex items-center gap-2 font-body text-sm font-medium text-cream/70 transition-colors hover:text-cream"
           >
             <ArrowLeft className="h-4 w-4" />
             {tCommon("backToLawyers")}
@@ -96,10 +101,10 @@ export default async function LawyerProfilePage({
                   <Badge variant="burgundy">{tCommon("verified")}</Badge>
                 )}
               </div>
-              <p className="mt-1 font-body text-cream/55">
+              <p className="mt-1 font-body text-cream/72">
                 {localizedLawyerHeadline(lawyer, loc)}
               </p>
-              <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 font-body text-sm text-cream/45">
+              <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 font-body text-sm text-cream/65">
                 <span className="flex items-center gap-1.5">
                   <MapPin className="h-4 w-4" />
                   {lawyer.city}
@@ -124,7 +129,7 @@ export default async function LawyerProfilePage({
           <h2 className="font-heading text-lg font-semibold text-espresso">
             {t("about")}
           </h2>
-          <p className="mt-3 font-body leading-relaxed text-espresso/70">
+          <p className="mt-3 font-body leading-relaxed text-espresso/80">
             {localizedLawyerBio(lawyer, loc)}
           </p>
 
@@ -135,8 +140,46 @@ export default async function LawyerProfilePage({
             {services.length > 0 ? (
               <CompactServiceList services={services} />
             ) : (
-              <p className="mt-3 font-body text-sm text-espresso/50">
+              <p className="mt-3 font-body text-sm text-espresso/65">
                 {t("noServices")}
+              </p>
+            )}
+          </div>
+
+          <div className="mt-10">
+            <h2 className="font-heading text-lg font-semibold text-espresso">
+              {t("cases")}
+            </h2>
+            {cases.length > 0 ? (
+              <div className="mt-5 space-y-4">
+                {cases.map((item) => (
+                  <Card key={item.id} className="bg-white/60">
+                    <CardContent>
+                      <div className="flex items-baseline justify-between gap-4">
+                        <p className="font-heading font-semibold text-espresso">
+                          {localizedCaseTitle(item, loc)}
+                        </p>
+                        {item.year && (
+                          <p className="font-mono text-xs text-espresso/60">
+                            {item.year}
+                          </p>
+                        )}
+                      </div>
+                      <p className="mt-3 font-body text-sm leading-relaxed text-espresso/80">
+                        {localizedCaseDescription(item, loc)}
+                      </p>
+                      {localizedCaseOutcome(item, loc) && (
+                        <p className="mt-3 font-body text-sm text-espresso/70">
+                          {localizedCaseOutcome(item, loc)}
+                        </p>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <p className="mt-3 font-body text-sm text-espresso/65">
+                {t("noCases")}
               </p>
             )}
           </div>
@@ -168,10 +211,10 @@ export default async function LawyerProfilePage({
                           ))}
                         </div>
                       </div>
-                      <p className="mt-1 font-body text-xs text-espresso/45">
+                      <p className="mt-1 font-body text-xs text-espresso/60">
                         {localizedReviewRole(review, loc)}
                       </p>
-                      <p className="mt-3 font-body text-sm leading-relaxed text-espresso/70">
+                      <p className="mt-3 font-body text-sm leading-relaxed text-espresso/80">
                         &ldquo;{localizedReviewQuote(review, loc)}&rdquo;
                       </p>
                     </CardContent>
@@ -179,7 +222,7 @@ export default async function LawyerProfilePage({
                 ))}
               </div>
             ) : (
-              <p className="mt-3 font-body text-sm text-espresso/50">
+              <p className="mt-3 font-body text-sm text-espresso/65">
                 {t("noReviews")}
               </p>
             )}
@@ -189,7 +232,7 @@ export default async function LawyerProfilePage({
         <div className="lg:col-span-1">
           <Card className="bg-white/70">
             <CardContent>
-              <h2 className="font-heading text-sm font-semibold uppercase tracking-wide text-espresso/70">
+              <h2 className="font-heading text-sm font-semibold uppercase tracking-wide text-espresso/80">
                 {t("practiceAreas")}
               </h2>
               <div className="mt-3 flex flex-wrap gap-2">
@@ -201,8 +244,8 @@ export default async function LawyerProfilePage({
                 ))}
               </div>
 
-              <div className="mt-6 flex items-start gap-2 rounded-xl bg-cream-muted/70 p-4 font-body text-xs leading-relaxed text-espresso/55">
-                <MessageCircle className="mt-0.5 h-4 w-4 shrink-0 text-espresso/40" />
+              <div className="mt-6 flex items-start gap-2 rounded-xl bg-cream-muted/70 p-4 font-body text-xs leading-relaxed text-espresso/70">
+                <MessageCircle className="mt-0.5 h-4 w-4 shrink-0 text-espresso/55" />
                 {t("contactNote")}
               </div>
             </CardContent>

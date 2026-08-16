@@ -39,7 +39,7 @@ export default async function AboutPage({
           <h2 className="font-heading text-2xl font-semibold text-espresso">
             {t("missionTitle")}
           </h2>
-          <p className="mt-4 font-body leading-relaxed text-espresso/65">
+          <p className="mt-4 font-body leading-relaxed text-espresso/80">
             {t("missionText")}
           </p>
         </div>
@@ -57,7 +57,7 @@ export default async function AboutPage({
                 <h3 className="mt-4 font-heading text-lg font-semibold text-espresso">
                   {value.title}
                 </h3>
-                <p className="mt-2 font-body text-sm leading-relaxed text-espresso/60">
+                <p className="mt-2 font-body text-sm leading-relaxed text-espresso/75">
                   {value.text}
                 </p>
               </CardContent>

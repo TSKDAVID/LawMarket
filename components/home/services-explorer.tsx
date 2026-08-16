@@ -159,7 +159,7 @@ function FilterDropdown({
       >
         <span
           id={labelId}
-          className="block font-mono text-[10px] uppercase tracking-[0.16em] text-espresso/50"
+          className="block font-mono text-[10px] uppercase tracking-[0.16em] text-espresso/65"
         >
           {label}
         </span>
@@ -170,7 +170,7 @@ function FilterDropdown({
           <ChevronDown
             aria-hidden="true"
             className={cn(
-              "h-3.5 w-3.5 shrink-0 text-espresso/45 transition-transform",
+              "h-3.5 w-3.5 shrink-0 text-espresso/60 transition-transform",
               open && "rotate-180"
             )}
           />
@@ -328,10 +328,10 @@ export function ServicesExplorer({
           <div className="border-x border-espresso/15">
             {/* Row 1 — file header: tagline left, attorney annotation right */}
             <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-1 border-b border-espresso/15 px-4 py-3 sm:px-6">
-              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-espresso/55">
+              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-espresso/70">
                 {tCommon("tagline")}
               </p>
-              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-espresso/55">
+              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-espresso/70">
                 {t("attorneyPrompt")}{" "}
                 <Link
                   href="/signup"
@@ -350,7 +350,7 @@ export function ServicesExplorer({
                   accent: (chunks) => <>{chunks}</>,
                 })}
               </h1>
-              <p className="animate-fade-up mt-6 max-w-xl border-l border-espresso/25 pl-4 font-body text-base text-espresso/60 sm:text-lg">
+              <p className="animate-fade-up mt-6 max-w-xl border-l border-espresso/25 pl-4 font-body text-base text-espresso/75 sm:text-lg">
                 {t("heroSubtitle")}
               </p>
             </div>
@@ -358,7 +358,7 @@ export function ServicesExplorer({
             {/* Row 3 — search console */}
             <div className="px-4 py-8 sm:px-6 sm:py-10">
               <div className="lg:w-[68%]">
-                <p className="animate-fade-up mb-3 font-mono text-xs uppercase tracking-[0.16em] text-espresso/60">
+                <p className="animate-fade-up mb-3 font-mono text-xs uppercase tracking-[0.16em] text-espresso/75">
                   {t("proofLine", {
                     services: services.length,
                     lawyers: lawyers.length,
@@ -396,14 +396,14 @@ export function ServicesExplorer({
                         aria-expanded={showSuggestions}
                         aria-controls="hero-search-suggestions"
                         aria-autocomplete="list"
-                        className="h-16 w-full min-w-0 rounded-none border-0 bg-transparent px-4 font-body text-base text-espresso outline-none placeholder:text-espresso/40 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-burgundy sm:px-5 sm:text-lg"
+                        className="h-16 w-full min-w-0 rounded-none border-0 bg-transparent px-4 font-body text-base text-espresso outline-none placeholder:text-espresso/55 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-burgundy sm:px-5 sm:text-lg"
                       />
                       {query && (
                         <button
                           type="button"
                           onClick={() => setQuery("")}
                           aria-label="Clear search"
-                          className="flex w-10 shrink-0 items-center justify-center rounded-none text-espresso/40 transition-colors hover:text-espresso focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-burgundy"
+                          className="flex w-10 shrink-0 items-center justify-center rounded-none text-espresso/55 transition-colors hover:text-espresso focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-burgundy"
                         >
                           <X className="h-4 w-4" />
                         </button>
@@ -478,7 +478,7 @@ export function ServicesExplorer({
                                       {localizedServiceTitle(service, locale)}
                                     </span>
                                     {category && (
-                                      <span className="block font-mono text-[10px] uppercase tracking-[0.12em] text-espresso/45">
+                                      <span className="block font-mono text-[10px] uppercase tracking-[0.12em] text-espresso/60">
                                         {localizedCategoryName(
                                           category,
                                           locale
@@ -495,7 +495,7 @@ export function ServicesExplorer({
                           })}
                         </ul>
                       ) : (
-                        <p className="px-4 py-4 font-body text-sm text-espresso/50 sm:px-5">
+                        <p className="px-4 py-4 font-body text-sm text-espresso/65 sm:px-5">
                           {t("noResults")}
                         </p>
                       )}
@@ -528,7 +528,7 @@ export function ServicesExplorer({
               <h2 className="font-heading text-2xl font-semibold text-espresso sm:text-3xl">
                 {isFiltering ? t("searchResultsTitle") : t("popularServicesTitle")}
               </h2>
-              <p className="mt-1 font-body text-sm text-espresso/50">
+              <p className="mt-1 font-body text-sm text-espresso/65">
                 {isFiltering
                   ? tServices("resultsCount", { count: filteredServices.length })
                   : t("popularServicesSubtitle")}
@@ -555,7 +555,7 @@ export function ServicesExplorer({
                   "inline-flex shrink-0 items-center gap-1.5 rounded-none px-4 py-2.5 font-body text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-burgundy",
                   activeCategory === null
                     ? "bg-espresso text-cream"
-                    : "text-espresso/60 hover:bg-espresso/5 hover:text-espresso"
+                    : "text-espresso/75 hover:bg-espresso/5 hover:text-espresso"
                 )}
               >
                 {tCommon("all")}
@@ -572,7 +572,7 @@ export function ServicesExplorer({
                       "inline-flex shrink-0 items-center gap-1.5 rounded-none px-4 py-2.5 font-body text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-burgundy",
                       active
                         ? "bg-espresso text-cream"
-                        : "text-espresso/60 hover:bg-espresso/5 hover:text-espresso"
+                        : "text-espresso/75 hover:bg-espresso/5 hover:text-espresso"
                     )}
                   >
                     <CategoryIcon name={category.icon} className="h-3.5 w-3.5" />
@@ -608,7 +608,7 @@ export function ServicesExplorer({
             </div>
           ) : (
             <div className="mt-5 rounded-none border border-espresso/20 bg-parchment px-6 py-14 text-center">
-              <p className="font-body text-espresso/50">{t("noResults")}</p>
+              <p className="font-body text-espresso/65">{t("noResults")}</p>
             </div>
           )}
         </div>

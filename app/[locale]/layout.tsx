@@ -10,12 +10,20 @@ import { GlobalBanner } from "@/components/layout/global-banner";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { IntlProvider } from "@/components/providers/intl-provider";
+import { getSessionUser } from "@/lib/auth";
 import "../globals.css";
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
 };
+
+/**
+ * Catalog and site copy live in Supabase. Pages are cached and refreshed at
+ * most once a minute; admin writes additionally revalidate their paths, so
+ * edits normally appear immediately.
+ */
+export const revalidate = 60;
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -58,6 +66,7 @@ export default async function LocaleLayout({
 
   setRequestLocale(locale as Locale);
   const messages = getMessagesForLocale(locale as Locale);
+  const user = await getSessionUser();
 
   return (
     <html lang={locale} data-locale={locale} data-scroll-behavior="smooth">
@@ -73,7 +82,11 @@ export default async function LocaleLayout({
       <body className="flex min-h-screen flex-col bg-cream font-body text-espresso antialiased">
         <IntlProvider locale={locale} messages={messages}>
           <GlobalBanner />
-          <Header />
+          <Header
+            signedIn={Boolean(user)}
+            role={user?.profile?.role ?? null}
+            label={user?.profile?.full_name ?? user?.email ?? null}
+          />
           <main className="flex-1">{children}</main>
           <Footer />
         </IntlProvider>

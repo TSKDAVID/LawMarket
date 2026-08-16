@@ -16,7 +16,7 @@ export function CompactServiceList({ services }: CompactServiceListProps) {
 
   if (services.length === 0) {
     return (
-      <p className="font-body text-sm text-espresso/50">{t("noServices")}</p>
+      <p className="font-body text-sm text-espresso/65">{t("noServices")}</p>
     );
   }
 
@@ -33,7 +33,7 @@ export function CompactServiceList({ services }: CompactServiceListProps) {
                 {localizedServiceTitle(service, locale)}
               </p>
               {service.durationMinutes && (
-                <p className="mt-0.5 font-body text-xs text-espresso/45">
+                <p className="mt-0.5 font-body text-xs text-espresso/60">
                   {service.durationMinutes} min
                 </p>
               )}

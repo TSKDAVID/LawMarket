@@ -1,49 +1,45 @@
 "use client";
 
-import { type FormEvent } from "react";
-import { useTranslations } from "next-intl";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
+import { useLocale, useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { signUp, type AuthState } from "@/app/[locale]/auth-actions";
+
+function SubmitButton({ label }: { label: string }) {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" size="lg" className="w-full" disabled={pending}>
+      {label}
+    </Button>
+  );
+}
 
 export function SignupForm() {
   const t = useTranslations("auth");
-
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-  }
+  const locale = useLocale();
+  const [state, formAction] = useActionState<AuthState, FormData>(signUp, {
+    error: null,
+  });
 
   return (
-    <form onSubmit={handleSubmit} className="mt-8 space-y-5">
-      <div>
-        <p className="mb-2 font-body text-sm font-medium text-espresso/70">
-          {t("roleLabel")}
+    <form action={formAction} className="mt-8 space-y-5">
+      <input type="hidden" name="locale" value={locale} />
+
+      {state.error && (
+        <p
+          role="alert"
+          className="border-l-[3px] border-burgundy bg-burgundy-tint px-4 py-3 font-body text-sm text-burgundy-dark"
+        >
+          {t(`errors.${state.error}`)}
         </p>
-        <div className="grid grid-cols-2 gap-3">
-          <label className="cursor-pointer">
-            <input
-              type="radio"
-              name="role"
-              value="client"
-              defaultChecked
-              className="peer sr-only"
-            />
-            <span className="block rounded-xl border border-espresso/15 px-3 py-3 text-center font-body text-xs font-medium text-espresso/60 transition-colors peer-checked:border-burgundy peer-checked:bg-burgundy-tint peer-checked:text-burgundy-dark">
-              {t("roleClient")}
-            </span>
-          </label>
-          <label className="cursor-pointer">
-            <input type="radio" name="role" value="lawyer" className="peer sr-only" />
-            <span className="block rounded-xl border border-espresso/15 px-3 py-3 text-center font-body text-xs font-medium text-espresso/60 transition-colors peer-checked:border-burgundy peer-checked:bg-burgundy-tint peer-checked:text-burgundy-dark">
-              {t("roleLawyer")}
-            </span>
-          </label>
-        </div>
-      </div>
+      )}
 
       <div>
         <label
           htmlFor="signup-name"
-          className="mb-2 block font-body text-sm font-medium text-espresso/70"
+          className="mb-2 block font-body text-sm font-medium text-espresso/80"
         >
           {t("fullNameLabel")}
         </label>
@@ -52,7 +48,7 @@ export function SignupForm() {
       <div>
         <label
           htmlFor="signup-email"
-          className="mb-2 block font-body text-sm font-medium text-espresso/70"
+          className="mb-2 block font-body text-sm font-medium text-espresso/80"
         >
           {t("emailLabel")}
         </label>
@@ -67,7 +63,7 @@ export function SignupForm() {
       <div>
         <label
           htmlFor="signup-password"
-          className="mb-2 block font-body text-sm font-medium text-espresso/70"
+          className="mb-2 block font-body text-sm font-medium text-espresso/80"
         >
           {t("passwordLabel")}
         </label>
@@ -77,12 +73,13 @@ export function SignupForm() {
           type="password"
           name="password"
           autoComplete="new-password"
+          minLength={8}
         />
       </div>
       <div>
         <label
           htmlFor="signup-confirm-password"
-          className="mb-2 block font-body text-sm font-medium text-espresso/70"
+          className="mb-2 block font-body text-sm font-medium text-espresso/80"
         >
           {t("confirmPasswordLabel")}
         </label>
@@ -92,12 +89,11 @@ export function SignupForm() {
           type="password"
           name="confirmPassword"
           autoComplete="new-password"
+          minLength={8}
         />
       </div>
 
-      <Button type="submit" size="lg" className="w-full">
-        {t("signupButton")}
-      </Button>
+      <SubmitButton label={t("signupButton")} />
     </form>
   );
 }

@@ -4,31 +4,34 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 /**
- * Static export for GitHub Pages. Custom domains (e.g. lawmarket.ge) serve from
- * the site root, so basePath stays empty. Project-page previews use /LawMarket.
+ * Server-rendered on Vercel. Content lives in Supabase and has to be editable
+ * without a rebuild, and admin authorization has to be enforced before any
+ * HTML is sent — neither is possible with `output: "export"`.
  */
-const isGithubPages = process.env.GITHUB_PAGES === "true";
-const useProjectBasePath =
-  isGithubPages && process.env.CUSTOM_DOMAIN !== "true";
+const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL
+  ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname
+  : undefined;
 
 const nextConfig: NextConfig = {
-  output: "export",
   trailingSlash: true,
   images: {
-    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
+      // Lawyer portraits and post covers served from Supabase Storage.
+      ...(supabaseHost
+        ? ([
+            {
+              protocol: "https" as const,
+              hostname: supabaseHost,
+              pathname: "/storage/v1/object/public/**",
+            },
+          ])
+        : []),
     ],
   },
-  ...(useProjectBasePath
-    ? {
-        basePath: "/LawMarket",
-        assetPrefix: "/LawMarket",
-      }
-    : {}),
 };
 
 export default withNextIntl(nextConfig);

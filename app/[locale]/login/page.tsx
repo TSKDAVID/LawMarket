@@ -17,12 +17,17 @@ export async function generateMetadata({
 
 export default async function LoginPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ next?: string }>;
 }) {
   const { locale } = await params;
+  const { next } = await searchParams;
   setRequestLocale(locale as Locale);
   const t = await getTranslations("auth");
+  const nextPath =
+    next && next.startsWith("/") && !next.startsWith("//") ? next : undefined;
 
   return (
     <div className="flex min-h-[80vh] items-center justify-center bg-cream-muted/40 px-6 py-16">
@@ -32,21 +37,24 @@ export default async function LoginPage({
           <h1 className="mt-4 font-heading text-2xl font-semibold text-espresso">
             {t("loginTitle")}
           </h1>
-          <p className="mt-1 font-body text-sm text-espresso/55">
+          <p className="mt-1 font-body text-sm text-espresso/70">
             {t("loginSubtitle")}
+          </p>
+          <p className="mt-3 max-w-sm font-body text-xs leading-relaxed text-espresso/60">
+            {t("lawyerNote")}
           </p>
         </div>
 
-        <LoginForm />
+        <LoginForm next={nextPath} />
 
-        <p className="mt-6 text-center font-body text-sm text-espresso/55">
+        <p className="mt-6 text-center font-body text-sm text-espresso/70">
           {t("noAccount")}{" "}
           <Link href="/signup" className="font-medium text-burgundy hover:text-burgundy-dark">
             {t("signUpLink")}
           </Link>
         </p>
 
-        <p className="mt-6 border-t border-espresso/8 pt-5 text-center font-body text-xs leading-relaxed text-espresso/40">
+        <p className="mt-6 border-t border-espresso/8 pt-5 text-center font-body text-xs leading-relaxed text-espresso/55">
           {t("note")}
         </p>
       </div>

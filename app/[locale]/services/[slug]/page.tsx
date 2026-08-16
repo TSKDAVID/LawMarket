@@ -9,6 +9,7 @@ import { Avatar } from "@/components/shared/avatar";
 import { CategoryIcon } from "@/components/shared/category-icon";
 import { ServiceCard } from "@/components/shared/service-card";
 import { ConsultationBooking } from "@/components/booking/consultation-booking";
+import { PurchaseButton } from "@/components/purchase/purchase-button";
 import { ServiceFaqList } from "@/components/services/service-faq-list";
 import {
   getCategoryById,
@@ -74,7 +75,7 @@ export default async function ServiceDetailPage({
     <div className="page-shell py-10 lg:py-12">
       <Link
         href="/services"
-        className="inline-flex items-center gap-2 font-body text-sm font-medium text-espresso/50 transition-colors hover:text-burgundy"
+        className="inline-flex items-center gap-2 font-body text-sm font-medium text-espresso/65 transition-colors hover:text-burgundy"
       >
         <ArrowLeft className="h-4 w-4" />
         {tCommon("backToServices")}
@@ -96,7 +97,7 @@ export default async function ServiceDetailPage({
             <h2 className="font-heading text-lg font-semibold text-espresso">
               {t("about")}
             </h2>
-            <p className="mt-3 font-body leading-relaxed text-espresso/50">
+            <p className="mt-3 font-body leading-relaxed text-espresso/65">
               {localizedServiceDescription(service, loc)}
             </p>
           </div>
@@ -110,7 +111,7 @@ export default async function ServiceDetailPage({
                 {includes.map((item) => (
                   <li
                     key={item}
-                    className="flex items-start gap-3 font-body text-sm text-espresso/50"
+                    className="flex items-start gap-3 font-body text-sm text-espresso/65"
                   >
                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-burgundy" />
                     {item}
@@ -135,7 +136,7 @@ export default async function ServiceDetailPage({
         <div className="lg:col-span-1">
           <Card className="sticky top-24 border-espresso/12 bg-white/85">
             <CardContent>
-              <p className="font-body text-sm text-espresso/50">
+              <p className="font-body text-sm text-espresso/65">
                 {tCommon("from")}
               </p>
               <p className="mt-1 font-heading text-3xl font-semibold text-burgundy">
@@ -143,7 +144,7 @@ export default async function ServiceDetailPage({
               </p>
 
               {service.durationMinutes && (
-                <p className="mt-3 flex items-center gap-2 font-body text-sm text-espresso/50">
+                <p className="mt-3 flex items-center gap-2 font-body text-sm text-espresso/65">
                   <Clock className="h-4 w-4" />
                   {t("duration")}: {service.durationMinutes} {tCommon("minutes")}
                 </p>
@@ -163,13 +164,13 @@ export default async function ServiceDetailPage({
                     className="border border-espresso/20 transition-colors group-hover:border-burgundy"
                   />
                   <div>
-                    <p className="font-body text-xs text-espresso/45">
+                    <p className="font-body text-xs text-espresso/60">
                       {t("providedBy")}
                     </p>
                     <p className="font-heading font-semibold text-espresso group-hover:text-burgundy">
                       {lawyer.name}
                     </p>
-                    <p className="font-body text-xs text-espresso/50">
+                    <p className="font-body text-xs text-espresso/65">
                       {localizedLawyerHeadline(lawyer, loc)}
                     </p>
                   </div>
@@ -177,24 +178,39 @@ export default async function ServiceDetailPage({
               )}
 
               {lawyer && (
-                <ConsultationBooking
-                  lawyer={{
-                    id: lawyer.id,
-                    name: lawyer.name,
-                    initials: lawyer.initials,
-                    avatarColor: lawyer.avatarColor,
-                    photoUrl: lawyer.photoUrl,
-                  }}
-                  className="mt-6"
-                />
+                <>
+                  {/* Buy is the primary action; the free call sits under it. */}
+                  <PurchaseButton
+                    serviceTitle={localizedServiceTitle(service, loc)}
+                    price={service.price}
+                    lawyer={{
+                      id: lawyer.id,
+                      name: lawyer.name,
+                      initials: lawyer.initials,
+                      avatarColor: lawyer.avatarColor,
+                      photoUrl: lawyer.photoUrl,
+                    }}
+                    className="mt-6"
+                  />
+                  <ConsultationBooking
+                    lawyer={{
+                      id: lawyer.id,
+                      name: lawyer.name,
+                      initials: lawyer.initials,
+                      avatarColor: lawyer.avatarColor,
+                      photoUrl: lawyer.photoUrl,
+                    }}
+                    className="mt-2.5"
+                  />
+                </>
               )}
 
-              <p className="mt-4 flex items-start gap-2 font-body text-xs leading-relaxed text-espresso/45">
+              <p className="mt-4 flex items-start gap-2 font-body text-xs leading-relaxed text-espresso/60">
                 <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
                 {t("bookingNote")}
               </p>
 
-              <p className="mt-4 flex items-start gap-2 rounded-[var(--radius-control)] bg-cream-muted/60 p-3 font-body text-xs leading-relaxed text-espresso/50">
+              <p className="mt-4 flex items-start gap-2 rounded-[var(--radius-control)] bg-cream-muted/60 p-3 font-body text-xs leading-relaxed text-espresso/65">
                 <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-brass" />
                 {t("guaranteeNote")}
               </p>

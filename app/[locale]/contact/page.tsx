@@ -41,11 +41,11 @@ export default async function ContactPage({
                 <h2 className="font-heading text-lg font-semibold text-espresso">
                   {t("otherWaysTitle")}
                 </h2>
-                <ul className="mt-5 space-y-4 font-body text-sm text-espresso/70">
+                <ul className="mt-5 space-y-4 font-body text-sm text-espresso/80">
                   <li className="flex items-start gap-3">
                     <Mail className="mt-0.5 h-4 w-4 shrink-0 text-burgundy" />
                     <div>
-                      <p className="text-espresso/50">{t("emailUs")}</p>
+                      <p className="text-espresso/65">{t("emailUs")}</p>
                       <a
                         href="mailto:hello@lawmarket.ge"
                         className="font-medium text-espresso hover:text-burgundy"
@@ -57,7 +57,7 @@ export default async function ContactPage({
                   <li className="flex items-start gap-3">
                     <Phone className="mt-0.5 h-4 w-4 shrink-0 text-burgundy" />
                     <div>
-                      <p className="text-espresso/50">{t("callUs")}</p>
+                      <p className="text-espresso/65">{t("callUs")}</p>
                       <a
                         href="tel:+995322000000"
                         className="font-medium text-espresso hover:text-burgundy"

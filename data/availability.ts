@@ -1,11 +1,12 @@
+import { createBrowserClient } from "@supabase/ssr";
 import type { LawyerAvailability } from "./types";
 
 /**
- * Mock lawyer availability.
+ * Lawyer availability, read from Supabase by the booking modal.
  *
- * Swap the body of `getLawyerAvailability` for a real API request later.
- * Callers must depend only on the returned `{ lawyerId, availableDates }`
- * shape — never on how the dates are produced.
+ * Availability is public data, so this uses the anon key directly and is safe
+ * to call from the browser. Callers depend only on the returned
+ * `{ lawyerId, availableDates }` shape — never on where the dates came from.
  */
 
 const HORIZON_DAYS = 14;
@@ -64,11 +65,47 @@ function isSlotInPast(isoDate: string, slot: string, now: Date): boolean {
 }
 
 /**
- * Returns mock availability for a lawyer over the next ~two weeks.
- * Days with no slots are omitted. Remaining days vary in density so the
- * calendar reads like a working diary, not a generated grid.
+ * Real availability for a lawyer, from `lawyer_availability`.
+ *
+ * Until a lawyer has any future dates entered in the admin panel, this falls
+ * back to the generated diary below so the booking flow stays demonstrable.
+ * Delete `generateDemoAvailability` once real schedules are being maintained.
  */
 export async function getLawyerAvailability(
+  lawyerId: string
+): Promise<LawyerAvailability> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (url && key) {
+    const supabase = createBrowserClient(url, key);
+    const today = toISODate(startOfDay(new Date()));
+    const { data } = await supabase
+      .from("lawyer_availability")
+      .select("date, slots")
+      .eq("lawyer_id", lawyerId)
+      .gte("date", today)
+      .order("date");
+
+    if (data && data.length > 0) {
+      const now = new Date();
+      const availableDates = data
+        .map((row) => ({
+          date: row.date,
+          slots: (row.slots ?? []).filter(
+            (slot: string) => !isSlotInPast(row.date, slot, now)
+          ),
+        }))
+        .filter((entry) => entry.slots.length > 0);
+
+      if (availableDates.length > 0) return { lawyerId, availableDates };
+    }
+  }
+
+  return generateDemoAvailability(lawyerId);
+}
+
+async function generateDemoAvailability(
   lawyerId: string
 ): Promise<LawyerAvailability> {
   const now = new Date();

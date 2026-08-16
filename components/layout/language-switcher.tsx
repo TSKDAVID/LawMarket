@@ -52,8 +52,8 @@ export function LanguageSwitcher({
                   ? "bg-cream text-espresso"
                   : "bg-espresso text-cream"
                 : dark
-                  ? "text-cream/60 hover:text-cream"
-                  : "text-espresso/55 hover:text-espresso"
+                  ? "text-cream/75 hover:text-cream"
+                  : "text-espresso/70 hover:text-espresso"
             )}
           >
             {labels[loc] ?? loc.toUpperCase()}

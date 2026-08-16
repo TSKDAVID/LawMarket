@@ -45,7 +45,7 @@ export function SectionHeader({
           <p
             className={cn(
               "font-body text-xs font-medium uppercase tracking-widest",
-              isDark ? "text-cream/45" : "text-espresso/45"
+              isDark ? "text-cream/65" : "text-espresso/60"
             )}
           >
             {eyebrow}
@@ -65,7 +65,7 @@ export function SectionHeader({
             className={cn(
               "mt-2 max-w-xl font-body text-sm leading-relaxed sm:text-base",
               isCentered && "mx-auto",
-              isDark ? "text-cream/50" : "text-espresso/50"
+              isDark ? "text-cream/70" : "text-espresso/65"
             )}
           >
             {subtitle}

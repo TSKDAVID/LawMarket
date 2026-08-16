@@ -56,7 +56,7 @@ function CategoryFilters({
             ? isSidebar
               ? "bg-burgundy text-cream"
               : "bg-espresso text-cream"
-            : "text-espresso/60 hover:bg-espresso/5 hover:text-espresso"
+            : "text-espresso/75 hover:bg-espresso/5 hover:text-espresso"
         )}
       >
         {allLabel}
@@ -73,7 +73,7 @@ function CategoryFilters({
               isSidebar && "w-full",
               active
                 ? "bg-burgundy text-cream"
-                : "text-espresso/60 hover:bg-espresso/5 hover:text-burgundy"
+                : "text-espresso/75 hover:bg-espresso/5 hover:text-burgundy"
             )}
           >
             <CategoryIcon name={category.icon} className="h-4 w-4" />
@@ -156,27 +156,27 @@ export function ServicesCatalog({
         <h1 className="font-heading text-3xl font-semibold text-espresso sm:text-4xl">
           {t("title")}
         </h1>
-        <p className="mt-2 font-body text-base text-espresso/50">
+        <p className="mt-2 font-body text-base text-espresso/65">
           {t("subtitle")}
         </p>
       </div>
 
       <div className="relative">
-        <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-espresso/35" />
+        <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-espresso/50" />
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={t("searchPlaceholder")}
           aria-label={t("searchPlaceholder")}
-          className="h-12 w-full rounded-xl border border-espresso/12 bg-white/90 pl-11 pr-11 font-body text-base text-espresso shadow-sm outline-none transition-colors placeholder:text-espresso/40 focus:border-burgundy"
+          className="h-12 w-full rounded-xl border border-espresso/12 bg-white/90 pl-11 pr-11 font-body text-base text-espresso shadow-sm outline-none transition-colors placeholder:text-espresso/55 focus:border-burgundy"
         />
         {query && (
           <button
             type="button"
             onClick={() => setQuery("")}
             aria-label="Clear search"
-            className="absolute right-3 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-[var(--radius-control)] text-espresso/40 transition-colors hover:bg-espresso/5 hover:text-espresso"
+            className="absolute right-3 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-[var(--radius-control)] text-espresso/55 transition-colors hover:bg-espresso/5 hover:text-espresso"
           >
             <X className="h-4 w-4" />
           </button>
@@ -195,10 +195,10 @@ export function ServicesCatalog({
       </div>
 
       <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-        <p className="font-body text-sm text-espresso/50">
+        <p className="font-body text-sm text-espresso/65">
           {t("resultsCount", { count: filteredServices.length })}
         </p>
-        <label className="flex items-center gap-2 font-body text-sm text-espresso/50">
+        <label className="flex items-center gap-2 font-body text-sm text-espresso/65">
           <span className="sr-only">{t("sortBy")}</span>
           <select
             value={sort}
@@ -215,7 +215,7 @@ export function ServicesCatalog({
       <div className="mt-6 lg:grid lg:grid-cols-12 lg:gap-10">
         <aside className="hidden lg:col-span-3 lg:block">
           <div className="sticky top-24">
-            <p className="font-body text-xs font-medium uppercase tracking-widest text-espresso/45">
+            <p className="font-body text-xs font-medium uppercase tracking-widest text-espresso/60">
               {t("filterByCategory")}
             </p>
             <CategoryFilters
@@ -253,7 +253,7 @@ export function ServicesCatalog({
             </div>
           ) : (
             <div className="rounded-[var(--radius-card)] border border-dashed border-espresso/15 bg-white/50 px-6 py-14 text-center">
-              <p className="font-body text-espresso/50">{t("noResults")}</p>
+              <p className="font-body text-espresso/65">{t("noResults")}</p>
             </div>
           )}
         </div>

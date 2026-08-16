@@ -22,7 +22,7 @@ export function GuaranteeBand() {
             <p className="font-heading text-base font-semibold text-espresso sm:text-lg">
               {t("guaranteeTitle")}
             </p>
-            <p className="mt-0.5 font-body text-sm text-espresso/50">
+            <p className="mt-0.5 font-body text-sm text-espresso/65">
               {t("guaranteeSubtitle")}
             </p>
           </div>

@@ -29,13 +29,13 @@ export function ServiceFaqList({ items }: ServiceFaqListProps) {
               {item.q}
               <ChevronDown
                 className={cn(
-                  "h-5 w-5 shrink-0 text-espresso/40 transition-transform",
+                  "h-5 w-5 shrink-0 text-espresso/55 transition-transform",
                   open && "rotate-180"
                 )}
               />
             </button>
             {open && (
-              <p className="pb-4 font-body text-sm leading-relaxed text-espresso/50">
+              <p className="pb-4 font-body text-sm leading-relaxed text-espresso/65">
                 {item.a}
               </p>
             )}

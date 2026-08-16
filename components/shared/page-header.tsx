@@ -26,7 +26,7 @@ export function PageHeader({
           {subtitle && (
             <p
               className={cn(
-                "mt-3 font-body text-base text-espresso/50 sm:text-lg",
+                "mt-3 font-body text-base text-espresso/65 sm:text-lg",
                 align === "center" && "mx-auto max-w-xl"
               )}
             >

@@ -71,7 +71,7 @@ export function TrustBand({ lawyers }: TrustBandProps) {
         <h2 className="mt-5 max-w-3xl font-heading text-2xl font-semibold leading-snug text-cream sm:text-3xl">
           {t("verifiedLawyersTitle")}
         </h2>
-        <p className="mt-1.5 max-w-xl font-body text-sm text-cream/50">
+        <p className="mt-1.5 max-w-xl font-body text-sm text-cream/70">
           {t("verifiedLawyersSubtitle")}
         </p>
 
@@ -124,7 +124,7 @@ export function TrustBand({ lawyers }: TrustBandProps) {
                         "after:transition-transform after:duration-300 after:ease-out",
                         isActive
                           ? "text-cream after:scale-x-100"
-                          : "text-cream/80 after:scale-x-0 group-hover:text-cream group-hover:after:scale-x-100"
+                          : "text-cream/88 after:scale-x-0 group-hover:text-cream group-hover:after:scale-x-100"
                       )}
                     >
                       {lawyer.name}
@@ -140,7 +140,7 @@ export function TrustBand({ lawyers }: TrustBandProps) {
           aria-live="polite"
           className="flex flex-col gap-2 border-t border-brass/40 pt-3 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6"
         >
-          <p className="min-w-0 font-body text-sm leading-relaxed text-cream/70">
+          <p className="min-w-0 font-body text-sm leading-relaxed text-cream/82">
             <span className="font-heading font-semibold text-cream">
               {active.name}
             </span>

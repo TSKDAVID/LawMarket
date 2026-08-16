@@ -23,7 +23,7 @@ export function ContactForm() {
         <p className="mt-4 font-heading text-lg font-semibold text-espresso">
           {t("successTitle")}
         </p>
-        <p className="mt-2 max-w-sm font-body text-sm text-espresso/55">
+        <p className="mt-2 max-w-sm font-body text-sm text-espresso/70">
           {t("successNote")}
         </p>
       </div>
@@ -36,7 +36,7 @@ export function ContactForm() {
         <div>
           <label
             htmlFor="contact-name"
-            className="mb-2 block font-body text-sm font-medium text-espresso/70"
+            className="mb-2 block font-body text-sm font-medium text-espresso/80"
           >
             {t("nameLabel")}
           </label>
@@ -45,7 +45,7 @@ export function ContactForm() {
         <div>
           <label
             htmlFor="contact-email"
-            className="mb-2 block font-body text-sm font-medium text-espresso/70"
+            className="mb-2 block font-body text-sm font-medium text-espresso/80"
           >
             {t("emailLabel")}
           </label>
@@ -62,7 +62,7 @@ export function ContactForm() {
       <div>
         <label
           htmlFor="contact-subject"
-          className="mb-2 block font-body text-sm font-medium text-espresso/70"
+          className="mb-2 block font-body text-sm font-medium text-espresso/80"
         >
           {t("subjectLabel")}
         </label>
@@ -72,7 +72,7 @@ export function ContactForm() {
       <div>
         <label
           htmlFor="contact-message"
-          className="mb-2 block font-body text-sm font-medium text-espresso/70"
+          className="mb-2 block font-body text-sm font-medium text-espresso/80"
         >
           {t("messageLabel")}
         </label>
@@ -89,7 +89,7 @@ export function ContactForm() {
         {t("submit")}
       </Button>
 
-      <p className="flex items-start gap-2 font-body text-xs leading-relaxed text-espresso/45">
+      <p className="flex items-start gap-2 font-body text-xs leading-relaxed text-espresso/60">
         <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
         {t("note")}
       </p>

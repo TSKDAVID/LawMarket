@@ -2,61 +2,74 @@
 
 Bilingual (Georgian / English) marketplace for fixed-price legal services in Georgia.
 
-**Live site (after Pages is enabled):** https://lawmarket.ge  
-**GitHub Pages URL:** https://TSKDAVID.github.io/LawMarket/
+**Live site:** https://lawmarket.ge (Vercel)
 
-Georgian is the default locale (`/`, also `/ka/`). English lives under `/en/`.
+Georgian is the default locale — `/` redirects to `/ka/`. English lives under `/en/`.
 
 ## Local development
 
 ```bash
 npm install
+cp .env.example .env.local   # then fill in your Supabase keys
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) (redirects to `/ka`).
+Open [http://localhost:3000](http://localhost:3000).
 
-## Production build (static export)
+## Environment
+
+The app reads three variables; see [`.env.example`](.env.example).
+
+| Variable | Where it's used | Secret |
+|---|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | browser + server | no |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | browser + server | no |
+| `SUPABASE_SERVICE_ROLE_KEY` | server only | **yes** |
+
+The anon key is safe in the browser because row-level security decides what it
+can read. The service-role key bypasses RLS completely and must never be
+exposed to the client or committed.
+
+## Database
+
+SQL lives in [`supabase/migrations`](supabase/migrations) and is applied in
+order:
+
+1. `0001_init.sql` — tables, enums, triggers, and row-level security policies
+2. `0002_seed.sql` — catalog content generated from `data/*.ts`
+3. `0003_portal.sql` — lawyer portal, past cases, and the approval queue
+4. `0004_first_admin.sql` — first signup becomes the super admin
+
+Apply it either by pasting into the Supabase SQL Editor, or with the CLI:
 
 ```bash
-npm run build
+supabase link --project-ref <your-project-ref>
+supabase db push
 ```
 
-Output is written to `out/` for GitHub Pages. A post-build step hoists the Georgian (`ka`) pages to the site root and writes `.nojekyll`.
+Regenerate the seed after editing anything in `data/`:
 
-## Deploy to GitHub Pages + custom domain
+```bash
+node --experimental-strip-types scripts/generate-seed.mjs
+```
 
-This repo deploys automatically on every push to `main` via [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml).
+### Making the first admin
 
-### One-time GitHub setup
+The first person who signs up at `/signup` becomes the super admin. Later
+signups stay clients. Lawyer logins are created from `/admin/lawyers`.
 
-1. Open https://github.com/TSKDAVID/LawMarket/settings/pages
-2. Under **Build and deployment → Source**, choose **GitHub Actions**
-3. Open the **Actions** tab and confirm the **Deploy to GitHub Pages** workflow succeeds
-4. After the first green run, the site is live
+## Deployment
 
-### Connect `lawmarket.ge` (or your domain)
+Vercel builds and serves the app on every push to `main`. Set the same three
+environment variables in **Project → Settings → Environment Variables**.
 
-1. In **Settings → Pages → Custom domain**, enter `lawmarket.ge` and save  
-   (this repo already includes [`public/CNAME`](public/CNAME))
-2. Enable **Enforce HTTPS** once DNS has propagated
-3. At your DNS provider, add:
-
-| Type | Name | Value |
-|------|------|--------|
-| `A` | `@` | `185.199.108.153` |
-| `A` | `@` | `185.199.109.153` |
-| `A` | `@` | `185.199.110.153` |
-| `A` | `@` | `185.199.111.153` |
-| `CNAME` | `www` | `TSKDAVID.github.io` |
-
-GitHub’s current Pages IPs are listed in [Managing a custom domain for your GitHub Pages site](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site).
-
-DNS can take from a few minutes up to 48 hours.
+The site is server-rendered rather than statically exported, so content edited
+in Supabase appears without a rebuild, and admin routes are authorized before
+any HTML is sent.
 
 ## Stack
 
-- Next.js (App Router) static export
+- Next.js 16 (App Router), server-rendered on Vercel
+- Supabase — Postgres, auth, storage
 - next-intl (ka default, en at `/en`)
 - Tailwind CSS v4
-- Placeholder marketplace data in `data/`

@@ -15,7 +15,7 @@ export function CtaSection() {
           <h2 className="font-heading text-2xl font-semibold text-cream sm:text-3xl">
             {t("ctaTitle")}
           </h2>
-          <p className="mt-2 font-body text-cream/50 sm:text-base">
+          <p className="mt-2 font-body text-cream/70 sm:text-base">
             {t("ctaSubtitle")}
           </p>
           <div className="mt-6 flex flex-wrap items-center gap-4">
@@ -35,7 +35,7 @@ export function CtaSection() {
             </Link>
             <Link
               href="/lawyers"
-              className="font-body text-sm font-semibold text-cream/70 transition-colors hover:text-cream"
+              className="font-body text-sm font-semibold text-cream/82 transition-colors hover:text-cream"
             >
               {tNav("lawyers")} &rarr;
             </Link>

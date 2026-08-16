@@ -13,7 +13,7 @@ export default function NotFound() {
       <h1 className="mt-6 font-heading text-3xl font-semibold text-espresso">
         {t("title")}
       </h1>
-      <p className="mt-3 font-body text-espresso/60">{t("subtitle")}</p>
+      <p className="mt-3 font-body text-espresso/75">{t("subtitle")}</p>
       <Link href="/" className={cn(buttonVariants({ variant: "primary" }), "mt-8")}>
         {t("backHome")}
       </Link>

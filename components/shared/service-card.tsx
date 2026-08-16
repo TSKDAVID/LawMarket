@@ -76,7 +76,7 @@ export function ServiceCard({
         </Link>
       </h3>
 
-      <p className="mt-2 min-h-[2.85rem] flex-1 font-body text-sm leading-relaxed text-espresso/60 line-clamp-2">
+      <p className="mt-2 min-h-[2.85rem] flex-1 font-body text-sm leading-relaxed text-espresso/75 line-clamp-2">
         {description}
       </p>
 
@@ -123,9 +123,9 @@ export function ServiceCard({
             {displayPrice}
           </p>
           <Link
-            href={detailsUrl}
+            href={`${detailsUrl}#buy`}
             className={cn(
-              "font-body text-[13px] font-normal text-espresso/55 no-underline",
+              "font-body text-[13px] font-normal text-espresso/70 no-underline",
               "hover:text-espresso hover:underline hover:decoration-brass hover:decoration-1 hover:underline-offset-4",
               "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy"
             )}

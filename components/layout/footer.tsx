@@ -47,10 +47,10 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-5">
           <div className="sm:col-span-2 lg:col-span-2">
             <LogoLockup className="text-cream" />
-            <p className="mt-4 max-w-sm font-body text-sm leading-relaxed text-cream/50">
+            <p className="mt-4 max-w-sm font-body text-sm leading-relaxed text-cream/70">
               {t("footer.description")}
             </p>
-            <p className="mt-3 font-body text-xs text-cream/35">
+            <p className="mt-3 font-body text-xs text-cream/55">
               {t("tagline")}
             </p>
             {/* Set as a run of text, separated by slashes — no chrome. */}
@@ -58,13 +58,13 @@ export function Footer() {
               {socialLinks.map((social, index) => (
                 <li key={social.label} className="flex items-center gap-x-2">
                   {index > 0 && (
-                    <span aria-hidden="true" className="text-cream/25">
+                    <span aria-hidden="true" className="text-cream/45">
                       {"//"}
                     </span>
                   )}
                   <a
                     href={social.href}
-                    className="text-cream/60 transition-colors hover:text-cream"
+                    className="text-cream/75 transition-colors hover:text-cream"
                   >
                     {social.label}
                   </a>
@@ -74,7 +74,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-heading text-sm font-semibold uppercase tracking-wide text-cream/90">
+            <h3 className="font-heading text-sm font-semibold uppercase tracking-wide text-cream/95">
               {t("footer.platform")}
             </h3>
             <ul className="mt-4 space-y-3">
@@ -82,7 +82,7 @@ export function Footer() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="font-body text-sm text-cream/60 transition-colors hover:text-cream"
+                    className="font-body text-sm text-cream/75 transition-colors hover:text-cream"
                   >
                     {item.label}
                   </Link>
@@ -92,7 +92,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-heading text-sm font-semibold uppercase tracking-wide text-cream/90">
+            <h3 className="font-heading text-sm font-semibold uppercase tracking-wide text-cream/95">
               {t("footer.company")}
             </h3>
             <ul className="mt-4 space-y-3">
@@ -100,14 +100,14 @@ export function Footer() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="font-body text-sm text-cream/60 transition-colors hover:text-cream"
+                    className="font-body text-sm text-cream/75 transition-colors hover:text-cream"
                   >
                     {item.label}
                   </Link>
                 </li>
               ))}
             </ul>
-            <h3 className="mt-8 font-heading text-sm font-semibold uppercase tracking-wide text-cream/90">
+            <h3 className="mt-8 font-heading text-sm font-semibold uppercase tracking-wide text-cream/95">
               {t("footer.legal")}
             </h3>
             <ul className="mt-4 space-y-3">
@@ -115,7 +115,7 @@ export function Footer() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="font-body text-sm text-cream/60 transition-colors hover:text-cream"
+                    className="font-body text-sm text-cream/75 transition-colors hover:text-cream"
                   >
                     {item.label}
                   </Link>
@@ -125,11 +125,11 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-heading text-sm font-semibold uppercase tracking-wide text-cream/90">
+            <h3 className="font-heading text-sm font-semibold uppercase tracking-wide text-cream/95">
               {t("footer.contact")}
             </h3>
             {/* Field labels, not pictograms: the prefix carries the meaning. */}
-            <ul className="mt-4 space-y-3 font-body text-sm text-cream/60">
+            <ul className="mt-4 space-y-3 font-body text-sm text-cream/75">
               {contactEntries.map((entry) => (
                 <li
                   key={entry.prefix}
@@ -155,7 +155,7 @@ export function Footer() {
         </div>
 
         <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-cream/15 pt-8 sm:flex-row">
-          <p className="font-body text-xs text-cream/40">
+          <p className="font-body text-xs text-cream/60">
             &copy; {new Date().getFullYear()} {t("appName")}. {t("footer.rights")}
           </p>
         </div>

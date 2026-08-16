@@ -48,6 +48,21 @@ export type Lawyer = {
   yearsExperience: number;
   practiceAreaIds: string[];
   verified: boolean;
+  phone?: string;
+  contactEmail?: string;
+};
+
+export type LawyerCase = {
+  id: string;
+  lawyerId: string;
+  categoryId?: string;
+  title_en: string;
+  title_ka: string;
+  description_en: string;
+  description_ka: string;
+  year: number | null;
+  outcome_en: string;
+  outcome_ka: string;
 };
 
 export type Review = {
@@ -61,6 +76,12 @@ export type Review = {
   serviceId?: string;
   lawyerId?: string;
 };
+
+/**
+ * Editable copy from the `site_content` table, keyed by slot
+ * (e.g. `hero.title`). Missing keys fall back to the bundled translations.
+ */
+export type SiteContent = Record<string, { en: string; ka: string }>;
 
 /** One calendar day of bookable consultation times (24h `HH:mm`). */
 export type AvailabilityDay = {

@@ -10,7 +10,7 @@ const badgeVariants = cva(
         burgundy: "bg-burgundy-tint text-burgundy-dark",
         gold: "bg-[#8a6d3b]/10 text-[#8a6d3b]",
         espresso: "bg-espresso text-cream",
-        outline: "border border-espresso/15 text-espresso/70",
+        outline: "border border-espresso/15 text-espresso/80",
       },
       size: {
         sm: "px-2.5 py-1",

@@ -18,7 +18,7 @@ export function LegalSections({
 }: LegalSectionsProps) {
   return (
     <div className="mx-auto max-w-3xl px-6 py-16 lg:px-8">
-      <p className="font-body text-sm text-espresso/45">{lastUpdatedLabel}</p>
+      <p className="font-body text-sm text-espresso/60">{lastUpdatedLabel}</p>
 
       <div className="mt-6 flex items-start gap-3 rounded-card border border-burgundy/20 bg-burgundy-tint/60 p-5">
         <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-burgundy" />
@@ -33,7 +33,7 @@ export function LegalSections({
             <h2 className="font-heading text-lg font-semibold text-espresso">
               {section.title}
             </h2>
-            <p className="mt-2 font-body leading-relaxed text-espresso/65">
+            <p className="mt-2 font-body leading-relaxed text-espresso/80">
               {section.text}
             </p>
           </div>

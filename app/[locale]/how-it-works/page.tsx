@@ -49,7 +49,7 @@ export default async function HowItWorksPage({
               <h3 className="mt-5 font-heading text-xl font-semibold text-espresso">
                 {step.title}
               </h3>
-              <p className="mt-2 font-body text-sm leading-relaxed text-espresso/60">
+              <p className="mt-2 font-body text-sm leading-relaxed text-espresso/75">
                 {step.text}
               </p>
             </div>
@@ -64,7 +64,7 @@ export default async function HowItWorksPage({
             <h2 className="font-heading text-xl font-semibold text-espresso">
               {t("guaranteeTitle")}
             </h2>
-            <p className="mt-2 font-body text-sm leading-relaxed text-espresso/65">
+            <p className="mt-2 font-body text-sm leading-relaxed text-espresso/80">
               {t("guaranteeText")}
             </p>
           </div>

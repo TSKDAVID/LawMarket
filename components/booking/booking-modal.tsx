@@ -39,7 +39,7 @@ type BookingModalProps = {
 type Step = 1 | 2 | 3;
 
 const fieldClass =
-  "h-11 w-full rounded-none border border-espresso/20 bg-white px-3 font-body text-sm text-espresso outline-none transition-colors placeholder:text-espresso/35 focus:border-burgundy";
+  "h-11 w-full rounded-none border border-espresso/20 bg-white px-3 font-body text-sm text-espresso outline-none transition-colors placeholder:text-espresso/50 focus:border-burgundy";
 
 function intlLocale(locale: Locale) {
   return locale === "ka" ? "ka-GE" : "en-GB";
@@ -274,7 +274,7 @@ export function BookingModal({
             <p className="font-heading text-base font-semibold leading-tight text-espresso">
               {lawyer.name}
             </p>
-            <p id={titleId} className="mt-0.5 font-body text-sm text-espresso/55">
+            <p id={titleId} className="mt-0.5 font-body text-sm text-espresso/70">
               {t("subtitle")}
             </p>
           </div>
@@ -283,7 +283,7 @@ export function BookingModal({
             type="button"
             onClick={handleClose}
             aria-label={t("close")}
-            className="flex h-9 w-9 shrink-0 items-center justify-center text-espresso/50 transition-colors hover:bg-espresso/5 hover:text-espresso"
+            className="flex h-9 w-9 shrink-0 items-center justify-center text-espresso/65 transition-colors hover:bg-espresso/5 hover:text-espresso"
           >
             <X className="h-4 w-4" />
           </button>
@@ -308,7 +308,7 @@ export function BookingModal({
                           setViewYear(d.getFullYear());
                           setViewMonth(d.getMonth());
                         }}
-                        className="flex h-8 w-8 items-center justify-center text-espresso disabled:text-espresso/25"
+                        className="flex h-8 w-8 items-center justify-center text-espresso disabled:text-espresso/40"
                       >
                         <ChevronLeft className="h-4 w-4" />
                       </button>
@@ -321,7 +321,7 @@ export function BookingModal({
                           setViewYear(d.getFullYear());
                           setViewMonth(d.getMonth());
                         }}
-                        className="flex h-8 w-8 items-center justify-center text-espresso disabled:text-espresso/25"
+                        className="flex h-8 w-8 items-center justify-center text-espresso disabled:text-espresso/40"
                       >
                         <ChevronRight className="h-4 w-4" />
                       </button>
@@ -355,10 +355,10 @@ export function BookingModal({
                           }}
                           className={cn(
                             "relative mx-auto flex h-10 w-10 flex-col items-center justify-center font-body text-sm",
-                            isPast && "cursor-not-allowed text-espresso/25",
+                            isPast && "cursor-not-allowed text-espresso/40",
                             !isPast &&
                               !bookable &&
-                              "cursor-not-allowed text-espresso/30",
+                              "cursor-not-allowed text-espresso/55",
                             bookable &&
                               !selected &&
                               "text-espresso hover:bg-espresso/5",
@@ -380,7 +380,7 @@ export function BookingModal({
                     })}
                   </div>
                   {loading && (
-                    <p className="mt-3 font-body text-xs text-espresso/45">
+                    <p className="mt-3 font-body text-xs text-espresso/60">
                       {t("loading")}
                     </p>
                   )}
@@ -393,12 +393,12 @@ export function BookingModal({
                       : t("pickTime")}
                   </p>
                   {!selectedDate && (
-                    <p className="font-body text-sm text-espresso/45">
+                    <p className="font-body text-sm text-espresso/60">
                       {t("pickDate")}
                     </p>
                   )}
                   {selectedDate && daySlots.length === 0 && (
-                    <p className="font-body text-sm text-espresso/45">
+                    <p className="font-body text-sm text-espresso/60">
                       {t("noTimes")}
                     </p>
                   )}
@@ -436,7 +436,7 @@ export function BookingModal({
                   <span className="font-medium">
                     {formatLongDate(selectedDate, locale)}, {selectedTime}
                   </span>
-                  <span className="text-espresso/45">
+                  <span className="text-espresso/60">
                     {" "}
                     {t("summaryWith", { name: lawyer.name })}
                   </span>
@@ -518,7 +518,7 @@ export function BookingModal({
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     placeholder={t("notesPlaceholder")}
-                    className="w-full resize-y rounded-none border border-espresso/20 bg-white px-3 py-2.5 font-body text-sm text-espresso outline-none placeholder:text-espresso/35 focus:border-burgundy"
+                    className="w-full resize-y rounded-none border border-espresso/20 bg-white px-3 py-2.5 font-body text-sm text-espresso outline-none placeholder:text-espresso/50 focus:border-burgundy"
                   />
                 </div>
               </form>
@@ -535,17 +535,17 @@ export function BookingModal({
               <h3 className="mt-4 font-heading text-2xl font-semibold text-espresso">
                 {t("successTitle")}
               </h3>
-              <p className="mt-3 font-body text-sm text-espresso/70">
+              <p className="mt-3 font-body text-sm text-espresso/80">
                 {formatLongDate(selectedDate, locale)}, {selectedTime}
-                <span className="text-espresso/45">
+                <span className="text-espresso/60">
                   {" "}
                   {t("summaryWith", { name: lawyer.name })}
                 </span>
               </p>
-              <p className="mt-4 font-body text-sm text-espresso/55">
+              <p className="mt-4 font-body text-sm text-espresso/70">
                 {t("successEmail", { email })}
               </p>
-              <p className="mt-1 font-body text-sm text-espresso/45">
+              <p className="mt-1 font-body text-sm text-espresso/60">
                 {t("successNote")}
               </p>
             </div>

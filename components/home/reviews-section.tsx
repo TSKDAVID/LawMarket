@@ -116,7 +116,7 @@ export function ReviewsSection({
           <h2 className="font-heading text-2xl font-semibold text-espresso sm:text-3xl">
             {t("reviewsTitle")}
           </h2>
-          <p className="mt-2 font-body text-sm text-espresso/50">
+          <p className="mt-2 font-body text-sm text-espresso/65">
             {t("reviewsSubtitle")}
           </p>
         </div>
@@ -140,7 +140,7 @@ export function ReviewsSection({
                   <p className="font-heading text-sm font-semibold text-espresso">
                     {featured.authorName}
                   </p>
-                  <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-espresso/50">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-espresso/65">
                     {localizedReviewRole(featured, locale)}
                   </p>
                   {featuredService && (
@@ -178,7 +178,7 @@ export function ReviewsSection({
                   key={review.id}
                   className={cn("py-5", index > 0 && "border-t border-espresso")}
                 >
-                  <p className="font-body text-[15px] leading-relaxed text-espresso/75">
+                  <p className="font-body text-[15px] leading-relaxed text-espresso/85">
                     &ldquo;{localizedReviewQuote(review, locale)}&rdquo;
                   </p>
                   {/*

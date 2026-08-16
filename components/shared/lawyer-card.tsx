@@ -41,16 +41,16 @@ export function LawyerCard({ lawyer, rating }: LawyerCardProps) {
                 </Badge>
               )}
             </div>
-            <p className="mt-0.5 font-body text-sm text-espresso/50">
+            <p className="mt-0.5 font-body text-sm text-espresso/65">
               {localizedLawyerHeadline(lawyer, locale)}
             </p>
             {rating && rating.count > 0 && (
-              <p className="mt-1.5 flex items-center gap-1 font-body text-xs text-espresso/45">
+              <p className="mt-1.5 flex items-center gap-1 font-body text-xs text-espresso/60">
                 <Star className="h-3.5 w-3.5 fill-brass text-brass" />
                 {rating.average} ({rating.count})
               </p>
             )}
-            <p className="mt-2 flex items-center gap-1 font-body text-xs text-espresso/45">
+            <p className="mt-2 flex items-center gap-1 font-body text-xs text-espresso/60">
               <MapPin className="h-3.5 w-3.5 shrink-0" />
               {lawyer.city} · {lawyer.yearsExperience} {t("years")}
             </p>
