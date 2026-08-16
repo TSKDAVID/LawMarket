@@ -80,7 +80,9 @@
     "findService": "Find your service",
     "findServiceHint": "You already know the work you need — browse fixed prices.",
     "postProblem": "Post your problem",
-    "postProblemHint": "Describe the situation and collect priced proposals from lawyers."
+    "postProblemHint": "Describe the situation and collect priced proposals from lawyers.",
+    "heroMediaLabel": "Informative photo or video",
+    "heroMediaHint": "A short platform overview will appear here soon."
   },
   "services": {
     "title": "All services",

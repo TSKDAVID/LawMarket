@@ -119,8 +119,8 @@ export function LawyersDirectory({
   );
 
   return (
-    <div className="lg:grid lg:grid-cols-12 lg:gap-10">
-      <aside className="hidden lg:col-span-3 lg:block">
+    <div className="lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-10">
+      <aside className="hidden lg:block">
         <div className="sticky top-24 rounded-[var(--radius-card)] border border-espresso/12 bg-white/80 p-5">
           <p className="font-body text-xs font-medium uppercase tracking-widest text-espresso/60">
             {t("filtersTitle")}
@@ -129,7 +129,7 @@ export function LawyersDirectory({
         </div>
       </aside>
 
-      <div className="lg:col-span-9">
+      <div className="min-w-0">
         <div className="brand-rule mb-6">
           <h1 className="font-heading text-3xl font-semibold text-espresso sm:text-4xl">
             {t("title")}
@@ -139,7 +139,7 @@ export function LawyersDirectory({
           </p>
         </div>
 
-        <div className="relative">
+        <div className="relative field-measure">
           <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-espresso/50" />
           <input
             type="text"
@@ -173,7 +173,7 @@ export function LawyersDirectory({
         </p>
 
         {filteredLawyers.length > 0 ? (
-          <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="card-grid mt-5">
             {filteredLawyers.map((lawyer) => (
               <LawyerCard
                 key={lawyer.id}

@@ -35,11 +35,11 @@ export function LawyerCard({ lawyer, rating }: LawyerCardProps) {
               <h3 className="font-heading text-lg font-semibold text-espresso">
                 {lawyer.name}
               </h3>
-              {lawyer.verified && (
+              {lawyer.verified && t("verified") ? (
                 <Badge variant="burgundy" className="text-[0.65rem]">
                   {t("verified")}
                 </Badge>
-              )}
+              ) : null}
             </div>
             <p className="mt-0.5 font-body text-sm text-espresso/65">
               {localizedLawyerHeadline(lawyer, locale)}

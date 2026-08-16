@@ -46,7 +46,7 @@ export async function generateMetadata({
       template: "%s | Law Market",
     },
     description: isKa
-      ? "იპოვეთ დადასტურებული იურისტები საქართველოში ფიქსირებული ფასებითა და კმაყოფილების გარანტიით."
+      ? "იპოვეთ იურისტები საქართველოში ფიქსირებული ფასებითა და კმაყოფილების გარანტიით."
       : "Find verified lawyers in Georgia with fixed pricing and a satisfaction guarantee.",
   };
 }

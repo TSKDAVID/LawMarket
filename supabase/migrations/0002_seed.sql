@@ -84,7 +84,7 @@ insert into public.reviews (author_name, author_role_en, author_role_ka, rating,
 -- Editable site copy -----------------------------------------------------
 insert into public.site_content (key, value_en, value_ka, description) values
   ('hero.title', 'Legal help at a fixed price', 'იურიდიული დახმარება ფიქსირებული ფასით', 'Homepage hero headline'),
-  ('hero.subtitle', 'Find verified lawyers, compare services, and book with a satisfaction guarantee.', 'იპოვეთ დადასტურებული იურისტები, შეადარეთ სერვისები და დაჯავშნეთ კმაყოფილების გარანტიით.', 'Homepage hero subtitle'),
+  ('hero.subtitle', 'Find verified lawyers, compare services, and book with a satisfaction guarantee.', 'იპოვეთ იურისტები, შეადარეთ სერვისები და დაჯავშნეთ კმაყოფილების გარანტიით.', 'Homepage hero subtitle'),
   ('banner.text', 'Free 15-minute consultation on every service', '15-წუთიანი უფასო კონსულტაცია ყოველ სერვისზე', 'Sitewide top banner'),
   ('guarantee.title', 'Every service is covered by our satisfaction guarantee', 'ყველა სერვისი დაფარულია კმაყოფილების გარანტიით', 'Guarantee band heading')
 on conflict (key) do nothing;

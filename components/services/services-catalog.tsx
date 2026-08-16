@@ -162,7 +162,7 @@ export function ServicesCatalog({
         </p>
       </div>
 
-      <div className="relative">
+      <div className="relative field-measure">
         <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-espresso/50" />
         <input
           type="text"
@@ -213,8 +213,8 @@ export function ServicesCatalog({
         </label>
       </div>
 
-      <div className="mt-6 lg:grid lg:grid-cols-12 lg:gap-10">
-        <aside className="hidden lg:col-span-3 lg:block">
+      <div className="mt-6 lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-10">
+        <aside className="hidden lg:block">
           <div className="sticky top-24">
             <p className="font-body text-xs font-medium uppercase tracking-widest text-espresso/60">
               {t("filterByCategory")}
@@ -230,9 +230,9 @@ export function ServicesCatalog({
           </div>
         </aside>
 
-        <div className="lg:col-span-9">
+        <div className="min-w-0 lg:pt-0">
           {filteredServices.length > 0 ? (
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="card-grid">
               {filteredServices.map((service, index) => {
                 const cat = categoryById.get(service.categoryId);
                 return (

@@ -28,6 +28,7 @@ import {
   FindServiceMark,
   PostProblemMark,
 } from "@/components/brand/hero-path-marks";
+import { HeroMediaSlot } from "@/components/home/hero-media-slot";
 
 type ServicesExplorerProps = {
   services: Service[];
@@ -350,24 +351,35 @@ export function ServicesExplorer({
               </p>
             </div>
 
-            {/* Row 2 — the oversized serif headline */}
-            <div className="border-b border-espresso/15 px-4 py-10 sm:px-6 sm:py-14 lg:py-16">
-              {/* One uniform ink — burgundy is reserved for interactivity. */}
-              <h1 className="animate-fade-up font-heading text-[clamp(2.75rem,7.2vw,6.75rem)] font-semibold leading-[1.02] tracking-[-0.03em] text-espresso">
-                {t.rich("heroTitle", {
-                  accent: (chunks) => <>{chunks}</>,
-                })}
-              </h1>
-              <p className="animate-fade-up mt-6 max-w-xl border-l border-espresso/25 pl-4 font-body text-base text-espresso/75 sm:text-lg">
-                {t("heroSubtitle")}
-              </p>
+            {/* Row 2 — headline left, media slot right */}
+            <div className="border-b border-espresso/15 lg:grid lg:grid-cols-2 lg:items-stretch">
+              <div className="flex flex-col justify-center px-4 py-10 sm:px-6 sm:py-12 lg:py-14">
+                <h1 className="animate-fade-up max-w-2xl font-heading text-[clamp(2.25rem,4.5vw,4.5rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-espresso">
+                  {t.rich("heroTitle", {
+                    accent: (chunks) => <>{chunks}</>,
+                  })}
+                </h1>
+                <p className="animate-fade-up mt-6 max-w-lg border-l border-espresso/25 pl-4 font-body text-base text-espresso/75 sm:text-lg">
+                  {t("heroSubtitle")}
+                </p>
+              </div>
 
-              <div className="animate-fade-up mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
+              <HeroMediaSlot />
+            </div>
+
+            {/* Row 3 — path buttons, full hero width */}
+            <div className="border-b border-espresso/15 px-4 py-6 sm:px-6 sm:py-8">
+              <div className="animate-fade-up grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
                 <Link
                   href="/services"
                   className="group flex min-h-[4.75rem] items-center gap-3.5 border-2 border-espresso bg-burgundy px-4 py-3.5 text-cream shadow-[5px_5px_0_0_var(--color-espresso)] transition-[transform,box-shadow,background-color] duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-espresso hover:shadow-[7px_7px_0_0_var(--color-espresso)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy active:translate-x-0 active:translate-y-0 active:shadow-[2px_2px_0_0_var(--color-espresso)] sm:min-h-[5.25rem] sm:gap-4 sm:px-5"
                 >
-                  <FindServiceMark className="h-9 w-9 shrink-0 sm:h-10 sm:w-10" />
+                  <span
+                    className="flex h-11 w-11 shrink-0 items-center justify-center border border-current/35 sm:h-12 sm:w-12"
+                    aria-hidden="true"
+                  >
+                    <FindServiceMark className="h-6 w-6 sm:h-7 sm:w-7" />
+                  </span>
                   <span className="min-w-0 flex-1 text-left">
                     <span className="block font-mono text-base tracking-wide sm:text-lg">
                       {t("findService")}
@@ -385,7 +397,12 @@ export function ServicesExplorer({
                   href={postHref}
                   className="group flex min-h-[4.75rem] items-center gap-3.5 border-2 border-burgundy bg-cream px-4 py-3.5 text-burgundy shadow-[5px_5px_0_0_var(--color-burgundy)] transition-[transform,box-shadow,background-color,color] duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-burgundy hover:text-cream hover:shadow-[7px_7px_0_0_var(--color-espresso)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy active:translate-x-0 active:translate-y-0 active:shadow-[2px_2px_0_0_var(--color-burgundy)] sm:min-h-[5.25rem] sm:gap-4 sm:px-5"
                 >
-                  <PostProblemMark className="h-9 w-9 shrink-0 sm:h-10 sm:w-10" />
+                  <span
+                    className="flex h-11 w-11 shrink-0 items-center justify-center border border-current/35 sm:h-12 sm:w-12"
+                    aria-hidden="true"
+                  >
+                    <PostProblemMark className="h-6 w-6 sm:h-7 sm:w-7" />
+                  </span>
                   <span className="min-w-0 flex-1 text-left">
                     <span className="block font-mono text-base tracking-wide sm:text-lg">
                       {t("postProblem")}
@@ -402,18 +419,17 @@ export function ServicesExplorer({
               </div>
             </div>
 
-            {/* Row 3 — search console */}
+            {/* Row 4 — search console, full hero width */}
             <div className="px-4 py-8 sm:px-6 sm:py-10">
-              <div className="lg:w-[68%]">
-                <p className="animate-fade-up mb-3 font-mono text-xs uppercase tracking-[0.16em] text-espresso/75">
-                  {t("proofLine", {
-                    services: services.length,
-                    lawyers: lawyers.length,
-                  })}
-                </p>
+              <p className="animate-fade-up mb-3 font-mono text-xs uppercase tracking-[0.16em] text-espresso/75">
+                {t("proofLine", {
+                  services: services.length,
+                  lawyers: lawyers.length,
+                })}
+              </p>
 
-                <form
-                  className="animate-fade-up relative z-20"
+              <form
+                className="animate-fade-up relative z-20"
                   onSubmit={(e) => {
                     e.preventDefault();
                     submitSearch();
@@ -561,7 +577,6 @@ export function ServicesExplorer({
                     </div>
                   )}
                 </form>
-              </div>
             </div>
           </div>
         </PageShell>
@@ -631,7 +646,7 @@ export function ServicesExplorer({
           </div>
 
           {displayedServices.length > 0 ? (
-            <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="card-grid mt-5">
               {displayedServices.map((service, index) => {
                 const isLead = !isFiltering && index === 0;
                 const cat = categoryById.get(service.categoryId);

@@ -147,7 +147,7 @@ const siteContent = [
   [
     "hero.subtitle",
     "Find verified lawyers, compare services, and book with a satisfaction guarantee.",
-    "იპოვეთ დადასტურებული იურისტები, შეადარეთ სერვისები და დაჯავშნეთ კმაყოფილების გარანტიით.",
+    "იპოვეთ იურისტები, შეადარეთ სერვისები და დაჯავშნეთ კმაყოფილების გარანტიით.",
     "Homepage hero subtitle",
   ],
   [

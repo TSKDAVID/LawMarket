@@ -126,7 +126,7 @@ export default async function CasesPage({
           {isLawyerView ? t("emptyBoard") : t("emptyMine")}
         </p>
       ) : (
-        <ul className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <ul className="card-grid-wide">
           {cases.map((row) => {
             const category = categoryName(row.category_id);
             return (

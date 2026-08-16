@@ -93,9 +93,9 @@ export default async function LawyerProfilePage({
                 <h1 className="font-heading text-3xl font-semibold text-cream sm:text-4xl">
                   {lawyer.name}
                 </h1>
-                {lawyer.verified && (
+                {lawyer.verified && tCommon("verified") ? (
                   <Badge variant="burgundy">{tCommon("verified")}</Badge>
-                )}
+                ) : null}
               </div>
               <p className="mt-1 font-body text-cream/72">
                 {localizedLawyerHeadline(lawyer, loc)}
