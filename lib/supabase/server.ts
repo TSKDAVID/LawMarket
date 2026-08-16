@@ -2,14 +2,10 @@ import { createServerClient } from "@supabase/ssr";
 import { createClient as createJsClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import type { Database } from "@/lib/supabase/database.types";
+import { getSupabasePublicEnv } from "@/lib/supabase/env";
 
-/**
- * Server Supabase client bound to the request cookies. Use this in server
- * components, server actions, and route handlers.
- */
 function publicEnv() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
+  const { url, key } = getSupabasePublicEnv();
   if (!url || !key) {
     throw new Error(
       "Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY"
@@ -72,8 +68,8 @@ export function createAnonClient() {
  * without an authorization check first.
  */
 export function createAdminClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const { url } = getSupabasePublicEnv();
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
   if (!url || !key) {
     throw new Error("SUPABASE_SERVICE_ROLE_KEY is not set");
   }

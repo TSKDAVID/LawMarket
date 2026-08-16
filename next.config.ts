@@ -3,30 +3,47 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
-if (
-  process.env.VERCEL &&
-  (!process.env.NEXT_PUBLIC_SUPABASE_URL ||
-    !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
-) {
+const supabaseUrl = (
+  process.env.SUPABASE_URL ||
+  process.env.NEXT_PUBLIC_SUPABASE_URL ||
+  ""
+).trim();
+
+if (process.env.VERCEL && !supabaseUrl) {
   throw new Error(
-    "Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in Vercel → Project Settings → Environment Variables (Production + Preview), then redeploy. Do not set Output Directory to `out` — this is a Next.js server app, not a static export."
+    "Add NEXT_PUBLIC_SUPABASE_URL (or SUPABASE_URL) in Vercel → Settings → Environment Variables for Production, then redeploy."
   );
 }
 
-/**
- * Server-rendered on Vercel. Content lives in Supabase and has to be editable
- * without a rebuild, and admin authorization has to be enforced before any
- * HTML is sent — neither is possible with `output: "export"`.
- */
-const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL
-  ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL.trim()).hostname
-  : undefined;
-
-if (process.env.VERCEL && supabaseHost) {
-  console.log(`[lawmarket] Supabase host: ${supabaseHost}`);
+if (process.env.VERCEL && supabaseUrl) {
+  try {
+    console.log(`[lawmarket] Supabase host: ${new URL(supabaseUrl).hostname}`);
+  } catch {
+    throw new Error(`Invalid SUPABASE_URL: ${supabaseUrl}`);
+  }
 }
 
+const supabaseAnonKey = (
+  process.env.SUPABASE_ANON_KEY ||
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+  ""
+).trim();
+
+const supabaseHost = supabaseUrl
+  ? new URL(supabaseUrl).hostname
+  : undefined;
+
 const nextConfig: NextConfig = {
+  // Prefer server-only aliases at build so a stale NEXT_PUBLIC_* on Vercel
+  // does not bake a dead Supabase host into the client bundle.
+  env: process.env.SUPABASE_URL
+    ? {
+        NEXT_PUBLIC_SUPABASE_URL: supabaseUrl,
+        ...(process.env.SUPABASE_ANON_KEY
+          ? { NEXT_PUBLIC_SUPABASE_ANON_KEY: supabaseAnonKey }
+          : {}),
+      }
+    : {},
   trailingSlash: true,
   images: {
     remotePatterns: [

@@ -2,6 +2,7 @@ import createIntlMiddleware from "next-intl/middleware";
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { routing } from "@/i18n/routing";
+import { getSupabasePublicEnv } from "@/lib/supabase/env";
 
 const handleI18n = createIntlMiddleware(routing);
 
@@ -19,8 +20,7 @@ const handleI18n = createIntlMiddleware(routing);
 export async function proxy(request: NextRequest) {
   const response = handleI18n(request);
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const { url, key: anonKey } = getSupabasePublicEnv();
   if (!url || !anonKey) return response;
 
   const supabase = createServerClient(url, anonKey, {

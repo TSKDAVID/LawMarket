@@ -1,5 +1,6 @@
 import { createBrowserClient } from "@supabase/ssr";
 import type { LawyerAvailability } from "./types";
+import { getSupabasePublicEnv } from "@/lib/supabase/env";
 
 /**
  * Lawyer availability, read from Supabase by the booking modal.
@@ -74,8 +75,7 @@ function isSlotInPast(isoDate: string, slot: string, now: Date): boolean {
 export async function getLawyerAvailability(
   lawyerId: string
 ): Promise<LawyerAvailability> {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const { url, key } = getSupabasePublicEnv();
 
   if (url && key) {
     const supabase = createBrowserClient(url, key);
