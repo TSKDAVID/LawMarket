@@ -38,41 +38,69 @@ export async function createLawyerAccount(
   }
 
   const admin = createAdminClient();
-  const { data, error } = await admin.auth.admin.createUser({
+  const supabase = await createClient();
+
+  let userId: string | null = null;
+  const created = await admin.auth.admin.createUser({
     email,
     password,
     email_confirm: true,
     user_metadata: { full_name: name },
   });
-  if (error || !data.user) return { error: "createFailed" };
 
-  const { error: roleError } = await admin
+  if (created.data.user) {
+    userId = created.data.user.id;
+  } else {
+    const { data: listed } = await admin.auth.admin.listUsers({ perPage: 1000 });
+    const existing = listed?.users.find(
+      (user) => user.email?.toLowerCase() === email
+    );
+    if (!existing) return { error: "createFailed" };
+    userId = existing.id;
+    await admin.auth.admin.updateUserById(userId, {
+      password,
+      email_confirm: true,
+      user_metadata: { full_name: name },
+    });
+  }
+
+  // Role changes must go through the signed-in admin session. The service-role
+  // key has no auth.uid(), so guard_profile_role() would reject it.
+  const { error: roleError } = await supabase
     .from("profiles")
     .update({ role: "lawyer", full_name: name, email })
-    .eq("id", data.user.id);
+    .eq("id", userId);
   if (roleError) return { error: "createFailed" };
 
-  let slug = slugify(name);
-  const { data: clash } = await admin
+  const { data: existingLawyer } = await supabase
     .from("lawyers")
     .select("id")
-    .eq("slug", slug)
+    .eq("profile_id", userId)
     .maybeSingle();
-  if (clash) slug = `${slug}-${data.user.id.slice(0, 6)}`;
 
-  const { error: lawyerError } = await admin.from("lawyers").insert({
-    profile_id: data.user.id,
-    slug,
-    name,
-    initials: initialsFromName(name) || "LM",
-    headline_ka: "",
-    headline_en: "",
-    bio_ka: "",
-    bio_en: "",
-    published: true,
-    verified: true,
-  });
-  if (lawyerError) return { error: "createFailed" };
+  if (!existingLawyer) {
+    let slug = slugify(name);
+    const { data: clash } = await supabase
+      .from("lawyers")
+      .select("id")
+      .eq("slug", slug)
+      .maybeSingle();
+    if (clash) slug = `${slug}-${userId.slice(0, 6)}`;
+
+    const { error: lawyerError } = await supabase.from("lawyers").insert({
+      profile_id: userId,
+      slug,
+      name,
+      initials: initialsFromName(name) || "LM",
+      headline_ka: "",
+      headline_en: "",
+      bio_ka: "",
+      bio_en: "",
+      published: true,
+      verified: true,
+    });
+    if (lawyerError) return { error: "createFailed" };
+  }
 
   revalidatePath("/", "layout");
   return { error: null, ok: true };
