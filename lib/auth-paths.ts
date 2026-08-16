@@ -16,6 +16,14 @@ export function mapAuthError(error: { message: string; code?: string }) {
   if (code === "invalid_login_credentials" || message.includes("invalid login")) {
     return "invalidCredentials";
   }
+  if (
+    message.includes("fetch") ||
+    message.includes("network") ||
+    message.includes("enotfound") ||
+    message.includes("failed to parse")
+  ) {
+    return "signInFailed";
+  }
   return "signInFailed";
 }
 

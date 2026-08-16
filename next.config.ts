@@ -19,8 +19,12 @@ if (
  * HTML is sent — neither is possible with `output: "export"`.
  */
 const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL
-  ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname
+  ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL.trim()).hostname
   : undefined;
+
+if (process.env.VERCEL && supabaseHost) {
+  console.log(`[lawmarket] Supabase host: ${supabaseHost}`);
+}
 
 const nextConfig: NextConfig = {
   trailingSlash: true,
