@@ -53,10 +53,12 @@ Regenerate the seed after editing anything in `data/`:
 node --experimental-strip-types scripts/generate-seed.mjs
 ```
 
-### Making the first admin
+### Super admin
 
-The first person who signs up at `/signup` becomes the super admin. Later
-signups stay clients. Lawyer logins are created from `/admin/lawyers`.
+`admin@lawmarket.ge` is the operator account. Run `0005_superadmin.sql` in
+the SQL Editor after creating that user in Authentication. Lawyer logins are
+created from `/admin/lawyers`. New services and past cases wait in that
+admin inbox until approved.
 
 ## Deployment
 
