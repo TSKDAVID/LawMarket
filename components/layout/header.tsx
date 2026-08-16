@@ -25,12 +25,20 @@ export function Header({ signedIn, role, label }: HeaderProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
+  const caseNav =
+    role === "lawyer" || role === "admin"
+      ? { href: "/cases", label: t("openCases") }
+      : signedIn
+        ? { href: "/cases", label: t("myCases") }
+        : { href: "/cases/new", label: t("postCase") };
+
   const navItems = [
     { href: "/", label: t("home") },
     { href: "/services", label: t("services") },
     { href: "/lawyers", label: t("lawyers") },
+    caseNav,
     { href: "/how-it-works", label: t("howItWorks") },
-  ] as const;
+  ];
 
   const workspaceHref = role === "admin" ? "/admin" : "/portal/profile";
   const workspaceLabel =

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getOwnLawyer, requireLawyer } from "@/lib/auth";
+import { parseServicePricing } from "@/lib/service-pricing";
 import { initialsFromName } from "@/lib/utils";
 import { routing } from "@/i18n/routing";
 
@@ -172,8 +173,8 @@ export async function submitServiceRequest(
   const titleKa = String(formData.get("title_ka") ?? "").trim();
   const descriptionKa = String(formData.get("description_ka") ?? "").trim();
   const categoryId = String(formData.get("category_id") ?? "").trim();
-  const price = Number(formData.get("price") ?? 0);
-  if (!titleKa || !descriptionKa || !categoryId || !(price >= 0)) {
+  const price = parseServicePricing(formData);
+  if (!titleKa || !descriptionKa || !categoryId || !price) {
     return { error: "missingKa" };
   }
 
@@ -191,7 +192,9 @@ export async function submitServiceRequest(
         String(formData.get("description_en") ?? "")
       ),
       category_id: categoryId,
-      price,
+      price: price.price,
+      price_max: price.price_max,
+      pricing_mode: price.pricing_mode,
       duration_minutes: Number(formData.get("duration") ?? 0) || null,
       includes_ka: lines(formData.get("includes_ka")),
       includes_en: (() => {
@@ -275,8 +278,8 @@ export async function updateOwnService(
   const titleKa = String(formData.get("title_ka") ?? "").trim();
   const descriptionKa = String(formData.get("description_ka") ?? "").trim();
   const categoryId = String(formData.get("category_id") ?? "").trim();
-  const price = Number(formData.get("price") ?? 0);
-  if (!id || !titleKa || !descriptionKa || !categoryId || !(price >= 0)) {
+  const price = parseServicePricing(formData);
+  if (!id || !titleKa || !descriptionKa || !categoryId || !price) {
     return { error: "missingKa" };
   }
 
@@ -300,7 +303,9 @@ export async function updateOwnService(
         String(formData.get("description_en") ?? "")
       ),
       category_id: categoryId,
-      price,
+      price: price.price,
+      price_max: price.price_max,
+      pricing_mode: price.pricing_mode,
       duration_minutes: Number(formData.get("duration") ?? 0) || null,
       includes_ka: lines(formData.get("includes_ka")),
       includes_en: (() => {

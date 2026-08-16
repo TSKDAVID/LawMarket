@@ -14,6 +14,7 @@ import {
 } from "@/data/localize";
 import type { Locale } from "@/i18n/routing";
 import { cn, matchesQuery } from "@/lib/utils";
+import { formatServicePrice } from "@/lib/service-pricing";
 import { popularityScore } from "@/data/popularity";
 
 type SortOption = "popular" | "price-asc" | "price-desc";
@@ -242,7 +243,7 @@ export function ServicesCatalog({
                     }
                     title={localizedServiceTitle(service, locale)}
                     description={localizedServiceDescription(service, locale)}
-                    price={service.price}
+                    price={formatServicePrice(service, locale)}
                     hasFreeConsultation
                     detailsUrl={`/services/${service.slug}`}
                     index={index + 1}

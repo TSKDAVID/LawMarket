@@ -9,7 +9,7 @@ import {
   type KeyboardEvent,
 } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { ChevronDown, Search, X } from "lucide-react";
+import { ArrowRight, ChevronDown, Search, X } from "lucide-react";
 import { Link, useRouter } from "@/i18n/navigation";
 import { CategoryIcon } from "@/components/shared/category-icon";
 import { ServiceCard } from "@/components/shared/service-card";
@@ -21,13 +21,19 @@ import {
   localizedServiceTitle,
 } from "@/data/localize";
 import type { Locale } from "@/i18n/routing";
-import { cn, formatPrice, matchesQuery } from "@/lib/utils";
+import { cn, matchesQuery } from "@/lib/utils";
+import { formatServicePrice } from "@/lib/service-pricing";
 import { sortByPopularity } from "@/data/popularity";
+import {
+  FindServiceMark,
+  PostProblemMark,
+} from "@/components/brand/hero-path-marks";
 
 type ServicesExplorerProps = {
   services: Service[];
   categories: Category[];
   lawyers: Lawyer[];
+  postHref: string;
 };
 
 type FilterOption = {
@@ -224,6 +230,7 @@ export function ServicesExplorer({
   services,
   categories,
   lawyers,
+  postHref,
 }: ServicesExplorerProps) {
   const locale = useLocale() as Locale;
   const t = useTranslations("home");
@@ -354,6 +361,45 @@ export function ServicesExplorer({
               <p className="animate-fade-up mt-6 max-w-xl border-l border-espresso/25 pl-4 font-body text-base text-espresso/75 sm:text-lg">
                 {t("heroSubtitle")}
               </p>
+
+              <div className="animate-fade-up mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
+                <Link
+                  href="/services"
+                  className="group flex min-h-[4.75rem] items-center gap-3.5 border-2 border-espresso bg-burgundy px-4 py-3.5 text-cream shadow-[5px_5px_0_0_var(--color-espresso)] transition-[transform,box-shadow,background-color] duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-espresso hover:shadow-[7px_7px_0_0_var(--color-espresso)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy active:translate-x-0 active:translate-y-0 active:shadow-[2px_2px_0_0_var(--color-espresso)] sm:min-h-[5.25rem] sm:gap-4 sm:px-5"
+                >
+                  <FindServiceMark className="h-9 w-9 shrink-0 sm:h-10 sm:w-10" />
+                  <span className="min-w-0 flex-1 text-left">
+                    <span className="block font-mono text-base tracking-wide sm:text-lg">
+                      {t("findService")}
+                    </span>
+                    <span className="mt-1 block font-body text-xs font-normal leading-snug text-cream/80 sm:text-sm">
+                      {t("findServiceHint")}
+                    </span>
+                  </span>
+                  <ArrowRight
+                    aria-hidden="true"
+                    className="h-5 w-5 shrink-0 transition-transform duration-150 group-hover:translate-x-0.5"
+                  />
+                </Link>
+                <Link
+                  href={postHref}
+                  className="group flex min-h-[4.75rem] items-center gap-3.5 border-2 border-burgundy bg-cream px-4 py-3.5 text-burgundy shadow-[5px_5px_0_0_var(--color-burgundy)] transition-[transform,box-shadow,background-color,color] duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-burgundy hover:text-cream hover:shadow-[7px_7px_0_0_var(--color-espresso)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy active:translate-x-0 active:translate-y-0 active:shadow-[2px_2px_0_0_var(--color-burgundy)] sm:min-h-[5.25rem] sm:gap-4 sm:px-5"
+                >
+                  <PostProblemMark className="h-9 w-9 shrink-0 sm:h-10 sm:w-10" />
+                  <span className="min-w-0 flex-1 text-left">
+                    <span className="block font-mono text-base tracking-wide sm:text-lg">
+                      {t("postProblem")}
+                    </span>
+                    <span className="mt-1 block font-body text-xs font-normal leading-snug text-espresso/60 group-hover:text-cream/80 sm:text-sm">
+                      {t("postProblemHint")}
+                    </span>
+                  </span>
+                  <ArrowRight
+                    aria-hidden="true"
+                    className="h-5 w-5 shrink-0 transition-transform duration-150 group-hover:translate-x-0.5"
+                  />
+                </Link>
+              </div>
             </div>
 
             {/* Row 3 — search console */}
@@ -488,7 +534,7 @@ export function ServicesExplorer({
                                     )}
                                   </span>
                                   <span className="shrink-0 font-mono text-sm font-semibold text-burgundy">
-                                    {formatPrice(service.price)}
+                                    {formatServicePrice(service, locale)}
                                   </span>
                                 </Link>
                               </li>
@@ -597,7 +643,7 @@ export function ServicesExplorer({
                     }
                     title={localizedServiceTitle(service, locale)}
                     description={localizedServiceDescription(service, locale)}
-                    price={service.price}
+                    price={formatServicePrice(service, locale)}
                     hasFreeConsultation
                     detailsUrl={`/services/${service.slug}`}
                     index={index + 1}

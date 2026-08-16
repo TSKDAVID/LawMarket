@@ -26,7 +26,7 @@ import {
   localizedServiceIncludes,
   localizedServiceTitle,
 } from "@/data/localize";
-import { formatPrice } from "@/lib/utils";
+import { formatServicePrice, servicePricingMode } from "@/lib/service-pricing";
 import type { Locale } from "@/i18n/routing";
 
 export const dynamic = "force-dynamic";
@@ -135,10 +135,14 @@ export default async function ServiceDetailPage({
           <Card className="sticky top-24 border-espresso/12 bg-white/85">
             <CardContent>
               <p className="font-body text-sm text-espresso/65">
-                {tCommon("from")}
+                {servicePricingMode(service) === "range"
+                  ? t("priceRange")
+                  : servicePricingMode(service) === "from"
+                    ? t("priceFrom")
+                    : t("priceFixed")}
               </p>
               <p className="mt-1 font-heading text-3xl font-semibold text-burgundy">
-                {formatPrice(service.price)}
+                {formatServicePrice(service, loc)}
               </p>
 
               {service.durationMinutes && (
@@ -181,6 +185,8 @@ export default async function ServiceDetailPage({
                   <PurchaseButton
                     serviceTitle={localizedServiceTitle(service, loc)}
                     price={service.price}
+                    priceLabel={formatServicePrice(service, loc)}
+                    pricingMode={servicePricingMode(service)}
                     lawyer={{
                       id: lawyer.id,
                       name: lawyer.name,
@@ -231,7 +237,7 @@ export default async function ServiceDetailPage({
                 }
                 title={localizedServiceTitle(relatedService, loc)}
                 description={localizedServiceDescription(relatedService, loc)}
-                price={relatedService.price}
+                price={formatServicePrice(relatedService, loc)}
                 hasFreeConsultation
                 detailsUrl={`/services/${relatedService.slug}`}
                 index={index + 1}

@@ -175,6 +175,14 @@ export async function reviewChangeRequest(
         description_ka: String(payload.description_ka ?? ""),
         description_en: String(payload.description_en ?? ""),
         price: Number(payload.price ?? 0),
+        price_max:
+          payload.price_max === null || payload.price_max === undefined
+            ? null
+            : Number(payload.price_max),
+        pricing_mode:
+          payload.pricing_mode === "from" || payload.pricing_mode === "range"
+            ? payload.pricing_mode
+            : "fixed",
         duration_minutes:
           payload.duration_minutes === null || payload.duration_minutes === undefined
             ? null

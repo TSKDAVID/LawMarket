@@ -3,7 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import type { Service } from "@/data/types";
 import { localizedServiceTitle } from "@/data/localize";
-import { formatPrice } from "@/lib/utils";
+import { formatServicePrice } from "@/lib/service-pricing";
 import type { Locale } from "@/i18n/routing";
 
 type CompactServiceListProps = {
@@ -40,7 +40,7 @@ export function CompactServiceList({ services }: CompactServiceListProps) {
             </div>
             <div className="flex shrink-0 items-center gap-2">
               <span className="font-heading text-base font-semibold text-burgundy">
-                {formatPrice(service.price)}
+                {formatServicePrice(service, locale)}
               </span>
               <ArrowUpRight className="h-4 w-4 text-espresso/20 transition-colors group-hover:text-burgundy" />
             </div>

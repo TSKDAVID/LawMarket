@@ -17,12 +17,17 @@ export async function generateMetadata({
 
 export default async function SignupPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ next?: string }>;
 }) {
   const { locale } = await params;
+  const { next } = await searchParams;
   setRequestLocale(locale as Locale);
   const t = await getTranslations("auth");
+  const nextPath =
+    next && next.startsWith("/") && !next.startsWith("//") ? next : undefined;
 
   return (
     <div className="flex min-h-[80vh] items-center justify-center bg-cream-muted/40 px-6 py-16">
@@ -37,11 +42,14 @@ export default async function SignupPage({
           </p>
         </div>
 
-        <SignupForm />
+        <SignupForm next={nextPath} />
 
         <p className="mt-6 text-center font-body text-sm text-espresso/70">
           {t("haveAccount")}{" "}
-          <Link href="/login" className="font-medium text-burgundy hover:text-burgundy-dark">
+          <Link
+            href={nextPath ? `/login?next=${encodeURIComponent(nextPath)}` : "/login"}
+            className="font-medium text-burgundy hover:text-burgundy-dark"
+          >
             {t("logInLink")}
           </Link>
         </p>

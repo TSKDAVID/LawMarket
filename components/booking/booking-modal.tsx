@@ -21,6 +21,8 @@ import {
 import type { Lawyer, LawyerAvailability } from "@/data/types";
 import type { Locale } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
+import { AddToCalendar } from "@/components/booking/add-to-calendar";
+import { createConsultBooking } from "@/app/[locale]/cases/actions";
 
 type LawyerLite = Pick<
   Lawyer,
@@ -34,6 +36,7 @@ type BookingModalProps = {
   defaultName?: string;
   defaultEmail?: string;
   defaultPhone?: string;
+  clientCaseId?: string;
 };
 
 type Step = 1 | 2 | 3;
@@ -80,6 +83,7 @@ export function BookingModal({
   defaultName = "",
   defaultEmail = "",
   defaultPhone = "",
+  clientCaseId,
 }: BookingModalProps) {
   const locale = useLocale() as Locale;
   const t = useTranslations("booking");
@@ -98,6 +102,8 @@ export function BookingModal({
   const [email, setEmail] = useState(defaultEmail);
   const [phone, setPhone] = useState(defaultPhone);
   const [notes, setNotes] = useState("");
+  const [bookError, setBookError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
   const [viewYear, setViewYear] = useState(() => new Date().getFullYear());
   const [viewMonth, setViewMonth] = useState(() => new Date().getMonth());
 
@@ -164,6 +170,8 @@ export function BookingModal({
     setEmail(defaultEmail);
     setPhone(defaultPhone);
     setNotes("");
+    setBookError(null);
+    setSubmitting(false);
   }, [defaultEmail, defaultName, defaultPhone]);
 
   const handleClose = useCallback(() => {
@@ -231,11 +239,29 @@ export function BookingModal({
     };
   }, [handleClose, open, step]);
 
-  function handleConfirm(e: FormEvent<HTMLFormElement>) {
+  async function handleConfirm(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    // TODO: Replace with a real booking API call. Send lawyerId, selectedDate,
-    // selectedTime, and the contact fields, then trigger the confirmation email
-    // from the server. Keep this transition as the success path on resolve.
+    if (!selectedDate || !selectedTime) return;
+
+    setSubmitting(true);
+    setBookError(null);
+    const fd = new FormData();
+    fd.set("locale", locale);
+    fd.set("lawyer_id", lawyer.id);
+    if (clientCaseId) fd.set("client_case_id", clientCaseId);
+    fd.set("name", name);
+    fd.set("email", email);
+    fd.set("phone", phone);
+    fd.set("date", selectedDate);
+    fd.set("time", selectedTime);
+    fd.set("notes", notes);
+    const result = await createConsultBooking({ error: null }, fd);
+    setSubmitting(false);
+    if (result.error) {
+      setBookError(result.error === "missingFields" ? "missingFields" : "saveFailed");
+      return;
+    }
+
     setStep(3);
   }
 
@@ -451,6 +477,14 @@ export function BookingModal({
               </div>
 
               <form id="booking-contact" onSubmit={handleConfirm} className="mt-6 space-y-4">
+                {bookError && (
+                  <p
+                    role="alert"
+                    className="border-l-[3px] border-burgundy bg-burgundy-tint px-4 py-3 font-body text-sm text-burgundy-dark"
+                  >
+                    {t("saveFailed")}
+                  </p>
+                )}
                 <div>
                   <label
                     htmlFor="booking-name"
@@ -548,6 +582,15 @@ export function BookingModal({
               <p className="mt-1 font-body text-sm text-espresso/60">
                 {t("successNote")}
               </p>
+              <AddToCalendar
+                className="mx-auto mt-6 max-w-xs"
+                event={{
+                  title: t("calendarTitle", { name: lawyer.name }),
+                  description: t("calendarDescription", { name: lawyer.name }),
+                  date: selectedDate,
+                  time: selectedTime,
+                }}
+              />
             </div>
           )}
         </div>
@@ -571,7 +614,8 @@ export function BookingModal({
             <button
               type="submit"
               form="booking-contact"
-              className="flex h-12 w-full items-center justify-center rounded-none bg-burgundy font-body text-sm font-semibold text-cream hover:bg-burgundy-dark"
+              disabled={submitting}
+              className="flex h-12 w-full items-center justify-center rounded-none bg-burgundy font-body text-sm font-semibold text-cream hover:bg-burgundy-dark disabled:cursor-not-allowed disabled:opacity-40"
             >
               {t("confirm")}
             </button>

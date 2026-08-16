@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Field } from "@/components/workspace/field";
+import { PricingFields } from "@/components/workspace/pricing-fields";
 import {
   FormMessage,
   WorkspacePanel,
@@ -298,14 +299,10 @@ export function ServiceRequestForm({ categories }: { categories: Category[] }) {
           ))}
         </Select>
       </Field>
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-        <Field id="price" label={t("priceLabel")}>
-          <Input id="price" name="price" type="number" min={0} step="1" required />
-        </Field>
-        <Field id="duration" label={t("durationLabel")}>
-          <Input id="duration" name="duration" type="number" min={0} />
-        </Field>
-      </div>
+      <PricingFields />
+      <Field id="duration" label={t("durationLabel")}>
+        <Input id="duration" name="duration" type="number" min={0} />
+      </Field>
       <Field id="includes_ka" label={t("includesKa")}>
         <Textarea id="includes_ka" name="includes_ka" rows={4} />
       </Field>

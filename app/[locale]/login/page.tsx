@@ -49,7 +49,10 @@ export default async function LoginPage({
 
         <p className="mt-6 text-center font-body text-sm text-espresso/70">
           {t("noAccount")}{" "}
-          <Link href="/signup" className="font-medium text-burgundy hover:text-burgundy-dark">
+          <Link
+            href={nextPath ? `/signup?next=${encodeURIComponent(nextPath)}` : "/signup"}
+            className="font-medium text-burgundy hover:text-burgundy-dark"
+          >
             {t("signUpLink")}
           </Link>
         </p>

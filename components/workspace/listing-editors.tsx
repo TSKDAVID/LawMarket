@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Field } from "@/components/workspace/field";
+import { PricingFields } from "@/components/workspace/pricing-fields";
 import { FormMessage } from "@/components/workspace/workspace-shell";
 import {
   deleteOwnCase,
@@ -20,7 +21,7 @@ import {
 import type { Category } from "@/data/types";
 import type { LawyerCaseRow, ServiceRow } from "@/lib/supabase/database.types";
 import { localizedCaseTitle, localizedServiceTitle } from "@/data/localize";
-import { formatPrice } from "@/lib/utils";
+import { formatServicePrice } from "@/lib/service-pricing";
 import type { Locale } from "@/i18n/routing";
 
 function LocaleFields() {
@@ -101,7 +102,14 @@ export function ServiceManageCard({
             )}
           </p>
           <p className="mt-1 font-body text-xs text-espresso/65">
-            {formatPrice(Number(service.price))}
+            {formatServicePrice(
+              {
+                price: Number(service.price),
+                priceMax: service.price_max,
+                pricingMode: service.pricing_mode,
+              },
+              locale
+            )}
           </p>
         </div>
         <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-wrap">
@@ -191,28 +199,23 @@ export function ServiceManageCard({
               ))}
             </Select>
           </Field>
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-            <Field id={`${prefix}-price`} label={t("priceLabel")}>
-              <Input
-                id={`${prefix}-price`}
-                name="price"
-                type="number"
-                min={0}
-                step="1"
-                required
-                defaultValue={Number(service.price)}
-              />
-            </Field>
-            <Field id={`${prefix}-duration`} label={t("durationLabel")}>
-              <Input
-                id={`${prefix}-duration`}
-                name="duration"
-                type="number"
-                min={0}
-                defaultValue={service.duration_minutes ?? ""}
-              />
-            </Field>
-          </div>
+          <PricingFields
+            idPrefix={`${prefix}-`}
+            defaultMode={service.pricing_mode}
+            defaultPrice={Number(service.price)}
+            defaultPriceMax={
+              service.price_max == null ? "" : Number(service.price_max)
+            }
+          />
+          <Field id={`${prefix}-duration`} label={t("durationLabel")}>
+            <Input
+              id={`${prefix}-duration`}
+              name="duration"
+              type="number"
+              min={0}
+              defaultValue={service.duration_minutes ?? ""}
+            />
+          </Field>
           <Field id={`${prefix}-includes_ka`} label={t("includesKa")}>
             <Textarea
               id={`${prefix}-includes_ka`}

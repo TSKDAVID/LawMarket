@@ -29,6 +29,7 @@ export function Footer() {
     { href: "/services", label: tNav("services") },
     { href: "/lawyers", label: tNav("lawyers") },
     { href: "/how-it-works", label: tNav("howItWorks") },
+    { href: "/cases/new", label: tNav("postCase") },
     { href: "/signup", label: tNav("getStarted") },
   ] as const;
 

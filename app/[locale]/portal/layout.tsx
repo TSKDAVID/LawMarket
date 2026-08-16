@@ -37,6 +37,8 @@ export default async function PortalLayout({
         { href: "/portal/password", label: t("navPassword") },
         { href: "/portal/services", label: t("navServices") },
         { href: "/portal/cases", label: t("navCases") },
+        { href: "/portal/bookings", label: t("navBookings") },
+        { href: "/cases", label: t("navOpenCases") },
         {
           href: "/portal/requests",
           label: t("navRequests"),

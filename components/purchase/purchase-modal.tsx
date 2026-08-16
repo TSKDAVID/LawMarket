@@ -25,6 +25,8 @@ type PurchaseModalProps = {
   onClose: () => void;
   serviceTitle: string;
   price: number;
+  priceLabel?: string;
+  pricingMode?: "fixed" | "from" | "range";
   lawyer: LawyerLite;
   defaultName?: string;
   defaultEmail?: string;
@@ -39,6 +41,8 @@ export function PurchaseModal({
   onClose,
   serviceTitle,
   price,
+  priceLabel,
+  pricingMode = "fixed",
   lawyer,
   defaultName = "",
   defaultEmail = "",
@@ -185,10 +189,15 @@ export function PurchaseModal({
                 </div>
                 <div className="flex items-baseline justify-between gap-3 border-t border-espresso/15 px-4 py-3">
                   <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-espresso/65">
-                    {t("total")} · {t("fixedPrice")}
+                    {t("total")} ·{" "}
+                    {pricingMode === "range"
+                      ? t("rangePrice")
+                      : pricingMode === "from"
+                        ? t("fromPrice")
+                        : t("fixedPrice")}
                   </span>
                   <span className="font-heading text-2xl font-semibold text-burgundy">
-                    {formatPrice(price)}
+                    {priceLabel ?? formatPrice(price)}
                   </span>
                 </div>
               </div>
@@ -288,7 +297,7 @@ export function PurchaseModal({
                 {t("successTitle")}
               </h3>
               <p className="mt-3 font-body text-sm text-espresso/80">
-                {serviceTitle} · {formatPrice(price)}
+                {serviceTitle} · {priceLabel ?? formatPrice(price)}
               </p>
               <p className="mt-4 font-body text-sm text-espresso/70">
                 {t("successEmail", { email })}

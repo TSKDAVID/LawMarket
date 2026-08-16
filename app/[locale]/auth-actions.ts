@@ -109,7 +109,13 @@ export async function signUp(
     .maybeSingle();
 
   revalidatePath("/", "layout");
-  redirect(localePath(locale, homePathForRole(data?.role)));
+  redirect(
+    localePath(
+      locale,
+      pathFromNextParam(String(formData.get("next") ?? "")) ??
+        homePathForRole(data?.role)
+    )
+  );
 }
 
 export async function signOut(formData: FormData) {

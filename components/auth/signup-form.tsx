@@ -16,7 +16,7 @@ function SubmitButton({ label }: { label: string }) {
   );
 }
 
-export function SignupForm() {
+export function SignupForm({ next }: { next?: string }) {
   const t = useTranslations("auth");
   const locale = useLocale();
   const [state, formAction] = useActionState<AuthState, FormData>(signUp, {
@@ -26,6 +26,7 @@ export function SignupForm() {
   return (
     <form action={formAction} className="mt-8 space-y-5">
       <input type="hidden" name="locale" value={locale} />
+      {next && <input type="hidden" name="next" value={next} />}
 
       {state.error && (
         <p

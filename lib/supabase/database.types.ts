@@ -14,6 +14,7 @@ export type Json =
   | Json[];
 
 export type UserRole = "client" | "lawyer" | "admin";
+export type ServicePricingMode = "fixed" | "from" | "range";
 export type BookingStatus =
   | "pending"
   | "confirmed"
@@ -118,6 +119,8 @@ export type ServiceRow = Timestamps & {
   description_en: string;
   description_ka: string;
   price: number;
+  price_max: number | null;
+  pricing_mode: ServicePricingMode;
   currency: string;
   duration_minutes: number | null;
   popular: boolean;
@@ -189,6 +192,7 @@ export type BookingRow = Timestamps & {
   date: string;
   time: string;
   status: BookingStatus;
+  client_case_id: string | null;
 };
 
 export type OrderRow = Timestamps & {
@@ -203,6 +207,30 @@ export type OrderRow = Timestamps & {
   price: number;
   currency: string;
   status: OrderStatus;
+};
+
+export type ClientCaseStatus = "open" | "closed" | "matched";
+export type ProposalStatus = "pending" | "withdrawn" | "accepted" | "declined";
+
+export type ClientCaseRow = Timestamps & {
+  id: string;
+  client_id: string;
+  category_id: string | null;
+  title: string;
+  description: string;
+  city: string | null;
+  status: ClientCaseStatus;
+};
+
+export type CaseProposalRow = Timestamps & {
+  id: string;
+  case_id: string;
+  lawyer_id: string;
+  price: number;
+  currency: string;
+  duration_minutes: number | null;
+  message: string;
+  status: ProposalStatus;
 };
 
 export type ContactMessageRow = {
@@ -301,6 +329,8 @@ export type Database = {
         | "description_ka"
         | "view_count"
         | "purchase_count"
+        | "pricing_mode"
+        | "price_max"
       >;
       reviews: TableOf<
         ReviewRow,
@@ -336,7 +366,7 @@ export type Database = {
       lawyer_availability: TableOf<LawyerAvailabilityRow, "slots">;
       bookings: TableOf<
         BookingRow,
-        "service_id" | "user_id" | "notes" | "status"
+        "service_id" | "user_id" | "notes" | "status" | "client_case_id"
       >;
       orders: TableOf<
         OrderRow,
@@ -379,12 +409,24 @@ export type Database = {
           },
         ]
       >;
+      client_cases: TableOf<
+        ClientCaseRow,
+        "category_id" | "city" | "status"
+      >;
+      case_proposals: TableOf<
+        CaseProposalRow,
+        "currency" | "duration_minutes" | "message" | "status"
+      >;
     };
     Views: Record<never, never>;
     Functions: {
       is_admin: { Args: Record<string, never>; Returns: boolean };
       is_staff: { Args: Record<string, never>; Returns: boolean };
+      is_active_lawyer: { Args: Record<string, never>; Returns: boolean };
       current_lawyer_id: { Args: Record<string, never>; Returns: string | null };
+      owns_client_case: { Args: { p_case_id: string }; Returns: boolean };
+      lawyer_proposed_on_case: { Args: { p_case_id: string }; Returns: boolean };
+      client_case_is_open: { Args: { p_case_id: string }; Returns: boolean };
       record_service_view: { Args: { p_service_id: string }; Returns: undefined };
     };
     Enums: {
@@ -394,6 +436,9 @@ export type Database = {
       post_status: PostStatus;
       change_request_kind: ChangeRequestKind;
       change_request_status: ChangeRequestStatus;
+      client_case_status: ClientCaseStatus;
+      proposal_status: ProposalStatus;
+      service_pricing_mode: ServicePricingMode;
     };
     CompositeTypes: Record<never, never>;
   };

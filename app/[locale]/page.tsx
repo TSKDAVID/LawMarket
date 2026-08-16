@@ -10,6 +10,7 @@ import {
   getVerifiedLawyers,
   getReviews,
 } from "@/data/queries";
+import { getSessionUser } from "@/lib/auth";
 import type { Locale } from "@/i18n/routing";
 
 export default async function HomePage({
@@ -20,12 +21,17 @@ export default async function HomePage({
   const { locale } = await params;
   setRequestLocale(locale as Locale);
 
-  const [categories, services, lawyers, reviews] = await Promise.all([
+  const [categories, services, lawyers, reviews, user] = await Promise.all([
     getCategories(),
     getServices(),
     getVerifiedLawyers(),
     getReviews(),
+    getSessionUser(),
   ]);
+
+  const role = user?.profile?.role;
+  const postHref =
+    role === "lawyer" || role === "admin" ? "/cases" : "/cases/new";
 
   return (
     <>
@@ -33,6 +39,7 @@ export default async function HomePage({
         services={services}
         categories={categories}
         lawyers={lawyers}
+        postHref={postHref}
       />
       <GuaranteeBand />
       <TrustBand lawyers={lawyers} />

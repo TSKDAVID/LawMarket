@@ -92,6 +92,8 @@ function mapService(row: ServiceRow): Service {
     description_ka: row.description_ka,
     // numeric(10,2) arrives as a string over PostgREST
     price: Number(row.price),
+    priceMax: row.price_max == null ? null : Number(row.price_max),
+    pricingMode: row.pricing_mode ?? "fixed",
     currency: "GEL",
     durationMinutes: row.duration_minutes,
     popular: row.popular,

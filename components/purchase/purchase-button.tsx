@@ -9,6 +9,8 @@ import { cn } from "@/lib/utils";
 type PurchaseButtonProps = {
   serviceTitle: string;
   price: number;
+  priceLabel?: string;
+  pricingMode?: "fixed" | "from" | "range";
   lawyer: Pick<
     Lawyer,
     "id" | "name" | "initials" | "avatarColor" | "photoUrl"
@@ -19,6 +21,8 @@ type PurchaseButtonProps = {
 export function PurchaseButton({
   serviceTitle,
   price,
+  priceLabel,
+  pricingMode = "fixed",
   lawyer,
   className,
 }: PurchaseButtonProps) {
@@ -66,6 +70,8 @@ export function PurchaseButton({
         onClose={() => setOpen(false)}
         serviceTitle={serviceTitle}
         price={price}
+        priceLabel={priceLabel}
+        pricingMode={pricingMode}
         lawyer={lawyer}
         /* Prefill from the session once auth is wired. */
       />

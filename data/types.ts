@@ -22,6 +22,8 @@ export type Service = {
   description_en: string;
   description_ka: string;
   price: number;
+  priceMax?: number | null;
+  pricingMode?: "fixed" | "from" | "range";
   currency: "GEL";
   durationMinutes: number | null;
   lawyerId: string;
