@@ -18,6 +18,7 @@ import type {
   ServiceRow,
   SiteContentRow,
 } from "@/lib/supabase/database.types";
+import { decodePathSlug } from "@/lib/utils";
 
 /**
  * Read side of the catalog. Every function keeps the signature it had when the
@@ -181,7 +182,7 @@ export async function getServiceBySlug(
   const { data } = await supabase
     .from("services")
     .select("*")
-    .eq("slug", slug)
+    .eq("slug", decodePathSlug(slug))
     .eq("published", true)
     .maybeSingle();
   return data ? mapService(data) : undefined;
@@ -238,19 +239,18 @@ export async function getLawyers(): Promise<Lawyer[]> {
     .select(LAWYER_SELECT)
     .eq("published", true)
     .order("sort_order");
-  return (data ?? [])
-    .map(mapLawyer)
-    .filter((lawyer) => lawyer.headline_ka.trim() || lawyer.headline_en.trim());
+  return (data ?? []).map(mapLawyer);
 }
 
 export async function getLawyerBySlug(
   slug: string
 ): Promise<Lawyer | undefined> {
   const supabase = createAnonClient();
+  const normalized = decodePathSlug(slug);
   const { data } = await supabase
     .from("lawyers")
     .select(LAWYER_SELECT)
-    .eq("slug", slug)
+    .eq("slug", normalized)
     .eq("published", true)
     .maybeSingle();
   return data ? mapLawyer(data) : undefined;
@@ -275,9 +275,7 @@ export async function getVerifiedLawyers(): Promise<Lawyer[]> {
     .eq("published", true)
     .eq("verified", true)
     .order("sort_order");
-  return (data ?? [])
-    .map(mapLawyer)
-    .filter((lawyer) => lawyer.headline_ka.trim() || lawyer.headline_en.trim());
+  return (data ?? []).map(mapLawyer);
 }
 
 // --- Reviews ---------------------------------------------------------------

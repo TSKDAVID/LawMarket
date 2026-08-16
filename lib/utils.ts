@@ -5,6 +5,21 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+/** Dynamic [slug] params may arrive percent-encoded, especially for Georgian. */
+export function decodePathSlug(value: string) {
+  let slug = value.trim();
+  for (let i = 0; i < 3; i++) {
+    try {
+      const next = decodeURIComponent(slug);
+      if (next === slug) break;
+      slug = next;
+    } catch {
+      break;
+    }
+  }
+  return slug;
+}
+
 export function slugify(value: string) {
   const slug = value
     .trim()

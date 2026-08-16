@@ -12,7 +12,6 @@ import {
   getCategoryById,
   getCasesByLawyer,
   getLawyerBySlug,
-  getLawyers,
   getReviewsByLawyer,
   getServicesByLawyer,
 } from "@/data/queries";
@@ -29,14 +28,7 @@ import {
 import type { Locale } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
-export async function generateStaticParams() {
-  try {
-    const lawyers = await getLawyers();
-    return lawyers.map((lawyer) => ({ slug: lawyer.slug }));
-  } catch {
-    return [];
-  }
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,

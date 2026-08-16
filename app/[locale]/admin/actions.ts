@@ -92,8 +92,8 @@ export async function createLawyerAccount(
       slug,
       name,
       initials: initialsFromName(name) || "LM",
-      headline_ka: "",
-      headline_en: "",
+      headline_ka: name,
+      headline_en: name,
       bio_ka: "",
       bio_en: "",
       published: true,
@@ -103,6 +103,7 @@ export async function createLawyerAccount(
   }
 
   revalidatePath("/", "layout");
+  revalidatePath(`/${locale}/lawyers/`);
   return { error: null, ok: true };
 }
 
