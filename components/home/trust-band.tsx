@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Avatar } from "@/components/shared/avatar";
@@ -14,127 +14,164 @@ type TrustBandProps = {
   lawyers: Lawyer[];
 };
 
+function pad(n: number) {
+  return String(n).padStart(2, "0");
+}
+
 export function TrustBand({ lawyers }: TrustBandProps) {
   const locale = useLocale() as Locale;
   const t = useTranslations("home");
 
-  /* Track the id rather than the object so the selection survives any
-     reordering of the roster it was picked from. */
   const [activeId, setActiveId] = useState(() => lawyers[0]?.id);
   const active = lawyers.find((l) => l.id === activeId) ?? lawyers[0];
 
-  /* One full row at every breakpoint — a wrapped remainder reads as a broken
-     grid rather than an index. The rest live behind "browse all lawyers". */
-  const roster = lawyers.slice(0, 6);
+  const cityCount = useMemo(
+    () => new Set(lawyers.map((l) => l.city)).size,
+    [lawyers]
+  );
+  const combinedYears = useMemo(
+    () => lawyers.reduce((sum, l) => sum + l.yearsExperience, 0),
+    [lawyers]
+  );
 
   if (!active) return null;
 
   return (
-    <section className="bg-espresso py-12 sm:py-14">
+    <section className="bg-espresso py-8 sm:py-9">
       <PageShell>
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
-          <div className="lg:max-w-md">
-            <h2 className="font-heading text-2xl font-semibold text-cream sm:text-3xl">
-              {t("verifiedLawyersTitle")}
-            </h2>
-            <p className="mt-2 font-body text-sm text-cream/50 sm:text-base">
-              {t("verifiedLawyersSubtitle")}
-            </p>
-            <Link
-              href="/lawyers"
-              /* Burgundy ink on espresso measures ~1.4:1, so the accent moves
-                 to the rule and the label stays cream. */
-              className="mt-4 inline-block font-body text-sm font-semibold text-cream underline decoration-burgundy decoration-2 underline-offset-4 transition-colors hover:decoration-cream"
-            >
-              {t("browseAllLawyers", { count: lawyers.length })} &rarr;
-            </Link>
-          </div>
-
-          {/*
-           * Master view — personnel file for whichever plate is selected below:
-           * one cream frame, three ruled zones (mounted photograph, identity
-           * block, action strip). Capped at 16rem so the 3:4 plate stays
-           * passport-sized instead of filling a phone screen.
-           */}
-          <Link
-            href={`/lawyers/${active.slug}`}
-            className="group flex w-full max-w-[16rem] shrink-0 flex-col rounded-none border border-cream/70 bg-cream/5 transition-colors hover:border-burgundy"
-          >
-            <div className="border-b border-cream/70 p-3">
-              <Avatar
-                initials={active.initials}
-                color={active.avatarColor}
-                photoUrl={active.photoUrl}
-                alt={active.name}
-                size="xl"
-                className="aspect-[3/4] h-auto w-full border border-cream/70 transition-colors group-hover:border-burgundy"
-              />
-            </div>
-            <div className="border-b border-cream/70 px-4 py-3">
-              <p className="font-heading text-lg font-semibold leading-tight text-cream">
-                {active.name}
-              </p>
-              <p className="mt-1 font-body text-sm text-cream/50">
-                {localizedLawyerHeadline(active, locale)}
-              </p>
-            </div>
-            <span className="px-4 py-2.5 font-mono text-[11px] uppercase tracking-[0.16em] text-cream/70 transition-colors group-hover:bg-burgundy group-hover:text-cream">
-              {t("viewLawyerProfile")} &rarr;
+        <div className="flex flex-col gap-3 border-b border-brass/40 pb-3 sm:flex-row sm:items-baseline sm:justify-between sm:gap-8">
+          <p className="font-mono text-[11px] uppercase leading-none tracking-[0.16em] text-brass">
+            <span className="text-cream">{pad(lawyers.length)}</span>
+            <span className="ml-2">{t("lawyerStatLawyers")}</span>
+            <span className="mx-3 text-brass/35" aria-hidden="true">
+              /
             </span>
+            <span className="text-cream">{pad(cityCount)}</span>
+            <span className="ml-2">{t("lawyerStatCities")}</span>
+            <span className="mx-3 text-brass/35" aria-hidden="true">
+              /
+            </span>
+            <span className="text-cream">{combinedYears}</span>
+            <span className="ml-2">{t("lawyerStatYears")}</span>
+          </p>
+          <Link
+            href="/lawyers"
+            className={cn(
+              "relative w-fit shrink-0 pb-[5px] font-body text-sm font-semibold text-cream no-underline",
+              "after:absolute after:bottom-0 after:left-0 after:h-px after:w-full after:origin-left after:bg-brass",
+              "after:scale-x-[0.4] after:transition-transform after:duration-300 after:ease-out",
+              "hover:after:scale-x-100 hover:after:bg-cream"
+            )}
+          >
+            {t("browseAllLawyers", { count: lawyers.length })}{" "}
+            <span aria-hidden="true">→</span>
           </Link>
         </div>
 
-        {/*
-         * Control index — every plate selects the file above. Ruled top and
-         * bottom (1px solid) so the row locks into the ledger. Exactly ONE
-         * row at every breakpoint: below lg the strip scrolls horizontally
-         * instead of wrapping into a broken second row; at lg it is the same
-         * six-column grid as before.
-         */}
-        <ul className="no-scrollbar mt-8 flex gap-4 overflow-x-auto border-y border-cream/25 py-8 lg:grid lg:grid-cols-6 lg:gap-5">
-          {roster.map((lawyer) => {
+        <h2 className="mt-5 max-w-3xl font-heading text-2xl font-semibold leading-snug text-cream sm:text-3xl">
+          {t("verifiedLawyersTitle")}
+        </h2>
+        <p className="mt-1.5 max-w-xl font-body text-sm text-cream/50">
+          {t("verifiedLawyersSubtitle")}
+        </p>
+
+        <ul className="mt-6 grid grid-cols-2 gap-px bg-brass/40 sm:grid-cols-4 lg:grid-cols-8">
+          {lawyers.map((lawyer, index) => {
             const isActive = lawyer.id === active.id;
 
             return (
-              <li key={lawyer.id} className="w-28 shrink-0 sm:w-32 lg:w-auto">
+              <li key={lawyer.id} className="bg-espresso">
                 <button
                   type="button"
                   onClick={() => setActiveId(lawyer.id)}
                   aria-pressed={isActive}
                   title={localizedLawyerHeadline(lawyer, locale)}
-                  className="group flex w-full cursor-pointer flex-col gap-2.5 text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-burgundy"
+                  className={cn(
+                    "group flex h-full w-full cursor-pointer flex-col text-left",
+                    "focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-burgundy"
+                  )}
                 >
-                  {/* Strict rectangle: 3:4 plate, 1px border; the active
-                      plate carries a hard 2px burgundy outline drawn inward
-                      along the sharp corners — no rings, no box growth. */}
-                  <Avatar
-                    initials={lawyer.initials}
-                    color={lawyer.avatarColor}
-                    photoUrl={lawyer.photoUrl}
-                    alt={lawyer.name}
-                    size="lg"
+                  <span className="relative block">
+                    <Avatar
+                      initials={lawyer.initials}
+                      color={lawyer.avatarColor}
+                      photoUrl={lawyer.photoUrl}
+                      alt={lawyer.name}
+                      size="lg"
+                      className="aspect-[4/5] h-auto w-full rounded-none border-0"
+                    />
+                    <span
+                      aria-hidden="true"
+                      className={cn(
+                        "absolute left-0 top-0 h-[2px] w-full bg-brass transition-opacity duration-200",
+                        isActive ? "opacity-100" : "opacity-0 group-hover:opacity-70"
+                      )}
+                    />
+                    <span className="absolute left-2 top-2 font-heading text-[10px] leading-none tracking-[0.08em] text-brass">
+                      {pad(index + 1)}
+                    </span>
+                  </span>
+                  <span
                     className={cn(
-                      "aspect-[3/4] h-auto w-full rounded-none border transition-colors duration-150",
-                      isActive
-                        ? "-outline-offset-2 border-burgundy outline-2 outline-burgundy"
-                        : "border-cream/70 group-hover:border-burgundy"
-                    )}
-                  />
-                  <p
-                    className={cn(
-                      "font-body text-xs font-medium leading-tight transition-colors sm:text-sm",
-                      isActive
-                        ? "text-cream"
-                        : "text-cream/80 group-hover:text-cream"
+                      "border-t px-2.5 py-2.5",
+                      isActive ? "border-brass/50 bg-cream/[0.04]" : "border-brass/20"
                     )}
                   >
-                    {lawyer.name}
-                  </p>
+                    <span
+                      className={cn(
+                        "relative inline-block pb-0.5 font-heading text-xs font-medium leading-snug sm:text-[13px]",
+                        "after:absolute after:bottom-0 after:left-0 after:h-px after:w-full after:origin-left after:bg-brass",
+                        "after:transition-transform after:duration-300 after:ease-out",
+                        isActive
+                          ? "text-cream after:scale-x-100"
+                          : "text-cream/80 after:scale-x-0 group-hover:text-cream group-hover:after:scale-x-100"
+                      )}
+                    >
+                      {lawyer.name}
+                    </span>
+                  </span>
                 </button>
               </li>
             );
           })}
         </ul>
+
+        <div
+          aria-live="polite"
+          className="flex flex-col gap-2 border-t border-brass/40 pt-3 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6"
+        >
+          <p className="min-w-0 font-body text-sm leading-relaxed text-cream/70">
+            <span className="font-heading font-semibold text-cream">
+              {active.name}
+            </span>
+            <span className="mx-2 text-brass/50" aria-hidden="true">
+              ·
+            </span>
+            <span>{localizedLawyerHeadline(active, locale)}</span>
+            <span className="mx-2 text-brass/50" aria-hidden="true">
+              ·
+            </span>
+            <span>{active.city}</span>
+            <span className="mx-2 text-brass/50" aria-hidden="true">
+              ·
+            </span>
+            <span>
+              {active.yearsExperience} {t("lawyerStatYears")}
+            </span>
+          </p>
+          <Link
+            href={`/lawyers/${active.slug}`}
+            className={cn(
+              "relative w-fit shrink-0 pb-[5px] font-body text-sm font-semibold text-cream no-underline",
+              "after:absolute after:bottom-0 after:left-0 after:h-px after:w-full after:origin-left after:bg-burgundy",
+              "after:scale-x-[0.4] after:transition-transform after:duration-300 after:ease-out",
+              "hover:text-burgundy-light hover:after:scale-x-100"
+            )}
+          >
+            {t("viewLawyerProfile")}
+            <span aria-hidden="true"> →</span>
+          </Link>
+        </div>
       </PageShell>
     </section>
   );

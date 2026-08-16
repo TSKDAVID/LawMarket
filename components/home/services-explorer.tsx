@@ -587,12 +587,20 @@ export function ServicesExplorer({
             <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {displayedServices.map((service, index) => {
                 const isLead = !isFiltering && index === 0;
+                const cat = categoryById.get(service.categoryId);
                 return (
                   <ServiceCard
                     key={service.id}
-                    service={service}
-                    category={categoryById.get(service.categoryId)}
-                    featured={isLead}
+                    category={
+                      cat ? localizedCategoryName(cat, locale) : ""
+                    }
+                    title={localizedServiceTitle(service, locale)}
+                    description={localizedServiceDescription(service, locale)}
+                    price={service.price}
+                    hasFreeConsultation
+                    detailsUrl={`/services/${service.slug}`}
+                    index={index + 1}
+                    icon={cat?.icon}
                     className={isLead ? "sm:col-span-2" : undefined}
                   />
                 );

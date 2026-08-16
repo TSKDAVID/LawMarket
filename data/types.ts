@@ -61,3 +61,18 @@ export type Review = {
   serviceId?: string;
   lawyerId?: string;
 };
+
+/** One calendar day of bookable consultation times (24h `HH:mm`). */
+export type AvailabilityDay = {
+  date: string;
+  slots: string[];
+};
+
+/**
+ * Contract for `getLawyerAvailability`. The booking UI reads only this
+ * shape — swap the function body for a live API without changing callers.
+ */
+export type LawyerAvailability = {
+  lawyerId: string;
+  availableDates: AvailabilityDay[];
+};

@@ -1,115 +1,140 @@
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { Card } from "@/components/ui/card";
-import { CategoryIcon } from "@/components/shared/category-icon";
-import type { Category, Service } from "@/data/types";
 import {
-  localizedCategoryName,
-  localizedServiceDescription,
-  localizedServiceTitle,
-} from "@/data/localize";
+  ConsultationClockIcon,
+  DossierIcon,
+} from "@/components/shared/dossier-icon";
 import { formatPrice } from "@/lib/utils";
-import type { Locale } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
-type ServiceCardProps = {
-  service: Service;
-  category?: Category;
+export type ServiceCardProps = {
+  category: string;
+  title: string;
+  description: string;
+  price: string | number;
+  hasFreeConsultation: boolean;
+  detailsUrl: string;
+  /** 1-based catalog index — rendered as 01, 02, 03… */
+  index?: number;
+  /** Category motif key (briefcase, stamp, shield, …). */
+  icon?: string;
   className?: string;
-  /** Lead card: larger title, permanent burgundy strip. */
-  featured?: boolean;
 };
 
 export function ServiceCard({
-  service,
   category,
+  title,
+  description,
+  price,
+  hasFreeConsultation,
+  detailsUrl,
+  index,
+  icon,
   className,
-  featured = false,
 }: ServiceCardProps) {
-  const locale = useLocale() as Locale;
   const t = useTranslations("common");
+  const displayPrice =
+    typeof price === "number" ? formatPrice(price) : price;
+  const indexLabel =
+    typeof index === "number"
+      ? String(index).padStart(2, "0")
+      : undefined;
 
   return (
-    <Link
-      href={`/services/${service.slug}`}
+    <article
       className={cn(
-        "group block h-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy",
+        "group relative flex h-full flex-col rounded-none bg-[#fdfbf6] p-6 sm:p-7",
+        "border border-[color-mix(in_srgb,var(--color-brass)_28%,var(--color-espresso)_12%)]",
+        "shadow-[0_6px_18px_-8px_rgba(28,18,16,0.04)]",
+        "transition-[transform,box-shadow,border-color] duration-300 ease-out",
+        "hover:-translate-y-1 hover:border-brass/55",
+        "hover:shadow-[0_14px_28px_-12px_rgba(28,18,16,0.12)]",
         className
       )}
     >
-      {/*
-       * Ledger block: strict 1px ink frame, ruled zones, and a mechanical
-       * hover — the card lifts toward the cursor and casts a hard offset
-       * shadow, like a stamped file pulled off the stack.
-       */}
-      <Card className="relative flex h-full flex-col rounded-none border-espresso bg-parchment shadow-none transition-transform duration-150 group-hover:-translate-x-1 group-hover:-translate-y-1 group-hover:shadow-[4px_4px_0_0_#1c1210]">
-        {featured && (
-          <span
-            aria-hidden="true"
-            className="absolute inset-x-0 top-0 h-[2px] bg-burgundy"
-          />
-        )}
-
-        {/* Zone 1 — dossier header: category label */}
-        <div className="border-b border-espresso/20 px-5 py-3">
-          <span className="inline-flex items-center gap-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-brass">
-            {category ? (
-              <>
-                <CategoryIcon name={category.icon} className="h-3.5 w-3.5" />
-                {localizedCategoryName(category, locale)}
-              </>
-            ) : (
-              <>&nbsp;</>
-            )}
+      <div className="flex items-start gap-2.5">
+        {indexLabel && (
+          <span className="font-heading text-[13px] leading-none tracking-[0.04em] text-brass">
+            {indexLabel}
           </span>
-        </div>
+        )}
+        <DossierIcon name={icon} className="mt-px h-4 w-4 text-brass" />
+      </div>
 
-        {/* Zone 2 — title and clamped ledger note */}
-        <div className="flex flex-1 flex-col px-5 py-4">
-          <h3
+      {category && (
+        <p className="mt-4 w-fit font-heading text-[11px] font-medium tracking-[0.08em] text-brass underline decoration-brass/40 decoration-1 underline-offset-[5px]">
+          {category}
+        </p>
+      )}
+
+      <h3 className="mt-3 font-heading text-lg font-semibold leading-snug text-espresso sm:text-xl">
+        <Link
+          href={detailsUrl}
+          className="rounded-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy"
+        >
+          {title}
+        </Link>
+      </h3>
+
+      <p className="mt-2 min-h-[2.85rem] flex-1 font-body text-sm leading-relaxed text-espresso/60 line-clamp-2">
+        {description}
+      </p>
+
+      <Link
+        href={detailsUrl}
+        className={cn(
+          "relative mt-3 w-fit pb-0.5 font-body text-sm font-semibold text-espresso",
+          "after:absolute after:bottom-0 after:left-0 after:h-px after:w-0 after:bg-burgundy",
+          "after:transition-[width] after:duration-300 after:ease-out",
+          "hover:text-burgundy hover:after:w-full",
+          "group-hover:text-burgundy group-hover:after:w-full",
+          "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy"
+        )}
+      >
+        {t("viewDetails")}
+        <span aria-hidden="true"> →</span>
+      </Link>
+
+      <div className="mt-5 border-t border-brass/25 pt-5">
+        {hasFreeConsultation && (
+          <Link
+            href={`${detailsUrl}#consult`}
             className={cn(
-              "font-heading font-semibold text-espresso",
-              featured ? "text-xl sm:text-2xl" : "text-lg"
+              "flex h-12 w-full items-center justify-center gap-2.5 rounded-none",
+              "border-[1.5px] border-burgundy bg-transparent px-3",
+              "font-body text-[13px] font-semibold text-burgundy sm:text-sm",
+              "transition-colors duration-200 ease-out",
+              "hover:bg-burgundy hover:text-cream",
+              "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy"
             )}
           >
-            {localizedServiceTitle(service, locale)}
-          </h3>
-          {/*
-           * Layout lock: min-height reserves exactly two lines
-           * (2 × 0.875rem × 1.625 ≈ 2.85rem) so a one-line description
-           * cannot pull the footer rule out of alignment with row siblings.
-           */}
-          <div className="mt-2 min-h-[2.85rem] flex-1">
-            <p className="line-clamp-2 font-body text-sm leading-relaxed text-espresso/70">
-              {localizedServiceDescription(service, locale)}
-            </p>
-          </div>
-        </div>
+            <ConsultationClockIcon className="h-4 w-4" />
+            {t("bookFreeConsultation")}
+          </Link>
+        )}
 
-        {/*
-         * Zone 3 — ledger row: consultation note left, price right. The note is
-         * capped at 60% so it breaks under itself instead of crowding the
-         * price, and both columns resolve to 2rem (min-h-8 / leading-8) so the
-         * footer keeps identical height across the row however the note wraps.
-         */}
-        <div className="flex items-center justify-between gap-3 border-t border-espresso/20 px-5 py-3.5">
-          <p className="flex min-h-8 min-w-0 max-w-[60%] items-center font-mono text-xs leading-4 tracking-[0.08em] text-espresso/55">
-            {t("freeConsultation")}
-          </p>
-          <p className="shrink-0 text-right font-heading text-xl font-bold leading-8 tracking-tight text-espresso sm:text-2xl">
-            {formatPrice(service.price)}
-          </p>
-        </div>
-
-        {/* Zone 4 — action strip: inverts hard on hover */}
         <div
-          aria-hidden="true"
-          className="flex items-center justify-between border-t border-espresso/20 px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.16em] text-burgundy transition-colors group-hover:bg-burgundy group-hover:text-cream"
+          className={cn(
+            "flex items-baseline justify-between gap-3",
+            hasFreeConsultation ? "mt-2.5" : "mt-0"
+          )}
         >
-          <span>{t("viewDetails")}</span>
-          <span>&rarr;</span>
+          <p className="font-heading text-[14px] font-medium tracking-tight text-espresso">
+            {displayPrice}
+          </p>
+          <Link
+            href={detailsUrl}
+            className={cn(
+              "font-body text-[13px] font-normal text-espresso/55 no-underline",
+              "hover:text-espresso hover:underline hover:decoration-brass hover:decoration-1 hover:underline-offset-4",
+              "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy"
+            )}
+          >
+            {t("buyNow")}
+            <span aria-hidden="true"> →</span>
+          </Link>
         </div>
-      </Card>
-    </Link>
+      </div>
+    </article>
   );
 }

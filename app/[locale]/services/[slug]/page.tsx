@@ -4,16 +4,15 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ArrowLeft, Check, Clock, Info, ShieldCheck } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Badge } from "@/components/ui/badge";
-import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar } from "@/components/shared/avatar";
 import { CategoryIcon } from "@/components/shared/category-icon";
 import { ServiceCard } from "@/components/shared/service-card";
+import { ConsultationBooking } from "@/components/booking/consultation-booking";
 import { ServiceFaqList } from "@/components/services/service-faq-list";
 import {
   getCategoryById,
   getLawyerById,
-  getLawyers,
   getRelatedServices,
   getServiceBySlug,
   getServices,
@@ -26,7 +25,7 @@ import {
   localizedServiceIncludes,
   localizedServiceTitle,
 } from "@/data/localize";
-import { formatPrice, cn } from "@/lib/utils";
+import { formatPrice } from "@/lib/utils";
 import type { Locale } from "@/i18n/routing";
 
 export async function generateStaticParams() {
@@ -177,16 +176,18 @@ export default async function ServiceDetailPage({
                 </Link>
               )}
 
-              <button
-                type="button"
-                disabled
-                className={cn(
-                  buttonVariants({ variant: "primary", size: "lg" }),
-                  "mt-6 w-full cursor-not-allowed opacity-70"
-                )}
-              >
-                {tCommon("bookNow")}
-              </button>
+              {lawyer && (
+                <ConsultationBooking
+                  lawyer={{
+                    id: lawyer.id,
+                    name: lawyer.name,
+                    initials: lawyer.initials,
+                    avatarColor: lawyer.avatarColor,
+                    photoUrl: lawyer.photoUrl,
+                  }}
+                  className="mt-6"
+                />
+              )}
 
               <p className="mt-4 flex items-start gap-2 font-body text-xs leading-relaxed text-espresso/45">
                 <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
@@ -208,11 +209,19 @@ export default async function ServiceDetailPage({
             {t("relatedServices")}
           </h2>
           <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {related.map((relatedService) => (
+            {related.map((relatedService, index) => (
               <ServiceCard
                 key={relatedService.id}
-                service={relatedService}
-                category={category}
+                category={
+                  category ? localizedCategoryName(category, loc) : ""
+                }
+                title={localizedServiceTitle(relatedService, loc)}
+                description={localizedServiceDescription(relatedService, loc)}
+                price={relatedService.price}
+                hasFreeConsultation
+                detailsUrl={`/services/${relatedService.slug}`}
+                index={index + 1}
+                icon={category?.icon}
               />
             ))}
           </div>

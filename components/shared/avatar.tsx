@@ -47,7 +47,12 @@ export function Avatar({
           alt={alt ?? initials}
           fill
           sizes={imageSizes[size]}
-          className="object-cover object-top"
+          className="object-cover object-[center_18%] saturate-[0.82] contrast-[1.06] transition-[filter] duration-300 group-hover:saturate-[0.95]"
+        />
+        {/* Warm espresso grade so mixed source photos read as one set. */}
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-espresso/[0.13] mix-blend-multiply transition-opacity duration-300 group-hover:opacity-50"
         />
       </div>
     );

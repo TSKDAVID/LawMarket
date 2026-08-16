@@ -232,13 +232,24 @@ export function ServicesCatalog({
         <div className="lg:col-span-9">
           {filteredServices.length > 0 ? (
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-              {filteredServices.map((service) => (
-                <ServiceCard
-                  key={service.id}
-                  service={service}
-                  category={categoryById.get(service.categoryId)}
-                />
-              ))}
+              {filteredServices.map((service, index) => {
+                const cat = categoryById.get(service.categoryId);
+                return (
+                  <ServiceCard
+                    key={service.id}
+                    category={
+                      cat ? localizedCategoryName(cat, locale) : ""
+                    }
+                    title={localizedServiceTitle(service, locale)}
+                    description={localizedServiceDescription(service, locale)}
+                    price={service.price}
+                    hasFreeConsultation
+                    detailsUrl={`/services/${service.slug}`}
+                    index={index + 1}
+                    icon={cat?.icon}
+                  />
+                );
+              })}
             </div>
           ) : (
             <div className="rounded-[var(--radius-card)] border border-dashed border-espresso/15 bg-white/50 px-6 py-14 text-center">
