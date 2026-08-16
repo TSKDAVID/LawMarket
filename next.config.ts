@@ -34,16 +34,15 @@ const supabaseHost = supabaseUrl
   : undefined;
 
 const nextConfig: NextConfig = {
-  // Prefer server-only aliases at build so a stale NEXT_PUBLIC_* on Vercel
-  // does not bake a dead Supabase host into the client bundle.
-  env: process.env.SUPABASE_URL
-    ? {
-        NEXT_PUBLIC_SUPABASE_URL: supabaseUrl,
-        ...(process.env.SUPABASE_ANON_KEY
-          ? { NEXT_PUBLIC_SUPABASE_ANON_KEY: supabaseAnonKey }
-          : {}),
-      }
-    : {},
+  // Only override the inlined pair when both server aliases are set.
+  // Overriding the URL alone against a stale NEXT_PUBLIC anon key breaks login.
+  env:
+    process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY
+      ? {
+          NEXT_PUBLIC_SUPABASE_URL: supabaseUrl,
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: supabaseAnonKey,
+        }
+      : {},
   trailingSlash: true,
   images: {
     remotePatterns: [

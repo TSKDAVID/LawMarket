@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect, unstable_rethrow } from "next/navigation";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { homePathForRole, mapAuthError, pathFromNextParam } from "@/lib/auth-paths";
 import { routing } from "@/i18n/routing";
@@ -32,31 +32,27 @@ export async function signIn(
     return { error: "missingFields" };
   }
 
-  try {
-    const supabase = await createClient();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      return { error: mapAuthError(error) };
-    }
-
-    const { data } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", (await supabase.auth.getUser()).data.user?.id ?? "")
-      .maybeSingle();
-
-    revalidatePath("/", "layout");
-    redirect(
-      localePath(
-        locale,
-        pathFromNextParam(String(formData.get("next") ?? "")) ??
-          homePathForRole(data?.role)
-      )
-    );
-  } catch (error) {
-    unstable_rethrow(error);
-    return { error: "signInFailed" };
+  const supabase = await createClient();
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) {
+    console.error("[signIn]", error.code, error.message);
+    return { error: mapAuthError(error) };
   }
+
+  const { data } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", (await supabase.auth.getUser()).data.user?.id ?? "")
+    .maybeSingle();
+
+  revalidatePath("/", "layout");
+  redirect(
+    localePath(
+      locale,
+      pathFromNextParam(String(formData.get("next") ?? "")) ??
+        homePathForRole(data?.role)
+    )
+  );
 }
 
 export async function signUp(
