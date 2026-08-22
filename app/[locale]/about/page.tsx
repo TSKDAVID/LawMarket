@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { BadgeCheck, Receipt, ShieldCheck } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Card, CardContent } from "@/components/ui/card";
@@ -34,6 +34,7 @@ export default async function AboutPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale as Locale);
+  const t = await getTranslations("about");
   const page = await getSitePage("about");
   const loc = locale as Locale;
   const sections = localizedSections(page, loc);
@@ -62,7 +63,7 @@ export default async function AboutPage({
         {values.length > 0 && (
           <>
             <h2 className="mt-16 text-center font-heading text-2xl font-semibold text-espresso">
-              What we stand for
+              {t("valuesTitle")}
             </h2>
             <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-3">
               {values.map((value, index) => {

@@ -11,6 +11,9 @@ import {
   CmsEditorShell,
   CmsSectionBlock,
 } from "@/components/admin/cms-editor-shell";
+import { CmsPageExtraFields } from "@/components/admin/cms-page-extra-fields";
+import type { CmsTextFieldValues } from "@/lib/cms/admin-data";
+import { CMS_PAGE_EXTRA_KEYS } from "@/lib/cms/message-registry";
 import {
   saveSitePage,
   type CmsState,
@@ -29,9 +32,11 @@ const emptySection = (): SitePageSection => ({
 export function CmsPageForm({
   locale,
   page,
+  textValues,
 }: {
   locale: string;
   page: SitePage;
+  textValues: Record<string, CmsTextFieldValues>;
 }) {
   const t = useTranslations("admin.content");
   const [sections, setSections] = useState<SitePageSection[]>(
@@ -40,10 +45,14 @@ export function CmsPageForm({
   const [state, action] = useActionState(saveSitePage, initial);
 
   const isLegal = page.slug === "terms" || page.slug === "privacy";
+  const extraKeys = CMS_PAGE_EXTRA_KEYS[page.slug] ?? [];
   const navSections = [
     { id: "cms-page-meta", label: t("sectionPageMeta") },
     ...(isLegal
       ? [{ id: "cms-page-notice", label: t("sectionLegalNotice") }]
+      : []),
+    ...(extraKeys.length > 0
+      ? [{ id: "cms-page-extras", label: t("sectionPageExtras") }]
       : []),
     { id: "cms-page-sections", label: t("sections") },
   ];
@@ -112,6 +121,23 @@ export function CmsPageForm({
                   />
                 </div>
               </div>
+            </CmsSectionBlock>
+          )}
+
+          {extraKeys.length > 0 && (
+            <CmsSectionBlock
+              id="cms-page-extras"
+              title={t("sectionPageExtras")}
+            >
+              <p className="mb-4 font-body text-sm text-espresso/65">
+                {t("pageExtrasHint")}
+              </p>
+              <CmsPageExtraFields
+                keys={extraKeys}
+                values={textValues}
+                englishLabel={t("english")}
+                georgianLabel={t("georgian")}
+              />
             </CmsSectionBlock>
           )}
 

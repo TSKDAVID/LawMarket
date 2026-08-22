@@ -6,6 +6,7 @@ import { requireAdmin } from "@/lib/auth";
 import { createAdminClient, createClient } from "@/lib/supabase/server";
 import { CMS_CONTENT_KEYS } from "@/lib/cms/content-groups";
 import { cmsFormFieldName } from "@/lib/cms/form-fields";
+import { CMS_PAGE_EXTRA_KEYS } from "@/lib/cms/message-registry";
 import { readCmsTextStyleFormData } from "@/lib/cms/text-style";
 import {
   composeAccentMarkup,
@@ -95,7 +96,14 @@ export async function saveSiteText(
   const admin = await requireAdmin(locale);
   const db = createAdminClient();
 
-  let savedCount = 0;
+  const rowsToUpsert: Array<{
+    key: string;
+    value_en: string;
+    value_ka: string;
+    style_en: Json;
+    style_ka: Json;
+    updated_by: string;
+  }> = [];
 
   for (const key of CMS_CONTENT_KEYS) {
     const enField = cmsFormFieldName(key, "en");
@@ -117,45 +125,44 @@ export async function saveSiteText(
     const styleEn = readCmsTextStyleFormData(formData, key, "en");
     const styleKa = readCmsTextStyleFormData(formData, key, "ka");
 
-    const rowPayload = {
+    rowsToUpsert.push({
       key,
       value_en: valueEn,
       value_ka: valueKa,
       style_en: styleEn as Json,
       style_ka: styleKa as Json,
       updated_by: admin.id,
-    };
-
-    let { error } = await db.from("site_content").upsert(rowPayload, {
-      onConflict: "key",
     });
-
-    if (
-      error &&
-      /style_(en|ka)/i.test(error.message) &&
-      /column/i.test(error.message)
-    ) {
-      const { error: legacyError } = await db.from("site_content").upsert(
-        {
-          key,
-          value_en: valueEn,
-          value_ka: valueKa,
-          updated_by: admin.id,
-        },
-        { onConflict: "key" }
-      );
-      error = legacyError;
-    }
-
-    if (error) {
-      console.error("[cms] site_content", key, error.message);
-      return { error: "saveFailed" };
-    }
-    savedCount += 1;
   }
 
-  if (savedCount === 0) {
+  if (rowsToUpsert.length === 0) {
     return { error: "missingFields" };
+  }
+
+  let { error } = await db.from("site_content").upsert(rowsToUpsert, {
+    onConflict: "key",
+  });
+
+  if (
+    error &&
+    /style_(en|ka)/i.test(error.message) &&
+    /column/i.test(error.message)
+  ) {
+    const legacyRows = rowsToUpsert.map((row) => ({
+      key: row.key,
+      value_en: row.value_en,
+      value_ka: row.value_ka,
+      updated_by: row.updated_by,
+    }));
+    const legacy = await db.from("site_content").upsert(legacyRows, {
+      onConflict: "key",
+    });
+    error = legacy.error;
+  }
+
+  if (error) {
+    console.error("[cms] site_content batch", error.message);
+    return { error: "saveFailed" };
   }
 
   revalidateSite(locale);
@@ -291,6 +298,30 @@ export async function saveSitePage(
   if (error) {
     console.error("[cms] site_pages", slug, error.message);
     return { error: "saveFailed" };
+  }
+
+  const extraKeys = CMS_PAGE_EXTRA_KEYS[slug as SitePageSlug] ?? [];
+  if (extraKeys.length > 0) {
+    const db = createAdminClient();
+    const extraRows = extraKeys.map((key) => {
+      const rawEn = String(formData.get(cmsFormFieldName(key, "en")) ?? "");
+      const rawKa = String(formData.get(cmsFormFieldName(key, "ka")) ?? "");
+      return {
+        key,
+        value_en: sanitizePlainCmsText(rawEn),
+        value_ka: sanitizePlainCmsText(rawKa),
+        updated_by: admin.id,
+      };
+    });
+
+    const { error: extraError } = await db
+      .from("site_content")
+      .upsert(extraRows, { onConflict: "key" });
+
+    if (extraError) {
+      console.error("[cms] site_content page extras", slug, extraError.message);
+      return { error: "saveFailed" };
+    }
   }
 
   revalidateSite(locale);
