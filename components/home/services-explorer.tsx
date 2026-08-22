@@ -1,15 +1,8 @@
 "use client";
 
-import {
-  useEffect,
-  useId,
-  useMemo,
-  useRef,
-  useState,
-  type KeyboardEvent,
-} from "react";
+import { useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { ArrowRight, ChevronDown, Search, X } from "lucide-react";
+import { ArrowRight, Search, X } from "lucide-react";
 import { Link, useRouter } from "@/i18n/navigation";
 import { CategoryIcon } from "@/components/shared/category-icon";
 import { ServiceCard } from "@/components/shared/service-card";
@@ -42,196 +35,6 @@ type ServicesExplorerProps = {
   heroMedia: HeroMediaSettings;
 };
 
-type FilterOption = {
-  value: string;
-  label: string;
-};
-
-/*
- * Custom dropdown (W3C select-only combobox pattern) — a native <select>
- * cannot style its open panel, and this design demands a sharp-cornered
- * cream ledger with inverted burgundy hover rows.
- */
-function FilterDropdown({
-  label,
-  value,
-  options,
-  onChange,
-  className,
-}: {
-  label: string;
-  value: string;
-  options: FilterOption[];
-  onChange: (value: string) => void;
-  className?: string;
-}) {
-  const baseId = useId();
-  const labelId = `${baseId}-label`;
-  const listboxId = `${baseId}-listbox`;
-  const optionId = (index: number) => `${baseId}-option-${index}`;
-
-  const [open, setOpen] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const rootRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const listRef = useRef<HTMLUListElement>(null);
-
-  const selectedIndex = Math.max(
-    0,
-    options.findIndex((option) => option.value === value)
-  );
-  const selected = options[selectedIndex];
-
-  /* Clicking anywhere outside the component closes the panel. */
-  useEffect(() => {
-    if (!open) return;
-    const onPointerDown = (e: PointerEvent) => {
-      if (rootRef.current && !rootRef.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("pointerdown", onPointerDown);
-    return () => document.removeEventListener("pointerdown", onPointerDown);
-  }, [open]);
-
-  const openMenu = () => {
-    setActiveIndex(selectedIndex);
-    setOpen(true);
-  };
-
-  const moveActive = (index: number) => {
-    const clamped = Math.min(Math.max(index, 0), options.length - 1);
-    setActiveIndex(clamped);
-    listRef.current?.children[clamped]?.scrollIntoView({ block: "nearest" });
-  };
-
-  const selectAt = (index: number) => {
-    const option = options[index];
-    if (option) onChange(option.value);
-    setOpen(false);
-    buttonRef.current?.focus();
-  };
-
-  const onTriggerKeyDown = (e: KeyboardEvent<HTMLButtonElement>) => {
-    if (!open) {
-      if (["ArrowDown", "ArrowUp", "Enter", " ", "Home", "End"].includes(e.key)) {
-        e.preventDefault();
-        openMenu();
-      }
-      return;
-    }
-
-    switch (e.key) {
-      case "ArrowDown":
-        e.preventDefault();
-        moveActive(activeIndex + 1);
-        break;
-      case "ArrowUp":
-        e.preventDefault();
-        moveActive(activeIndex - 1);
-        break;
-      case "Home":
-        e.preventDefault();
-        moveActive(0);
-        break;
-      case "End":
-        e.preventDefault();
-        moveActive(options.length - 1);
-        break;
-      case "Enter":
-      case " ":
-        e.preventDefault();
-        selectAt(activeIndex);
-        break;
-      case "Escape":
-        /* Close only the dropdown — keep the results panel open. */
-        e.preventDefault();
-        e.stopPropagation();
-        setOpen(false);
-        break;
-      case "Tab":
-        setOpen(false);
-        break;
-    }
-  };
-
-  return (
-    <div ref={rootRef} className={cn("relative", className)}>
-      <button
-        ref={buttonRef}
-        type="button"
-        role="combobox"
-        aria-haspopup="listbox"
-        aria-expanded={open}
-        aria-controls={listboxId}
-        aria-labelledby={labelId}
-        aria-activedescendant={open ? optionId(activeIndex) : undefined}
-        onClick={() => (open ? setOpen(false) : openMenu())}
-        onKeyDown={onTriggerKeyDown}
-        className="w-full rounded-none px-4 py-3 text-left outline-none transition-colors hover:bg-espresso/[0.04] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-burgundy sm:px-5"
-      >
-        <span
-          id={labelId}
-          className="block font-mono text-[11px] uppercase tracking-[0.16em] text-espresso/65"
-        >
-          {label}
-        </span>
-        <span className="mt-1 flex items-center justify-between gap-2">
-          <span className="truncate font-body text-sm font-medium text-espresso">
-            {selected?.label}
-          </span>
-          <ChevronDown
-            aria-hidden="true"
-            className={cn(
-              "h-3.5 w-3.5 shrink-0 text-espresso/60 transition-transform",
-              open && "rotate-180"
-            )}
-          />
-        </span>
-      </button>
-
-      {open && (
-        <ul
-          ref={listRef}
-          id={listboxId}
-          role="listbox"
-          aria-labelledby={labelId}
-          className="absolute inset-x-0 top-full z-50 -mt-px max-h-72 overflow-y-auto border border-espresso bg-cream shadow-[4px_4px_0_0_rgba(28,18,16,0.15)] [scrollbar-color:var(--color-espresso)_transparent] [scrollbar-width:thin]"
-        >
-          {options.map((option, index) => {
-            const isSelected = option.value === value;
-            const isActive = index === activeIndex;
-            return (
-              <li
-                key={option.value || "__all"}
-                id={optionId(index)}
-                role="option"
-                aria-selected={isSelected}
-                onPointerEnter={() => setActiveIndex(index)}
-                onClick={() => selectAt(index)}
-                className={cn(
-                  "flex cursor-pointer items-center justify-between gap-3 border-b border-espresso/15 px-4 py-3 font-body text-sm leading-snug transition-colors last:border-b-0",
-                  isActive
-                    ? "bg-burgundy text-cream"
-                    : "bg-transparent text-espresso"
-                )}
-              >
-                <span>{option.label}</span>
-                {isSelected && (
-                  <span
-                    aria-hidden="true"
-                    className="h-1.5 w-1.5 shrink-0 bg-current"
-                  />
-                )}
-              </li>
-            );
-          })}
-        </ul>
-      )}
-    </div>
-  );
-}
-
 export function ServicesExplorer({
   services,
   categories,
@@ -242,7 +45,6 @@ export function ServicesExplorer({
   const locale = useLocale() as Locale;
   const t = useTranslations("home");
   const tCommon = useTranslations("common");
-  const tLawyers = useTranslations("lawyers");
   const tServices = useTranslations("services");
   const router = useRouter();
 
@@ -250,41 +52,16 @@ export function ServicesExplorer({
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
-  /* Quick filters — practice area and city. */
-  const [heroCategory, setHeroCategory] = useState("");
-  const [heroCity, setHeroCity] = useState("");
-
-  const lawyerById = useMemo(
-    () => new Map(lawyers.map((l) => [l.id, l])),
-    [lawyers]
-  );
   const categoryById = useMemo(
     () => new Map(categories.map((c) => [c.id, c])),
     [categories]
   );
-  const cities = useMemo(
-    () => Array.from(new Set(lawyers.map((l) => l.city))),
-    [lawyers]
-  );
-
-  /*
-   * The search answers WHERE THE EYE IS: matches surface in a panel
-   * directly under the search console. Quick filters work without typing —
-   * picking a practice area or city refines the list on the fly.
-   */
-  const filtersActive = heroCategory !== "" || heroCity !== "";
 
   const suggestions = useMemo(() => {
     const q = query.trim();
-    if (!q && !filtersActive) return [];
+    if (!q) return [];
 
     return services.filter((service) => {
-      if (heroCategory && service.categoryId !== heroCategory) return false;
-      if (heroCity && lawyerById.get(service.lawyerId)?.city !== heroCity) {
-        return false;
-      }
-      if (!q) return true;
-
       const category = categoryById.get(service.categoryId);
       const haystack = [
         localizedServiceTitle(service, locale),
@@ -294,20 +71,10 @@ export function ServicesExplorer({
 
       return matchesQuery(haystack, q);
     });
-  }, [
-    services,
-    query,
-    filtersActive,
-    heroCategory,
-    heroCity,
-    lawyerById,
-    categoryById,
-    locale,
-  ]);
+  }, [services, query, categoryById, locale]);
 
   const topSuggestions = suggestions.slice(0, 6);
-  const showSuggestions =
-    suggestionsOpen && (query.trim().length > 0 || filtersActive);
+  const showSuggestions = suggestionsOpen && query.trim().length > 0;
 
   const isFiltering = activeCategory !== null;
 
@@ -324,15 +91,8 @@ export function ServicesExplorer({
     : sortByPopularity(services).slice(0, 6);
 
   const submitSearch = () => {
-    const params = new URLSearchParams();
     const q = query.trim();
-    if (q) params.set("q", q);
-    const categorySlug = heroCategory
-      ? categoryById.get(heroCategory)?.slug
-      : undefined;
-    if (categorySlug) params.set("category", categorySlug);
-    const qs = params.toString();
-    router.push(qs ? `/services?${qs}` : "/services");
+    router.push(q ? `/services?q=${encodeURIComponent(q)}` : "/services");
   };
 
   return (
@@ -504,40 +264,6 @@ export function ServicesExplorer({
                           {t("searchButton")}
                         </span>
                       </button>
-                    </div>
-
-                    {/* Quick filters — choose on the fly, no typing required */}
-                    <div className="grid grid-cols-1 divide-y divide-espresso/12 border-t border-espresso/10 bg-white sm:grid-cols-2 sm:divide-x sm:divide-y-0">
-                      <FilterDropdown
-                        label={tLawyers("filterByPracticeArea")}
-                        value={heroCategory}
-                        options={[
-                          { value: "", label: tCommon("all") },
-                          ...categories.map((category) => ({
-                            value: category.id,
-                            label: localizedCategoryName(category, locale),
-                          })),
-                        ]}
-                        onChange={(v) => {
-                          setHeroCategory(v);
-                          setSuggestionsOpen(true);
-                        }}
-                      />
-                      <FilterDropdown
-                        label={tLawyers("filterByCity")}
-                        value={heroCity}
-                        options={[
-                          { value: "", label: tCommon("all") },
-                          ...cities.map((city) => ({
-                            value: city,
-                            label: city,
-                          })),
-                        ]}
-                        onChange={(v) => {
-                          setHeroCity(v);
-                          setSuggestionsOpen(true);
-                        }}
-                      />
                     </div>
                   </div>
 
