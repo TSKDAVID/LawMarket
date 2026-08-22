@@ -18,7 +18,7 @@ import {
   CmsStyleToolbar,
 } from "@/components/admin/cms-style-picker";
 import {
-  cmsStyleClasses,
+  cmsEditorFieldClasses,
   cmsStyleSeed,
   mergeCmsTextStyle,
   type CmsTextStyle,
@@ -67,8 +67,11 @@ function CmsLangColumn({
 
   useEffect(() => {
     setLiveText(textValue);
+  }, [textValue]);
+
+  useEffect(() => {
     setLiveStyle(mergeCmsTextStyle(styleValue));
-  }, [textValue, styleSeed, styleValue]);
+  }, [styleSeed, styleValue]);
 
   if (isAccent && accentLabels) {
     return (
@@ -110,14 +113,14 @@ function CmsLangColumn({
           rows={3}
           value={liveText}
           onChange={(e) => setLiveText(e.target.value)}
-          className={cn(cmsStyleClasses(liveStyle, fieldKey))}
+          className={cn(cmsEditorFieldClasses(liveStyle, fieldKey))}
         />
       ) : (
         <Input
           name={cmsFormFieldName(fieldKey, lang)}
           value={liveText}
           onChange={(e) => setLiveText(e.target.value)}
-          className={cn(cmsStyleClasses(liveStyle, fieldKey))}
+          className={cn(cmsEditorFieldClasses(liveStyle, fieldKey))}
         />
       )}
       <CmsStylePreview

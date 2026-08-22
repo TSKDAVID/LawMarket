@@ -160,6 +160,14 @@ export function cmsStyleClasses(
   );
 }
 
+/** Admin text fields — never apply CMS text color (cream on white looks empty). */
+export function cmsEditorFieldClasses(
+  style: CmsTextStyle | undefined,
+  contentKey?: string
+) {
+  return cmsStyleClasses({ ...mergeCmsTextStyle(style), color: "inherit" }, contentKey);
+}
+
 export function readCmsTextStyleFormData(
   formData: FormData,
   key: string,
