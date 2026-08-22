@@ -37,7 +37,7 @@ export function CmsPageForm({
   const [sections, setSections] = useState<SitePageSection[]>(
     page.sections.length > 0 ? page.sections : [emptySection()]
   );
-  const [state, action, pending] = useActionState(saveSitePage, initial);
+  const [state, action] = useActionState(saveSitePage, initial);
 
   const isLegal = page.slug === "terms" || page.slug === "privacy";
   const navSections = [
@@ -54,12 +54,7 @@ export function CmsPageForm({
       <input type="hidden" name="slug" value={page.slug} />
       <input type="hidden" name="section_count" value={sections.length} />
 
-      <CmsEditorShell
-        formId={FORM_ID}
-        sections={navSections}
-        pending={pending}
-        status={state}
-      >
+      <CmsEditorShell sections={navSections} status={state}>
         <div className="space-y-10">
           <CmsSectionBlock id="cms-page-meta" title={t("sectionPageMeta")}>
             <div className="grid gap-4 lg:grid-cols-2">

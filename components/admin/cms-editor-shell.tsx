@@ -1,6 +1,8 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
+import { useFormStatus } from "react-dom";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -10,32 +12,50 @@ export type CmsNavSection = {
   label: string;
 };
 
-export function CmsStatusBanner({
-  ok,
-  error,
+type CmsToast = {
+  type: "ok" | "error";
+  messageKey: string;
+};
+
+function CmsSaveButton({ label, savingLabel }: { label: string; savingLabel: string }) {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" disabled={pending}>
+      {pending ? savingLabel : label}
+    </Button>
+  );
+}
+
+function CmsFloatingToast({
+  toast,
+  toastKey,
 }: {
-  ok?: boolean;
-  error: string | null;
+  toast: CmsToast | null;
+  toastKey: number;
 }) {
   const t = useTranslations("admin.content");
 
-  if (ok) {
-    return (
-      <p className="mb-6 rounded-card border border-burgundy/20 bg-burgundy-tint/40 px-4 py-3 font-body text-sm text-burgundy-dark">
-        {t("saved")}
-      </p>
-    );
-  }
+  if (!toast || typeof document === "undefined") return null;
 
-  if (error) {
-    return (
-      <p className="mb-6 rounded-card border border-burgundy/30 bg-burgundy-tint/50 px-4 py-3 font-body text-sm text-burgundy-dark">
-        {t(error)}
+  return createPortal(
+    <div
+      key={toastKey}
+      role={toast.type === "ok" ? "status" : "alert"}
+      aria-live="polite"
+      className={cn(
+        "fixed bottom-24 left-4 right-4 z-[200] animate-fade-up sm:left-auto sm:right-8 sm:max-w-md",
+        "rounded-card border-2 border-espresso px-4 py-3 shadow-[5px_5px_0_0_var(--color-espresso)]",
+        toast.type === "ok"
+          ? "bg-burgundy text-cream"
+          : "border-burgundy/40 bg-burgundy-tint/95 text-burgundy-dark"
+      )}
+    >
+      <p className="font-body text-sm font-medium leading-snug">
+        {toast.type === "ok" ? t("saved") : t(toast.messageKey)}
       </p>
-    );
-  }
-
-  return null;
+    </div>,
+    document.body
+  );
 }
 
 function scrollToSection(id: string) {
@@ -77,48 +97,72 @@ export function CmsSectionNav({
   );
 }
 
-export function CmsStickySaveBar({
-  formId,
-  pending,
-}: {
-  formId: string;
-  pending: boolean;
-}) {
+export function CmsStickySaveBar({ toast }: { toast: CmsToast | null }) {
   const t = useTranslations("admin.content");
 
   return (
     <div
-      className="sticky bottom-0 z-20 -mx-1 mt-8 border-t border-espresso/15 bg-cream/95 px-1 py-4 backdrop-blur-sm"
+      className={cn(
+        "sticky bottom-0 z-30 -mx-1 mt-8 border-t px-1 py-4 backdrop-blur-sm",
+        toast?.type === "ok"
+          ? "border-burgundy/30 bg-burgundy-tint/30"
+          : "border-espresso/15 bg-cream/95"
+      )}
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="font-body text-xs text-espresso/60">{t("saveHint")}</p>
-        <Button type="submit" form={formId} disabled={pending}>
-          {pending ? t("saving") : t("save")}
-        </Button>
+        {toast ? (
+          <p
+            role={toast.type === "ok" ? "status" : "alert"}
+            className={cn(
+              "animate-fade-up font-body text-sm font-medium leading-snug",
+              toast.type === "ok" ? "text-burgundy" : "text-burgundy-dark"
+            )}
+          >
+            {toast.type === "ok" ? t("saved") : t(toast.messageKey)}
+          </p>
+        ) : (
+          <p className="font-body text-xs text-espresso/60">{t("saveHint")}</p>
+        )}
+        <CmsSaveButton label={t("save")} savingLabel={t("saving")} />
       </div>
     </div>
   );
 }
 
 export function CmsEditorShell({
-  formId,
   sections,
-  pending,
   children,
   status,
 }: {
-  formId: string;
   sections: CmsNavSection[];
-  pending: boolean;
   children: ReactNode;
   status: { ok?: boolean; error: string | null };
 }) {
   const t = useTranslations("admin.content");
+  const { pending } = useFormStatus();
+  const [toast, setToast] = useState<CmsToast | null>(null);
+  const [toastKey, setToastKey] = useState(0);
+  const wasPending = useRef(false);
+
+  useEffect(() => {
+    if (wasPending.current && !pending && status.ok && !status.error) {
+      setToast({ type: "ok", messageKey: "saved" });
+      setToastKey((key) => key + 1);
+    } else if (wasPending.current && !pending && status.error) {
+      setToast({ type: "error", messageKey: status.error });
+      setToastKey((key) => key + 1);
+    }
+    wasPending.current = pending;
+  }, [pending, status.error, status.ok]);
+
+  useEffect(() => {
+    if (!toast || toast.type !== "ok") return;
+    const timer = window.setTimeout(() => setToast(null), 3000);
+    return () => window.clearTimeout(timer);
+  }, [toast, toastKey]);
 
   return (
     <div className="min-w-0">
-      <CmsStatusBanner ok={status.ok} error={status.error} />
-
       <div className="lg:grid lg:grid-cols-[11.5rem_minmax(0,1fr)] lg:gap-10">
         <div className="mb-6 lg:mb-0 lg:sticky lg:top-24 lg:self-start">
           <p className="mb-2 font-mono text-[11px] uppercase tracking-widest text-espresso/50 lg:mb-3">
@@ -130,7 +174,8 @@ export function CmsEditorShell({
         <div className="min-w-0 pb-2">{children}</div>
       </div>
 
-      <CmsStickySaveBar formId={formId} pending={pending} />
+      <CmsStickySaveBar toast={toast} />
+      <CmsFloatingToast toast={toast} toastKey={toastKey} />
     </div>
   );
 }

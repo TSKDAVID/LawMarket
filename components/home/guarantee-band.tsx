@@ -2,6 +2,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { GuaranteeSeal } from "@/components/brand/guarantee-seal";
 import { PageShell } from "@/components/layout/page-shell";
+import { CmsStyledText } from "@/components/cms/cms-style-provider";
 
 export function GuaranteeBand() {
   const t = useTranslations("home");
@@ -19,12 +20,20 @@ export function GuaranteeBand() {
             <GuaranteeSeal className="h-7 w-7 text-brass" />
           </div>
           <div>
-            <p className="font-heading text-base font-semibold text-espresso sm:text-lg">
+            <CmsStyledText
+              contentKey="home.guaranteeTitle"
+              as="p"
+              className="font-heading text-base font-semibold text-espresso sm:text-lg"
+            >
               {t("guaranteeTitle")}
-            </p>
-            <p className="mt-0.5 font-body text-sm text-espresso/65">
+            </CmsStyledText>
+            <CmsStyledText
+              contentKey="home.guaranteeSubtitle"
+              as="p"
+              className="mt-0.5 font-body text-sm text-espresso/65"
+            >
               {t("guaranteeSubtitle")}
-            </p>
+            </CmsStyledText>
           </div>
         </div>
         <Link

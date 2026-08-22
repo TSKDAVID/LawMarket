@@ -5,10 +5,14 @@ import { LogoLockup } from "@/components/brand/logo-lockup";
 import { PageShell } from "@/components/layout/page-shell";
 import type { SiteSettings } from "@/lib/cms/types";
 import type { Locale } from "@/i18n/routing";
+import type { CmsTextStyle } from "@/lib/cms/text-style";
+import { cmsStyleClasses } from "@/lib/cms/text-style";
+import { cn } from "@/lib/utils";
 
 type FooterProps = {
   settings: SiteSettings;
   locale: Locale;
+  cmsStyles: Record<string, CmsTextStyle>;
 };
 
 function localizedLocation(settings: SiteSettings, locale: Locale) {
@@ -17,7 +21,7 @@ function localizedLocation(settings: SiteSettings, locale: Locale) {
     : settings.contact_location_en;
 }
 
-export async function Footer({ settings, locale }: FooterProps) {
+export async function Footer({ settings, locale, cmsStyles }: FooterProps) {
   const t = await getTranslations("common");
   const tNav = await getTranslations("common.nav");
 
@@ -70,10 +74,20 @@ export async function Footer({ settings, locale }: FooterProps) {
         <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-5">
           <div className="sm:col-span-2 lg:col-span-2">
             <LogoLockup className="text-cream" />
-            <p className="mt-4 max-w-sm font-body text-sm leading-relaxed text-cream/85">
+            <p
+              className={cn(
+                "mt-4 max-w-sm font-body text-sm leading-relaxed text-cream/85",
+                cmsStyleClasses(cmsStyles["common.footer.description"])
+              )}
+            >
               {t("footer.description")}
             </p>
-            <p className="mt-3 font-body text-xs text-cream/55">
+            <p
+              className={cn(
+                "mt-3 font-body text-xs text-cream/55",
+                cmsStyleClasses(cmsStyles["common.tagline"])
+              )}
+            >
               {t("tagline")}
             </p>
             {socialLinks.length > 0 && (

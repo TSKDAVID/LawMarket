@@ -32,6 +32,7 @@ import {
   HeroMediaSlot,
   type HeroMediaSettings,
 } from "@/components/home/hero-media-slot";
+import { CmsStyledText } from "@/components/cms/cms-style-provider";
 
 type ServicesExplorerProps = {
   services: Service[];
@@ -359,7 +360,9 @@ export function ServicesExplorer({
             {/* Row 2 — headline left, media slot right (fixed text slots, not fixed hero height) */}
             <div className="border-b border-espresso/15 lg:grid lg:grid-cols-2 lg:items-stretch lg:min-h-[26rem] xl:min-h-[30rem]">
               <div className="flex flex-col justify-center px-4 py-10 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
-                <h1
+                <CmsStyledText
+                  contentKey="home.heroTitle"
+                  as="h1"
                   className="animate-fade-up max-w-none min-h-[5.5rem] font-heading text-[clamp(2.25rem,4vw,3.5rem)] font-semibold leading-[1.1] tracking-[-0.03em] text-espresso sm:min-h-[7.5rem] lg:max-w-[36rem]"
                 >
                   {t.rich("heroTitle", {
@@ -367,12 +370,14 @@ export function ServicesExplorer({
                       <span className="text-burgundy">{chunks}</span>
                     ),
                   })}
-                </h1>
-                <p
+                </CmsStyledText>
+                <CmsStyledText
+                  contentKey="home.heroSubtitle"
+                  as="p"
                   className="animate-fade-up mt-5 max-w-lg line-clamp-3 min-h-[4.25rem] font-body text-base leading-relaxed text-espresso/75 sm:min-h-[5rem] sm:text-lg"
                 >
                   {t("heroSubtitle")}
-                </p>
+                </CmsStyledText>
               </div>
 
               <HeroMediaSlot settings={heroMedia} />
@@ -605,14 +610,22 @@ export function ServicesExplorer({
         <div className="pt-10 sm:pt-14">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div className="brand-rule">
-              <h2 className="font-heading text-2xl font-semibold text-espresso sm:text-3xl">
+              <CmsStyledText
+                contentKey="home.popularServicesTitle"
+                as="h2"
+                className="font-heading text-2xl font-semibold text-espresso sm:text-3xl"
+              >
                 {isFiltering ? t("searchResultsTitle") : t("popularServicesTitle")}
-              </h2>
-              <p className="mt-1 font-body text-sm text-espresso/65">
+              </CmsStyledText>
+              <CmsStyledText
+                contentKey="home.popularServicesSubtitle"
+                as="p"
+                className="mt-1 font-body text-sm text-espresso/65"
+              >
                 {isFiltering
                   ? tServices("resultsCount", { count: filteredServices.length })
                   : t("popularServicesSubtitle")}
-              </p>
+              </CmsStyledText>
             </div>
             {!isFiltering && (
               <Link

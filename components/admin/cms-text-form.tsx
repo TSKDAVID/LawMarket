@@ -1,8 +1,11 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import { CMS_CONTENT_GROUPS } from "@/lib/cms/content-groups";
+import { cmsFormFieldName } from "@/lib/cms/form-fields";
+import type { CmsTextFieldValues } from "@/lib/cms/admin-data";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -11,6 +14,17 @@ import {
 } from "@/components/admin/cms-editor-shell";
 import { CmsAccentEditor } from "@/components/admin/cms-accent-editor";
 import {
+  CmsStylePreview,
+  CmsStyleToolbar,
+} from "@/components/admin/cms-style-picker";
+import {
+  cmsStyleClasses,
+  cmsStyleSeed,
+  mergeCmsTextStyle,
+  type CmsTextStyle,
+} from "@/lib/cms/text-style";
+import { cn } from "@/lib/utils";
+import {
   saveSiteText,
   type CmsState,
 } from "@/app/[locale]/admin/content/actions";
@@ -18,31 +32,144 @@ import {
 const FORM_ID = "cms-text-form";
 const initial: CmsState = { error: null };
 
+function CmsLangColumn({
+  fieldKey,
+  lang,
+  langLabel,
+  multiline,
+  values,
+  isAccent,
+  accentLabels,
+  previewLabel,
+}: {
+  fieldKey: string;
+  lang: "en" | "ka";
+  langLabel: string;
+  multiline?: boolean;
+  values: CmsTextFieldValues;
+  isAccent?: boolean;
+  accentLabels?: {
+    highlight: string;
+    before: string;
+    after: string;
+    preview: string;
+    highlightLimit: string;
+    explain: string;
+  };
+  previewLabel: string;
+}) {
+  const textValue = values[lang === "en" ? "en" : "ka"];
+  const styleValue = values[lang === "en" ? "style_en" : "style_ka"];
+  const styleSeed = cmsStyleSeed(styleValue);
+  const inputKey = `${fieldKey}-${lang}-${textValue}-${styleSeed}`;
+
+  const [liveText, setLiveText] = useState(textValue);
+  const [liveStyle, setLiveStyle] = useState(() => mergeCmsTextStyle(styleValue));
+
+  useEffect(() => {
+    setLiveText(textValue);
+    setLiveStyle(mergeCmsTextStyle(styleValue));
+  }, [textValue, styleSeed, styleValue]);
+
+  if (isAccent && accentLabels) {
+    return (
+      <div>
+        <CmsAccentEditor
+          key={`${fieldKey}-accent-${lang}-${textValue}`}
+          name={cmsFormFieldName(fieldKey, lang)}
+          langLabel={langLabel}
+          defaultValue={textValue}
+          highlightLabel={accentLabels.highlight}
+          beforeLabel={accentLabels.before}
+          afterLabel={accentLabels.after}
+          previewLabel={accentLabels.preview}
+          highlightWordLimitHint={accentLabels.highlightLimit}
+          explain={accentLabels.explain}
+          isGeorgian={lang === "ka"}
+          previewStyle={liveStyle}
+        />
+        <CmsStyleToolbar
+          contentKey={fieldKey}
+          lang={lang}
+          defaultStyle={styleValue}
+          styleSeed={styleSeed}
+          onStyleChange={setLiveStyle}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <label className="mb-1 block font-mono text-xs text-espresso/70">
+        {langLabel}
+      </label>
+      {multiline ? (
+        <Textarea
+          key={inputKey}
+          name={cmsFormFieldName(fieldKey, lang)}
+          rows={3}
+          defaultValue={textValue}
+          onChange={(e) => setLiveText(e.target.value)}
+          className={cn(cmsStyleClasses(liveStyle))}
+        />
+      ) : (
+        <Input
+          key={inputKey}
+          name={cmsFormFieldName(fieldKey, lang)}
+          defaultValue={textValue}
+          onChange={(e) => setLiveText(e.target.value)}
+          className={cn(cmsStyleClasses(liveStyle))}
+        />
+      )}
+      <CmsStylePreview text={liveText} style={liveStyle} label={previewLabel} />
+      <CmsStyleToolbar
+        contentKey={fieldKey}
+        lang={lang}
+        defaultStyle={styleValue}
+        styleSeed={styleSeed}
+        onStyleChange={setLiveStyle}
+      />
+    </div>
+  );
+}
+
 export function CmsTextForm({
   locale,
   values,
 }: {
   locale: string;
-  values: Record<string, { en: string; ka: string }>;
+  values: Record<string, CmsTextFieldValues>;
 }) {
   const t = useTranslations("admin.content");
-  const [state, action, pending] = useActionState(saveSiteText, initial);
+  const router = useRouter();
+  const [state, action] = useActionState(saveSiteText, initial);
+
+  useEffect(() => {
+    if (state.ok) {
+      router.refresh();
+    }
+  }, [state.ok, router]);
 
   const navSections = CMS_CONTENT_GROUPS.map((group) => ({
     id: `cms-section-${group.id}`,
     label: group.labelKey ? t(group.labelKey) : group.label,
   }));
 
+  const accentLabels = {
+    highlight: t("accentHighlight"),
+    before: t("accentBefore"),
+    after: t("accentAfter"),
+    preview: t("accentPreview"),
+    highlightLimit: t("accentHighlightLimit"),
+    explain: t("accentHeadlineExplain"),
+  };
+
   return (
     <form id={FORM_ID} action={action}>
       <input type="hidden" name="locale" value={locale} />
 
-      <CmsEditorShell
-        formId={FORM_ID}
-        sections={navSections}
-        pending={pending}
-        status={state}
-      >
+      <CmsEditorShell sections={navSections} status={state}>
         <div className="space-y-10">
           {CMS_CONTENT_GROUPS.map((group) => (
             <CmsSectionBlock
@@ -65,67 +192,30 @@ export function CmsTextForm({
                     </p>
                   )}
                   <div className="mt-3 grid gap-4 lg:grid-cols-2">
-                    {field.format === "accent" ? (
-                      <>
-                        <CmsAccentEditor
-                          name={`${field.key}__en`}
-                          langLabel={t("english")}
-                          defaultValue={values[field.key]?.en ?? ""}
-                          highlightLabel={t("accentHighlight")}
-                          beforeLabel={t("accentBefore")}
-                          afterLabel={t("accentAfter")}
-                          previewLabel={t("accentPreview")}
-                          highlightWordLimitHint={t("accentHighlightLimit")}
-                        />
-                        <CmsAccentEditor
-                          name={`${field.key}__ka`}
-                          langLabel={t("georgian")}
-                          defaultValue={values[field.key]?.ka ?? ""}
-                          highlightLabel={t("accentHighlight")}
-                          beforeLabel={t("accentBefore")}
-                          afterLabel={t("accentAfter")}
-                          previewLabel={t("accentPreview")}
-                          highlightWordLimitHint={t("accentHighlightLimit")}
-                        />
-                      </>
-                    ) : (
-                      <>
-                        <div>
-                          <label className="mb-1 block font-mono text-xs text-espresso/70">
-                            {t("english")}
-                          </label>
-                          {field.multiline ? (
-                            <Textarea
-                              name={`${field.key}__en`}
-                              rows={3}
-                              defaultValue={values[field.key]?.en ?? ""}
-                            />
-                          ) : (
-                            <Input
-                              name={`${field.key}__en`}
-                              defaultValue={values[field.key]?.en ?? ""}
-                            />
-                          )}
-                        </div>
-                        <div>
-                          <label className="mb-1 block font-mono text-xs text-espresso/70">
-                            {t("georgian")}
-                          </label>
-                          {field.multiline ? (
-                            <Textarea
-                              name={`${field.key}__ka`}
-                              rows={3}
-                              defaultValue={values[field.key]?.ka ?? ""}
-                            />
-                          ) : (
-                            <Input
-                              name={`${field.key}__ka`}
-                              defaultValue={values[field.key]?.ka ?? ""}
-                            />
-                          )}
-                        </div>
-                      </>
-                    )}
+                    <CmsLangColumn
+                      fieldKey={field.key}
+                      lang="en"
+                      langLabel={t("english")}
+                      multiline={field.multiline}
+                      values={values[field.key]}
+                      isAccent={field.format === "accent"}
+                      accentLabels={
+                        field.format === "accent" ? accentLabels : undefined
+                      }
+                      previewLabel={t("stylePreview")}
+                    />
+                    <CmsLangColumn
+                      fieldKey={field.key}
+                      lang="ka"
+                      langLabel={t("georgian")}
+                      multiline={field.multiline}
+                      values={values[field.key]}
+                      isAccent={field.format === "accent"}
+                      accentLabels={
+                        field.format === "accent" ? accentLabels : undefined
+                      }
+                      previewLabel={t("stylePreview")}
+                    />
                   </div>
                 </div>
               ))}

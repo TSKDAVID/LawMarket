@@ -4,6 +4,8 @@ import { CmsTextForm } from "@/components/admin/cms-text-form";
 import { getCmsTextValues } from "@/lib/cms/admin-data";
 import type { Locale } from "@/i18n/routing";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminContentTextPage({
   params,
 }: {

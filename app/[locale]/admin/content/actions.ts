@@ -3,8 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { routing } from "@/i18n/routing";
 import { requireAdmin } from "@/lib/auth";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient, createClient } from "@/lib/supabase/server";
 import { CMS_CONTENT_KEYS } from "@/lib/cms/content-groups";
+import { readCmsTextFormData } from "@/lib/cms/form-fields";
+import { readCmsTextStyleFormData } from "@/lib/cms/text-style";
 import {
   composeAccentMarkup,
   HERO_HIGHLIGHT_MAX_WORDS,
@@ -40,6 +42,8 @@ function localeOf(formData: FormData) {
 function revalidateSite(locale: string) {
   revalidatePath("/", "layout");
   revalidatePath(`/${locale}/`);
+  revalidatePath(`/${locale}/admin/content`);
+  revalidatePath(`/${locale}/admin/content/text`);
   for (const slug of SITE_PAGE_SLUGS) {
     revalidatePath(`/${locale}/${slug === "how-it-works" ? "how-it-works" : slug}/`);
   }
@@ -89,11 +93,15 @@ export async function saveSiteText(
 ): Promise<CmsState> {
   const locale = localeOf(formData);
   const admin = await requireAdmin(locale);
-  const supabase = await createClient();
+  const db = createAdminClient();
+
+  const submitted = readCmsTextFormData(formData, CMS_CONTENT_KEYS);
+  let savedCount = 0;
 
   for (const key of CMS_CONTENT_KEYS) {
-    const rawEn = String(formData.get(`${key}__en`) ?? "");
-    const rawKa = String(formData.get(`${key}__ka`) ?? "");
+    const row = submitted.get(key) ?? { en: "", ka: "" };
+    const rawEn = row.en || String(formData.get(`${key}__en`) ?? "");
+    const rawKa = row.ka || String(formData.get(`${key}__ka`) ?? "");
     const valueEn =
       key === "home.heroTitle"
         ? sanitizeHeroTitle(rawEn)
@@ -104,16 +112,48 @@ export async function saveSiteText(
         : sanitizePlainCmsText(rawKa);
     if (!valueEn && !valueKa) continue;
 
-    const { error } = await supabase.from("site_content").upsert({
+    const styleEn = readCmsTextStyleFormData(formData, key, "en");
+    const styleKa = readCmsTextStyleFormData(formData, key, "ka");
+
+    const rowPayload = {
       key,
       value_en: valueEn,
       value_ka: valueKa,
+      style_en: styleEn as Json,
+      style_ka: styleKa as Json,
       updated_by: admin.id,
+    };
+
+    let { error } = await db.from("site_content").upsert(rowPayload, {
+      onConflict: "key",
     });
+
+    if (
+      error &&
+      /style_(en|ka)/i.test(error.message) &&
+      /column/i.test(error.message)
+    ) {
+      const { error: legacyError } = await db.from("site_content").upsert(
+        {
+          key,
+          value_en: valueEn,
+          value_ka: valueKa,
+          updated_by: admin.id,
+        },
+        { onConflict: "key" }
+      );
+      error = legacyError;
+    }
+
     if (error) {
       console.error("[cms] site_content", key, error.message);
       return { error: "saveFailed" };
     }
+    savedCount += 1;
+  }
+
+  if (savedCount === 0) {
+    return { error: "missingFields" };
   }
 
   revalidateSite(locale);

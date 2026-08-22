@@ -9,6 +9,7 @@ import {
 } from "@/data/localize";
 import type { Locale } from "@/i18n/routing";
 import { PageShell } from "@/components/layout/page-shell";
+import { CmsStyledText } from "@/components/cms/cms-style-provider";
 import { cn } from "@/lib/utils";
 
 type ReviewsSectionProps = {
@@ -113,12 +114,20 @@ export function ReviewsSection({
     <section className="bg-cream py-12 sm:py-14">
       <PageShell>
         <div className="max-w-xl">
-          <h2 className="font-heading text-2xl font-semibold text-espresso sm:text-3xl">
+          <CmsStyledText
+            contentKey="home.reviewsTitle"
+            as="h2"
+            className="font-heading text-2xl font-semibold text-espresso sm:text-3xl"
+          >
             {t("reviewsTitle")}
-          </h2>
-          <p className="mt-2 font-body text-sm text-espresso/65">
+          </CmsStyledText>
+          <CmsStyledText
+            contentKey="home.reviewsSubtitle"
+            as="p"
+            className="mt-2 font-body text-sm text-espresso/65"
+          >
             {t("reviewsSubtitle")}
-          </p>
+          </CmsStyledText>
         </div>
 
         <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">

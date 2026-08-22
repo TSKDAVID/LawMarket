@@ -20,6 +20,7 @@ import type {
   SiteContentRow,
 } from "@/lib/supabase/database.types";
 import { decodePathSlug } from "@/lib/utils";
+import { normalizeCmsTextStyle } from "@/lib/cms/text-style";
 
 /**
  * Read side of the catalog. Every function keeps the signature it had when the
@@ -386,7 +387,12 @@ export async function getSiteContent(): Promise<SiteContent> {
   const { data } = await supabase.from("site_content").select("*");
   const map: SiteContent = {};
   for (const row of (data ?? []) as SiteContentRow[]) {
-    map[row.key] = { en: row.value_en, ka: row.value_ka };
+    map[row.key] = {
+      en: row.value_en,
+      ka: row.value_ka,
+      style_en: normalizeCmsTextStyle(row.style_en),
+      style_ka: normalizeCmsTextStyle(row.style_ka),
+    };
   }
   return map;
 }

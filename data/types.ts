@@ -81,11 +81,21 @@ export type Review = {
   lawyerId?: string;
 };
 
+import type { CmsTextStyle } from "@/lib/cms/text-style";
+
 /**
  * Editable copy from the `site_content` table, keyed by slot
  * (e.g. `hero.title`). Missing keys fall back to the bundled translations.
  */
-export type SiteContent = Record<string, { en: string; ka: string }>;
+export type SiteContent = Record<
+  string,
+  {
+    en: string;
+    ka: string;
+    style_en?: CmsTextStyle;
+    style_ka?: CmsTextStyle;
+  }
+>;
 
 /** One calendar day of bookable consultation times (24h `HH:mm`). */
 export type AvailabilityDay = {

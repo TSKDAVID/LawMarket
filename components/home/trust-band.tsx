@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Avatar } from "@/components/shared/avatar";
 import { PageShell } from "@/components/layout/page-shell";
+import { CmsStyledText } from "@/components/cms/cms-style-provider";
 import type { Lawyer } from "@/data/types";
 import { localizedLawyerHeadline } from "@/data/localize";
 import type { Locale } from "@/i18n/routing";
@@ -68,12 +69,20 @@ export function TrustBand({ lawyers }: TrustBandProps) {
           </Link>
         </div>
 
-        <h2 className="mt-5 max-w-3xl font-heading text-2xl font-semibold leading-snug text-cream sm:text-3xl">
+        <CmsStyledText
+          contentKey="home.verifiedLawyersTitle"
+          as="h2"
+          className="mt-5 max-w-3xl font-heading text-2xl font-semibold leading-snug text-cream sm:text-3xl"
+        >
           {t("verifiedLawyersTitle")}
-        </h2>
-        <p className="mt-1.5 max-w-xl font-body text-sm text-cream/70">
+        </CmsStyledText>
+        <CmsStyledText
+          contentKey="home.verifiedLawyersSubtitle"
+          as="p"
+          className="mt-1.5 max-w-xl font-body text-sm text-cream/70"
+        >
           {t("verifiedLawyersSubtitle")}
-        </p>
+        </CmsStyledText>
 
         {/* Tiles carry their own hairline so unused columns stay invisible. */}
         <ul className="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-[repeat(auto-fill,minmax(9.5rem,11rem))]">

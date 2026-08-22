@@ -24,7 +24,7 @@ export function CmsContactForm({
   settings: SiteSettings;
 }) {
   const t = useTranslations("admin.content");
-  const [state, action, pending] = useActionState(saveSiteContact, initial);
+  const [state, action] = useActionState(saveSiteContact, initial);
 
   const navSections = [
     { id: "cms-contact-display", label: t("sectionContactDisplay") },
@@ -37,12 +37,7 @@ export function CmsContactForm({
     <form id={FORM_ID} action={action}>
       <input type="hidden" name="locale" value={locale} />
 
-      <CmsEditorShell
-        formId={FORM_ID}
-        sections={navSections}
-        pending={pending}
-        status={state}
-      >
+      <CmsEditorShell sections={navSections} status={state}>
         <div className="space-y-10">
           <CmsSectionBlock
             id="cms-contact-display"

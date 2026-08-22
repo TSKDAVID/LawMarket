@@ -2,6 +2,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { buttonVariants } from "@/components/ui/button";
 import { PageShell } from "@/components/layout/page-shell";
+import { CmsStyledText } from "@/components/cms/cms-style-provider";
 import { cn } from "@/lib/utils";
 
 export function CtaSection() {
@@ -12,12 +13,20 @@ export function CtaSection() {
     <section className="bg-espresso py-10 sm:py-12">
       <PageShell>
         <div className="max-w-xl">
-          <h2 className="font-heading text-2xl font-semibold text-cream sm:text-3xl">
+          <CmsStyledText
+            contentKey="home.ctaTitle"
+            as="h2"
+            className="font-heading text-2xl font-semibold text-cream sm:text-3xl"
+          >
             {t("ctaTitle")}
-          </h2>
-          <p className="mt-2 font-body text-cream/70 sm:text-base">
+          </CmsStyledText>
+          <CmsStyledText
+            contentKey="home.ctaSubtitle"
+            as="p"
+            className="mt-2 font-body text-cream/70 sm:text-base"
+          >
             {t("ctaSubtitle")}
-          </p>
+          </CmsStyledText>
           <div className="mt-6 flex flex-wrap items-center gap-4">
             {/*
              * Stamped block: no radius, no blur. The hover lifts the button

@@ -25,7 +25,7 @@ export function CmsMediaForm({
   settings: SiteSettings;
 }) {
   const t = useTranslations("admin.content");
-  const [state, action, pending] = useActionState(saveHeroMedia, initial);
+  const [state, action] = useActionState(saveHeroMedia, initial);
 
   const navSections = [
     { id: "cms-media-setup", label: t("sectionMediaSetup") },
@@ -37,12 +37,7 @@ export function CmsMediaForm({
     <form id={FORM_ID} action={action}>
       <input type="hidden" name="locale" value={locale} />
 
-      <CmsEditorShell
-        formId={FORM_ID}
-        sections={navSections}
-        pending={pending}
-        status={state}
-      >
+      <CmsEditorShell sections={navSections} status={state}>
         <div className="space-y-10">
           <CmsSectionBlock id="cms-media-setup" title={t("sectionMediaSetup")}>
             <p className="font-body text-sm text-espresso/70">{t("mediaHint")}</p>

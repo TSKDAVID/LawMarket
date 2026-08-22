@@ -12,6 +12,8 @@ import { Footer } from "@/components/layout/footer";
 import { IntlProvider } from "@/components/providers/intl-provider";
 import { getSessionUser } from "@/lib/auth";
 import { getSiteSettings } from "@/lib/cms/settings";
+import { getCmsStyleMap } from "@/lib/cms/admin-data";
+import { CmsStyleProvider } from "@/components/cms/cms-style-provider";
 import "../globals.css";
 
 export const viewport: Viewport = {
@@ -69,6 +71,7 @@ export default async function LocaleLayout({
   const messages = await getMessagesForLocale(locale as Locale);
   const settings = await getSiteSettings();
   const user = await getSessionUser();
+  const cmsStyles = await getCmsStyleMap(locale === "ka" ? "ka" : "en");
 
   return (
     <html lang={locale} data-locale={locale} data-scroll-behavior="smooth">
@@ -92,14 +95,20 @@ export default async function LocaleLayout({
       )}
       <body className="flex min-h-screen flex-col bg-cream font-body text-espresso antialiased">
         <IntlProvider locale={locale} messages={messages}>
-          <GlobalBanner visible={settings.banner_visible} />
-          <Header
-            signedIn={Boolean(user)}
-            role={user?.profile?.role ?? null}
-            label={user?.profile?.full_name ?? user?.email ?? null}
-          />
-          <main className="flex-1">{children}</main>
-          <Footer settings={settings} locale={locale as Locale} />
+          <CmsStyleProvider styles={cmsStyles}>
+            <GlobalBanner visible={settings.banner_visible} />
+            <Header
+              signedIn={Boolean(user)}
+              role={user?.profile?.role ?? null}
+              label={user?.profile?.full_name ?? user?.email ?? null}
+            />
+            <main className="flex-1">{children}</main>
+            <Footer
+              settings={settings}
+              locale={locale as Locale}
+              cmsStyles={cmsStyles}
+            />
+          </CmsStyleProvider>
         </IntlProvider>
       </body>
     </html>

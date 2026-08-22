@@ -153,6 +153,8 @@ export type SiteContentRow = {
   key: string;
   value_en: string;
   value_ka: string;
+  style_en: Json | null;
+  style_ka: Json | null;
   description: string | null;
   updated_at: string;
   updated_by: string | null;
