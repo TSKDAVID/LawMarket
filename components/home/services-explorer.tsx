@@ -28,13 +28,17 @@ import {
   FindServiceMark,
   PostProblemMark,
 } from "@/components/brand/hero-path-marks";
-import { HeroMediaSlot } from "@/components/home/hero-media-slot";
+import {
+  HeroMediaSlot,
+  type HeroMediaSettings,
+} from "@/components/home/hero-media-slot";
 
 type ServicesExplorerProps = {
   services: Service[];
   categories: Category[];
   lawyers: Lawyer[];
   postHref: string;
+  heroMedia: HeroMediaSettings;
 };
 
 type FilterOption = {
@@ -232,6 +236,7 @@ export function ServicesExplorer({
   categories,
   lawyers,
   postHref,
+  heroMedia,
 }: ServicesExplorerProps) {
   const locale = useLocale() as Locale;
   const t = useTranslations("home");
@@ -368,7 +373,7 @@ export function ServicesExplorer({
                 </p>
               </div>
 
-              <HeroMediaSlot />
+              <HeroMediaSlot settings={heroMedia} />
             </div>
 
             {/* Row 3 — path buttons, full hero width */}

@@ -126,7 +126,7 @@ export async function reviewChangeRequest(
     .select("*")
     .eq("id", id)
     .maybeSingle();
-  if (error || !request || request.status !== "pending") {
+  if (error || !request || request.status === "approved") {
     return { error: "createFailed" };
   }
 
@@ -142,13 +142,16 @@ export async function reviewChangeRequest(
       .eq("id", id);
     if (updateError) return { error: "createFailed" };
     revalidatePath(`/${locale}/admin/`);
+    revalidatePath(`/${locale}/portal/requests/`);
+    revalidatePath(`/${locale}/portal/services/`);
+    revalidatePath(`/${locale}/portal/cases/`);
     return { error: null, ok: true, decision: "rejected" };
   }
 
   const payload = request.payload as Record<string, Json | undefined>;
-  let createdId: string | null = null;
+  let createdId: string | null = request.created_record_id;
 
-  if (request.kind === "service") {
+  if (!createdId && request.kind === "service") {
     const { data: lawyer } = await supabase
       .from("lawyers")
       .select("slug")
@@ -203,7 +206,7 @@ export async function reviewChangeRequest(
     if (lawyer?.slug) revalidatePath(`/${locale}/lawyers/${lawyer.slug}/`);
   }
 
-  if (request.kind === "case") {
+  if (!createdId && request.kind === "case") {
     const { data: created, error: insertError } = await supabase
       .from("lawyer_cases")
       .insert({
@@ -243,6 +246,9 @@ export async function reviewChangeRequest(
   if (updateError) return { error: "createFailed" };
 
   revalidatePath(`/${locale}/admin/`);
+  revalidatePath(`/${locale}/portal/requests/`);
+  revalidatePath(`/${locale}/portal/services/`);
+  revalidatePath(`/${locale}/portal/cases/`);
   return { error: null, ok: true, decision: "approved" };
 }
 

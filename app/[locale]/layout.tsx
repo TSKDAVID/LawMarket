@@ -11,6 +11,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { IntlProvider } from "@/components/providers/intl-provider";
 import { getSessionUser } from "@/lib/auth";
+import { getSiteSettings } from "@/lib/cms/settings";
 import "../globals.css";
 
 export const viewport: Viewport = {
@@ -65,7 +66,8 @@ export default async function LocaleLayout({
   }
 
   setRequestLocale(locale as Locale);
-  const messages = getMessagesForLocale(locale as Locale);
+  const messages = await getMessagesForLocale(locale as Locale);
+  const settings = await getSiteSettings();
   const user = await getSessionUser();
 
   return (
@@ -90,14 +92,14 @@ export default async function LocaleLayout({
       )}
       <body className="flex min-h-screen flex-col bg-cream font-body text-espresso antialiased">
         <IntlProvider locale={locale} messages={messages}>
-          <GlobalBanner />
+          <GlobalBanner visible={settings.banner_visible} />
           <Header
             signedIn={Boolean(user)}
             role={user?.profile?.role ?? null}
             label={user?.profile?.full_name ?? user?.email ?? null}
           />
           <main className="flex-1">{children}</main>
-          <Footer />
+          <Footer settings={settings} locale={locale as Locale} />
         </IntlProvider>
       </body>
     </html>

@@ -8,6 +8,13 @@ export function asRecord(payload: Json): Record<string, Json | undefined> {
   return payload as Record<string, Json | undefined>;
 }
 
+export function payloadText(payload: Json, key: string): string {
+  const value = asRecord(payload)[key];
+  if (value == null) return "";
+  if (Array.isArray(value)) return value.map(String).join("\n");
+  return String(value);
+}
+
 export function requestTitle(payload: Json, locale: Locale) {
   const rec = asRecord(payload);
   const ka = String(rec.title_ka ?? "");

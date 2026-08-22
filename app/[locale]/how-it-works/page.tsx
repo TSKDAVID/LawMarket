@@ -1,11 +1,20 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { setRequestLocale } from "next-intl/server";
 import { Search, GitCompareArrows, CalendarCheck, ShieldCheck } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { PageHeader } from "@/components/shared/page-header";
 import { buttonVariants } from "@/components/ui/button";
+import {
+  getSitePage,
+  localizedPageSubtitle,
+  localizedPageTitle,
+  localizedSections,
+} from "@/lib/cms/pages";
+import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
+
+const stepIcons = [Search, GitCompareArrows, CalendarCheck];
 
 export async function generateMetadata({
   params,
@@ -13,8 +22,12 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "howItWorks" });
-  return { title: t("title"), description: t("subtitle") };
+  const page = await getSitePage("how-it-works");
+  return {
+    title: locale === "ka" ? page.title_ka : page.title_en,
+    description:
+      locale === "ka" ? page.subtitle_ka : page.subtitle_en,
+  };
 }
 
 export default async function HowItWorksPage({
@@ -25,35 +38,38 @@ export default async function HowItWorksPage({
   const { locale } = await params;
   setRequestLocale(locale as Locale);
   const t = await getTranslations("howItWorks");
-
-  const steps = [
-    { icon: Search, title: t("step1Title"), text: t("step1Text") },
-    { icon: GitCompareArrows, title: t("step2Title"), text: t("step2Text") },
-    { icon: CalendarCheck, title: t("step3Title"), text: t("step3Text") },
-  ];
+  const page = await getSitePage("how-it-works");
+  const loc = locale as Locale;
+  const steps = localizedSections(page, loc);
 
   return (
     <>
-      <PageHeader title={t("title")} subtitle={t("subtitle")} />
+      <PageHeader
+        title={localizedPageTitle(page, loc)}
+        subtitle={localizedPageSubtitle(page, loc)}
+      />
 
       <div className="page-shell py-16">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
-          {steps.map((step, i) => (
-            <div key={step.title} className="relative">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-burgundy-tint text-burgundy-dark">
-                <step.icon className="h-6 w-6" />
+          {steps.map((step, i) => {
+            const Icon = stepIcons[i] ?? Search;
+            return (
+              <div key={step.title} className="relative">
+                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-burgundy-tint text-burgundy-dark">
+                  <Icon className="h-6 w-6" />
+                </div>
+                <span className="absolute -top-2 left-10 flex h-7 w-7 items-center justify-center rounded-full bg-espresso font-heading text-xs font-semibold text-cream">
+                  {i + 1}
+                </span>
+                <h3 className="mt-5 font-heading text-xl font-semibold text-espresso">
+                  {step.title}
+                </h3>
+                <p className="mt-2 font-body text-sm leading-relaxed text-espresso/75">
+                  {step.text}
+                </p>
               </div>
-              <span className="absolute -top-2 left-10 flex h-7 w-7 items-center justify-center rounded-full bg-espresso font-heading text-xs font-semibold text-cream">
-                {i + 1}
-              </span>
-              <h3 className="mt-5 font-heading text-xl font-semibold text-espresso">
-                {step.title}
-              </h3>
-              <p className="mt-2 font-body text-sm leading-relaxed text-espresso/75">
-                {step.text}
-              </p>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className="mt-16 flex flex-col items-start gap-6 rounded-card border border-burgundy/15 bg-burgundy-tint/60 p-8 sm:flex-row sm:items-center">

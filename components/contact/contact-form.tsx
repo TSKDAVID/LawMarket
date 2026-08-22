@@ -1,22 +1,24 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useActionState } from "react";
 import { useTranslations } from "next-intl";
-import { CheckCircle2, Info } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import {
+  submitContactMessage,
+  type CmsState,
+} from "@/app/[locale]/admin/content/actions";
+
+const initial: CmsState = { error: null };
 
 export function ContactForm() {
   const t = useTranslations("contact");
-  const [submitted, setSubmitted] = useState(false);
+  const tAdmin = useTranslations("admin.content");
+  const [state, action, pending] = useActionState(submitContactMessage, initial);
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setSubmitted(true);
-  }
-
-  if (submitted) {
+  if (state.ok) {
     return (
       <div className="flex flex-col items-center rounded-card border border-espresso/8 bg-white/60 px-6 py-16 text-center">
         <CheckCircle2 className="h-10 w-10 text-burgundy" />
@@ -31,7 +33,13 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form action={action} className="space-y-5">
+      {state.error && (
+        <p className="rounded-card border border-burgundy/30 bg-burgundy-tint/50 px-4 py-3 font-body text-sm text-burgundy-dark">
+          {tAdmin(state.error)}
+        </p>
+      )}
+
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
         <div>
           <label
@@ -85,14 +93,9 @@ export function ContactForm() {
         />
       </div>
 
-      <Button type="submit" size="lg" className="w-full sm:w-auto">
-        {t("submit")}
+      <Button type="submit" size="lg" className="w-full sm:w-auto" disabled={pending}>
+        {pending ? tAdmin("saving") : t("submit")}
       </Button>
-
-      <p className="flex items-start gap-2 font-body text-xs leading-relaxed text-espresso/60">
-        <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-        {t("note")}
-      </p>
     </form>
   );
 }

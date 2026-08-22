@@ -26,7 +26,7 @@ export default async function PortalLayout({
         .from("change_requests")
         .select("id", { count: "exact", head: true })
         .eq("lawyer_id", lawyer.id)
-        .eq("status", "pending")
+        .in("status", ["pending", "rejected"])
     : { count: 0 };
 
   return (

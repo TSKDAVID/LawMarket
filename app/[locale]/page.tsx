@@ -11,6 +11,7 @@ import {
   getReviews,
 } from "@/data/queries";
 import { getSessionUser } from "@/lib/auth";
+import { getSiteSettings } from "@/lib/cms/settings";
 import type { Locale } from "@/i18n/routing";
 
 export default async function HomePage({
@@ -21,12 +22,13 @@ export default async function HomePage({
   const { locale } = await params;
   setRequestLocale(locale as Locale);
 
-  const [categories, services, lawyers, reviews, user] = await Promise.all([
+  const [categories, services, lawyers, reviews, user, settings] = await Promise.all([
     getCategories(),
     getServices(),
     getVerifiedLawyers(),
     getReviews(),
     getSessionUser(),
+    getSiteSettings(),
   ]);
 
   const role = user?.profile?.role;
@@ -40,6 +42,12 @@ export default async function HomePage({
         categories={categories}
         lawyers={lawyers}
         postHref={postHref}
+        heroMedia={{
+          hero_media_type: settings.hero_media_type,
+          hero_media_url: settings.hero_media_url,
+          hero_poster_url: settings.hero_poster_url,
+          hero_embed_url: settings.hero_embed_url,
+        }}
       />
       <GuaranteeBand />
       <TrustBand lawyers={lawyers} />

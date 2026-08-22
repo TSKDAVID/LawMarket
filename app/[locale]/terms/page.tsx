@@ -1,7 +1,15 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { setRequestLocale } from "next-intl/server";
 import { PageHeader } from "@/components/shared/page-header";
 import { LegalSections } from "@/components/legal/legal-sections";
+import {
+  getSitePage,
+  localizedPageNotice,
+  localizedPageTitle,
+  localizedSections,
+} from "@/lib/cms/pages";
+import { getSiteSettings } from "@/lib/cms/settings";
+import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/i18n/routing";
 
 export async function generateMetadata({
@@ -10,8 +18,10 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "legal" });
-  return { title: t("termsTitle") };
+  const page = await getSitePage("terms");
+  return {
+    title: locale === "ka" ? page.title_ka : page.title_en,
+  };
 }
 
 export default async function TermsPage({
@@ -22,25 +32,24 @@ export default async function TermsPage({
   const { locale } = await params;
   setRequestLocale(locale as Locale);
   const t = await getTranslations("legal");
-
-  const sections = [1, 2, 3, 4].map((n) => ({
-    title: t(`termsSection${n}Title`),
-    text: t(`termsSection${n}Text`),
-  }));
+  const page = await getSitePage("terms");
+  const settings = await getSiteSettings();
+  const loc = locale as Locale;
 
   const formattedDate = new Intl.DateTimeFormat(locale, {
     year: "numeric",
     month: "long",
     day: "numeric",
-  }).format(new Date("2026-08-08"));
+  }).format(new Date(settings.legal_updated_at));
 
   return (
     <>
-      <PageHeader title={t("termsTitle")} />
+      <PageHeader title={localizedPageTitle(page, loc)} />
       <LegalSections
         lastUpdatedLabel={t("lastUpdated", { date: formattedDate })}
-        placeholderNotice={t("placeholderNotice")}
-        sections={sections}
+        placeholderNotice={localizedPageNotice(page, loc)}
+        showPlaceholderNotice={Boolean(localizedPageNotice(page, loc))}
+        sections={localizedSections(page, loc)}
       />
     </>
   );

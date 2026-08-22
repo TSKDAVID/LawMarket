@@ -4,6 +4,7 @@ import { Mail, Phone, MapPin } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { ContactForm } from "@/components/contact/contact-form";
+import { getSiteSettings } from "@/lib/cms/settings";
 import type { Locale } from "@/i18n/routing";
 
 export async function generateMetadata({
@@ -16,6 +17,15 @@ export async function generateMetadata({
   return { title: t("title"), description: t("subtitle") };
 }
 
+function localizedLocation(
+  settings: Awaited<ReturnType<typeof getSiteSettings>>,
+  locale: Locale
+) {
+  return locale === "ka"
+    ? settings.contact_location_ka || settings.contact_location_en
+    : settings.contact_location_en;
+}
+
 export default async function ContactPage({
   params,
 }: {
@@ -24,6 +34,8 @@ export default async function ContactPage({
   const { locale } = await params;
   setRequestLocale(locale as Locale);
   const t = await getTranslations("contact");
+  const settings = await getSiteSettings();
+  const loc = locale as Locale;
 
   return (
     <>
@@ -47,10 +59,10 @@ export default async function ContactPage({
                     <div>
                       <p className="text-espresso/65">{t("emailUs")}</p>
                       <a
-                        href="mailto:hello@lawmarket.ge"
+                        href={`mailto:${settings.contact_email}`}
                         className="font-medium text-espresso hover:text-burgundy"
                       >
-                        hello@lawmarket.ge
+                        {settings.contact_email}
                       </a>
                     </div>
                   </li>
@@ -59,16 +71,18 @@ export default async function ContactPage({
                     <div>
                       <p className="text-espresso/65">{t("callUs")}</p>
                       <a
-                        href="tel:+995322000000"
+                        href={settings.contact_phone_href}
                         className="font-medium text-espresso hover:text-burgundy"
                       >
-                        +995 322 000 000
+                        {settings.contact_phone}
                       </a>
                     </div>
                   </li>
                   <li className="flex items-start gap-3">
                     <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-burgundy" />
-                    <p className="font-medium text-espresso">Tbilisi, Georgia</p>
+                    <p className="font-medium text-espresso">
+                      {localizedLocation(settings, loc)}
+                    </p>
                   </li>
                 </ul>
               </CardContent>

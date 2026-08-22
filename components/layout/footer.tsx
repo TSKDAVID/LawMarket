@@ -1,28 +1,25 @@
+import { getTranslations } from "next-intl/server";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { LogoLockup } from "@/components/brand/logo-lockup";
 import { PageShell } from "@/components/layout/page-shell";
+import type { SiteSettings } from "@/lib/cms/types";
+import type { Locale } from "@/i18n/routing";
 
-/* Set in Latin on purpose: these are wordmarks, not translatable nouns. */
-const socialLinks = [
-  { href: "#", label: "Facebook" },
-  { href: "#", label: "Instagram" },
-  { href: "#", label: "LinkedIn" },
-] as const;
+type FooterProps = {
+  settings: SiteSettings;
+  locale: Locale;
+};
 
-const contactEntries = [
-  {
-    prefix: "EMAIL",
-    value: "hello@lawmarket.ge",
-    href: "mailto:hello@lawmarket.ge",
-  },
-  { prefix: "TEL", value: "+995 322 000 000", href: "tel:+995322000000" },
-  { prefix: "LOC", value: "Tbilisi, Georgia", href: undefined },
-] as const;
+function localizedLocation(settings: SiteSettings, locale: Locale) {
+  return locale === "ka"
+    ? settings.contact_location_ka || settings.contact_location_en
+    : settings.contact_location_en;
+}
 
-export function Footer() {
-  const t = useTranslations("common");
-  const tNav = useTranslations("common.nav");
+export async function Footer({ settings, locale }: FooterProps) {
+  const t = await getTranslations("common");
+  const tNav = await getTranslations("common.nav");
 
   const platformLinks = [
     { href: "/", label: tNav("home") },
@@ -43,6 +40,30 @@ export function Footer() {
     { href: "/privacy", label: t("footer.privacy") },
   ] as const;
 
+  const socialLinks = [
+    { href: settings.social_facebook, label: "Facebook" },
+    { href: settings.social_instagram, label: "Instagram" },
+    { href: settings.social_linkedin, label: "LinkedIn" },
+  ].filter((item) => item.href);
+
+  const contactEntries = [
+    {
+      prefix: "EMAIL",
+      value: settings.contact_email,
+      href: `mailto:${settings.contact_email}`,
+    },
+    {
+      prefix: "TEL",
+      value: settings.contact_phone,
+      href: settings.contact_phone_href,
+    },
+    {
+      prefix: "LOC",
+      value: localizedLocation(settings, locale),
+      href: undefined,
+    },
+  ] as const;
+
   return (
     <footer className="border-t border-cream/15 bg-espresso text-cream">
       <PageShell className="py-12">
@@ -55,24 +76,27 @@ export function Footer() {
             <p className="mt-3 font-body text-xs text-cream/55">
               {t("tagline")}
             </p>
-            {/* Set as a run of text, separated by slashes — no chrome. */}
-            <ul className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-xs uppercase tracking-widest">
-              {socialLinks.map((social, index) => (
-                <li key={social.label} className="flex items-center gap-x-2">
-                  {index > 0 && (
-                    <span aria-hidden="true" className="text-cream/45">
-                      {"//"}
-                    </span>
-                  )}
-                  <a
-                    href={social.href}
-                    className="text-cream/75 transition-colors hover:text-cream"
-                  >
-                    {social.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
+            {socialLinks.length > 0 && (
+              <ul className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-xs uppercase tracking-widest">
+                {socialLinks.map((social, index) => (
+                  <li key={social.label} className="flex items-center gap-x-2">
+                    {index > 0 && (
+                      <span aria-hidden="true" className="text-cream/45">
+                        {"//"}
+                      </span>
+                    )}
+                    <a
+                      href={social.href}
+                      className="text-cream/75 transition-colors hover:text-cream"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {social.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           <div>
@@ -130,7 +154,6 @@ export function Footer() {
             <h3 className="font-heading text-sm font-semibold uppercase tracking-wide text-cream/95">
               {t("footer.contact")}
             </h3>
-            {/* Field labels, not pictograms: the prefix carries the meaning. */}
             <ul className="mt-4 space-y-3 font-body text-sm text-cream/88">
               {contactEntries.map((entry) => (
                 <li

@@ -158,6 +158,39 @@ export type SiteContentRow = {
   updated_by: string | null;
 };
 
+export type SiteSettingsRow = {
+  id: number;
+  contact_email: string;
+  contact_phone: string;
+  contact_phone_href: string;
+  contact_location_en: string;
+  contact_location_ka: string;
+  social_facebook: string;
+  social_instagram: string;
+  social_linkedin: string;
+  hero_media_type: "video" | "image" | "embed" | "none";
+  hero_media_url: string;
+  hero_poster_url: string;
+  hero_embed_url: string;
+  legal_updated_at: string;
+  banner_visible: boolean;
+  updated_at: string;
+  updated_by: string | null;
+};
+
+export type SitePageRow = {
+  slug: string;
+  title_en: string;
+  title_ka: string;
+  subtitle_en: string;
+  subtitle_ka: string;
+  sections: Json;
+  notice_en: string;
+  notice_ka: string;
+  updated_at: string;
+  updated_by: string | null;
+};
+
 export type PostRow = Timestamps & {
   id: string;
   slug: string;
@@ -348,6 +381,18 @@ export type Database = {
         Row: SiteContentRow;
         Insert: Pick<SiteContentRow, "key"> & Partial<SiteContentRow>;
         Update: Partial<SiteContentRow>;
+        Relationships: [];
+      };
+      site_settings: {
+        Row: SiteSettingsRow;
+        Insert: Pick<SiteSettingsRow, "id"> & Partial<SiteSettingsRow>;
+        Update: Partial<SiteSettingsRow>;
+        Relationships: [];
+      };
+      site_pages: {
+        Row: SitePageRow;
+        Insert: Pick<SitePageRow, "slug"> & Partial<SitePageRow>;
+        Update: Partial<SitePageRow>;
         Relationships: [];
       };
       posts: TableOf<

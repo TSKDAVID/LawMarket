@@ -60,12 +60,24 @@ export default async function AdminReviewPage({
           </div>
         ))}
       </dl>
-      {request.status === "pending" ? (
-        <ReviewForm id={request.id} />
-      ) : (
+      {request.status === "approved" ? (
         <p className="mt-6 font-body text-sm text-espresso/75">
-          {request.status === "approved" ? t("approved") : t("rejected")}
+          {t("approved")}
         </p>
+      ) : (
+        <>
+          {request.status === "rejected" && (
+            <p className="mt-6 font-body text-sm text-burgundy">
+              {t("previouslyRejected")}
+            </p>
+          )}
+          {request.review_note && request.status === "rejected" && (
+            <p className="mt-2 font-body text-sm text-espresso/70">
+              {request.review_note}
+            </p>
+          )}
+          <ReviewForm id={request.id} />
+        </>
       )}
     </div>
   );

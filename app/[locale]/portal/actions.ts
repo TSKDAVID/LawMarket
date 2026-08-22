@@ -27,6 +27,67 @@ function fallbackEn(ka: string, en: string) {
   return en.trim() ? en.trim() : ka.trim();
 }
 
+function revalidateQueue(locale: string) {
+  revalidatePath(`/${locale}/admin/`);
+  revalidatePath(`/${locale}/portal/requests/`);
+  revalidatePath(`/${locale}/portal/services/`);
+  revalidatePath(`/${locale}/portal/cases/`);
+}
+
+function servicePayloadFromForm(formData: FormData) {
+  const titleKa = String(formData.get("title_ka") ?? "").trim();
+  const descriptionKa = String(formData.get("description_ka") ?? "").trim();
+  const categoryId = String(formData.get("category_id") ?? "").trim();
+  const price = parseServicePricing(formData);
+  if (!titleKa || !descriptionKa || !categoryId || !price) return null;
+
+  return {
+    title_ka: titleKa,
+    title_en: fallbackEn(titleKa, String(formData.get("title_en") ?? "")),
+    description_ka: descriptionKa,
+    description_en: fallbackEn(
+      descriptionKa,
+      String(formData.get("description_en") ?? "")
+    ),
+    category_id: categoryId,
+    price: price.price,
+    price_max: price.price_max,
+    pricing_mode: price.pricing_mode,
+    duration_minutes: Number(formData.get("duration") ?? 0) || null,
+    includes_ka: lines(formData.get("includes_ka")),
+    includes_en: (() => {
+      const en = lines(formData.get("includes_en"));
+      return en.length ? en : lines(formData.get("includes_ka"));
+    })(),
+  };
+}
+
+function casePayloadFromForm(formData: FormData) {
+  const titleKa = String(formData.get("title_ka") ?? "").trim();
+  const descriptionKa = String(formData.get("description_ka") ?? "").trim();
+  if (!titleKa || !descriptionKa) return null;
+
+  const yearRaw = String(formData.get("year") ?? "").trim();
+  const year = yearRaw ? Number(yearRaw) : null;
+
+  return {
+    title_ka: titleKa,
+    title_en: fallbackEn(titleKa, String(formData.get("title_en") ?? "")),
+    description_ka: descriptionKa,
+    description_en: fallbackEn(
+      descriptionKa,
+      String(formData.get("description_en") ?? "")
+    ),
+    category_id: String(formData.get("category_id") ?? "").trim() || null,
+    year: Number.isFinite(year) ? year : null,
+    outcome_ka: String(formData.get("outcome_ka") ?? "").trim(),
+    outcome_en: fallbackEn(
+      String(formData.get("outcome_ka") ?? ""),
+      String(formData.get("outcome_en") ?? "")
+    ),
+  };
+}
+
 const PHOTO_TYPES: Record<string, string> = {
   "image/jpeg": "jpg",
   "image/png": "png",
@@ -170,42 +231,19 @@ export async function submitServiceRequest(
   const lawyer = await getOwnLawyer();
   if (!lawyer) return { error: "saveFailed" };
 
-  const titleKa = String(formData.get("title_ka") ?? "").trim();
-  const descriptionKa = String(formData.get("description_ka") ?? "").trim();
-  const categoryId = String(formData.get("category_id") ?? "").trim();
-  const price = parseServicePricing(formData);
-  if (!titleKa || !descriptionKa || !categoryId || !price) {
-    return { error: "missingKa" };
-  }
+  const payload = servicePayloadFromForm(formData);
+  if (!payload) return { error: "missingKa" };
 
   const supabase = await createClient();
   const { error } = await supabase.from("change_requests").insert({
     kind: "service",
     lawyer_id: lawyer.id,
     submitted_by: user.id,
-    payload: {
-      title_ka: titleKa,
-      title_en: fallbackEn(titleKa, String(formData.get("title_en") ?? "")),
-      description_ka: descriptionKa,
-      description_en: fallbackEn(
-        descriptionKa,
-        String(formData.get("description_en") ?? "")
-      ),
-      category_id: categoryId,
-      price: price.price,
-      price_max: price.price_max,
-      pricing_mode: price.pricing_mode,
-      duration_minutes: Number(formData.get("duration") ?? 0) || null,
-      includes_ka: lines(formData.get("includes_ka")),
-      includes_en: (() => {
-        const en = lines(formData.get("includes_en"));
-        return en.length ? en : lines(formData.get("includes_ka"));
-      })(),
-    },
+    payload,
   });
 
   if (error) return { error: "saveFailed" };
-  revalidatePath(`/${locale}/admin/`);
+  revalidateQueue(locale);
   return { error: null, ok: true };
 }
 
@@ -218,38 +256,87 @@ export async function submitCaseRequest(
   const lawyer = await getOwnLawyer();
   if (!lawyer) return { error: "saveFailed" };
 
-  const titleKa = String(formData.get("title_ka") ?? "").trim();
-  const descriptionKa = String(formData.get("description_ka") ?? "").trim();
-  if (!titleKa || !descriptionKa) return { error: "missingKa" };
-
-  const yearRaw = String(formData.get("year") ?? "").trim();
-  const year = yearRaw ? Number(yearRaw) : null;
+  const payload = casePayloadFromForm(formData);
+  if (!payload) return { error: "missingKa" };
 
   const supabase = await createClient();
   const { error } = await supabase.from("change_requests").insert({
     kind: "case",
     lawyer_id: lawyer.id,
     submitted_by: user.id,
-    payload: {
-      title_ka: titleKa,
-      title_en: fallbackEn(titleKa, String(formData.get("title_en") ?? "")),
-      description_ka: descriptionKa,
-      description_en: fallbackEn(
-        descriptionKa,
-        String(formData.get("description_en") ?? "")
-      ),
-      category_id: String(formData.get("category_id") ?? "").trim() || null,
-      year: Number.isFinite(year) ? year : null,
-      outcome_ka: String(formData.get("outcome_ka") ?? "").trim(),
-      outcome_en: fallbackEn(
-        String(formData.get("outcome_ka") ?? ""),
-        String(formData.get("outcome_en") ?? "")
-      ),
-    },
+    payload,
   });
 
   if (error) return { error: "saveFailed" };
-  revalidatePath(`/${locale}/admin/`);
+  revalidateQueue(locale);
+  return { error: null, ok: true };
+}
+
+export async function updateChangeRequest(
+  _prev: PortalState,
+  formData: FormData
+): Promise<PortalState> {
+  const locale = localeOf(formData);
+  await requireLawyer(locale);
+  const lawyer = await getOwnLawyer();
+  if (!lawyer) return { error: "saveFailed" };
+
+  const id = String(formData.get("id") ?? "");
+  if (!id) return { error: "saveFailed" };
+
+  const supabase = await createClient();
+  const { data: request } = await supabase
+    .from("change_requests")
+    .select("id, kind, status")
+    .eq("id", id)
+    .eq("lawyer_id", lawyer.id)
+    .maybeSingle();
+  if (
+    !request ||
+    (request.status !== "pending" && request.status !== "rejected")
+  ) {
+    return { error: "saveFailed" };
+  }
+
+  const payload =
+    request.kind === "service"
+      ? servicePayloadFromForm(formData)
+      : casePayloadFromForm(formData);
+  if (!payload) return { error: "missingKa" };
+
+  const { error } = await supabase
+    .from("change_requests")
+    .update({ payload, status: "pending" })
+    .eq("id", id)
+    .eq("lawyer_id", lawyer.id);
+
+  if (error) return { error: "saveFailed" };
+  revalidateQueue(locale);
+  return { error: null, ok: true };
+}
+
+export async function withdrawChangeRequest(
+  _prev: PortalState,
+  formData: FormData
+): Promise<PortalState> {
+  const locale = localeOf(formData);
+  await requireLawyer(locale);
+  const lawyer = await getOwnLawyer();
+  if (!lawyer) return { error: "saveFailed" };
+
+  const id = String(formData.get("id") ?? "");
+  if (!id) return { error: "saveFailed" };
+
+  const supabase = await createClient();
+  const { error, count } = await supabase
+    .from("change_requests")
+    .delete({ count: "exact" })
+    .eq("id", id)
+    .eq("lawyer_id", lawyer.id)
+    .in("status", ["pending", "rejected"]);
+
+  if (error || !count) return { error: "saveFailed" };
+  revalidateQueue(locale);
   return { error: null, ok: true };
 }
 
@@ -258,6 +345,7 @@ function revalidateListings(
   lawyerSlug: string,
   serviceSlug?: string
 ) {
+  revalidatePath(`/${locale}/portal/requests/`);
   revalidatePath(`/${locale}/portal/services/`);
   revalidatePath(`/${locale}/portal/cases/`);
   revalidatePath(`/${locale}/lawyers/${lawyerSlug}/`);
@@ -352,6 +440,13 @@ export async function deleteOwnService(
     return { error: error.code === "23503" ? "listingInUse" : "saveFailed" };
   }
   if (!count) return { error: "saveFailed" };
+
+  await supabase
+    .from("change_requests")
+    .delete()
+    .eq("created_record_id", id)
+    .eq("lawyer_id", lawyer.id);
+
   revalidateListings(locale, lawyer.slug, existing.slug);
   return { error: null, ok: true };
 }
@@ -420,6 +515,95 @@ export async function deleteOwnCase(
     .eq("lawyer_id", lawyer.id);
 
   if (error || !count) return { error: "saveFailed" };
+
+  await supabase
+    .from("change_requests")
+    .delete()
+    .eq("created_record_id", id)
+    .eq("lawyer_id", lawyer.id);
+
   revalidateListings(locale, lawyer.slug);
+  return { error: null, ok: true };
+}
+
+export async function removeApprovedSubmission(
+  _prev: PortalState,
+  formData: FormData
+): Promise<PortalState> {
+  const locale = localeOf(formData);
+  await requireLawyer(locale);
+  const lawyer = await getOwnLawyer();
+  if (!lawyer) return { error: "saveFailed" };
+
+  const id = String(formData.get("id") ?? "");
+  if (!id) return { error: "saveFailed" };
+
+  const supabase = await createClient();
+  const { data: request } = await supabase
+    .from("change_requests")
+    .select("id, kind, status, created_record_id")
+    .eq("id", id)
+    .eq("lawyer_id", lawyer.id)
+    .maybeSingle();
+
+  if (!request || request.status !== "approved") {
+    return { error: "saveFailed" };
+  }
+
+  let serviceSlug: string | undefined;
+
+  if (request.created_record_id) {
+    if (request.kind === "service") {
+      const { data: existing } = await supabase
+        .from("services")
+        .select("slug")
+        .eq("id", request.created_record_id)
+        .eq("lawyer_id", lawyer.id)
+        .maybeSingle();
+
+      if (existing) {
+        const { error, count } = await supabase
+          .from("services")
+          .delete({ count: "exact" })
+          .eq("id", request.created_record_id)
+          .eq("lawyer_id", lawyer.id);
+
+        if (error) {
+          return {
+            error: error.code === "23503" ? "listingInUse" : "saveFailed",
+          };
+        }
+        if (!count) return { error: "saveFailed" };
+        serviceSlug = existing.slug;
+      }
+    } else {
+      const { data: existingCase } = await supabase
+        .from("lawyer_cases")
+        .select("id")
+        .eq("id", request.created_record_id)
+        .eq("lawyer_id", lawyer.id)
+        .maybeSingle();
+
+      if (existingCase) {
+        const { error, count } = await supabase
+          .from("lawyer_cases")
+          .delete({ count: "exact" })
+          .eq("id", request.created_record_id)
+          .eq("lawyer_id", lawyer.id);
+
+        if (error || !count) return { error: "saveFailed" };
+      }
+    }
+  }
+
+  const { error: deleteRequestError, count: deletedRequests } = await supabase
+    .from("change_requests")
+    .delete({ count: "exact" })
+    .eq("id", id)
+    .eq("lawyer_id", lawyer.id);
+
+  if (deleteRequestError || !deletedRequests) return { error: "saveFailed" };
+
+  revalidateListings(locale, lawyer.slug, serviceSlug);
   return { error: null, ok: true };
 }
