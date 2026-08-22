@@ -30,13 +30,7 @@ function canMergeAt(messages: Record<string, unknown>, path: string) {
   }
   const leaf = parts[parts.length - 1];
   const existing = cur[leaf];
-  if (
-    parts.length === 1 &&
-    typeof existing === "object" &&
-    existing !== null
-  ) {
-    return false;
-  }
+  if (typeof existing === "object" && existing !== null) return false;
   return true;
 }
 
