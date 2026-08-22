@@ -36,7 +36,64 @@ function groupIdFor(path: string) {
   if (path.startsWith("common.nav.")) return "common-nav";
   if (path.startsWith("common.footer.")) return "common-footer";
   if (path.startsWith("common.")) return "common-shared";
+  if (path.startsWith("home.")) {
+    const leaf = path.slice("home.".length);
+    return HOME_LEAF_GROUPS[leaf] ?? "home-misc";
+  }
   return path.split(".")[0];
+}
+
+/** Maps home.* message keys to editor nav sections on the homepage. */
+const HOME_LEAF_GROUPS: Record<string, string> = {
+  heroTitle: "home-hero",
+  heroSubtitle: "home-hero",
+  heroMediaLabel: "home-hero",
+  heroMediaHint: "home-hero",
+  searchPlaceholder: "home-hero",
+  searchButton: "home-hero",
+  searchViewAll: "home-hero",
+  proofLine: "home-hero",
+  attorneyPrompt: "home-hero",
+  attorneyCta: "home-hero",
+  categoriesLabel: "home-hero",
+  searchResultsTitle: "home-hero",
+  noResults: "home-hero",
+  viewAllServices: "home-hero",
+  findService: "home-paths",
+  findServiceHint: "home-paths",
+  postProblem: "home-paths",
+  postProblemHint: "home-paths",
+  popularServicesTitle: "home-popular",
+  popularServicesSubtitle: "home-popular",
+  guaranteeTitle: "home-guarantee",
+  guaranteeSubtitle: "home-guarantee",
+  guaranteeLink: "home-guarantee",
+  verifiedLawyersTitle: "home-verified",
+  verifiedLawyersSubtitle: "home-verified",
+  browseAllLawyers: "home-verified",
+  viewLawyerProfile: "home-verified",
+  lawyerStatLawyers: "home-verified",
+  lawyerStatCities: "home-verified",
+  lawyerStatYears: "home-verified",
+  reviewsTitle: "home-reviews",
+  reviewsSubtitle: "home-reviews",
+  ctaTitle: "home-cta",
+  ctaSubtitle: "home-cta",
+  ctaButton: "home-cta",
+  viaService: "home-reviews",
+};
+
+const FIELD_LABEL_OVERRIDES: Record<string, string> = {
+  "home.reviewsTitle": "Reviews section title",
+  "home.reviewsSubtitle": "Reviews section subtitle",
+  "home.verifiedLawyersTitle": "Verified lawyers title",
+  "home.verifiedLawyersSubtitle": "Verified lawyers subtitle",
+  "home.popularServicesTitle": "Popular services title",
+  "home.popularServicesSubtitle": "Popular services subtitle",
+};
+
+function fieldLabel(path: string) {
+  return FIELD_LABEL_OVERRIDES[path] ?? humanizeKey(path);
 }
 
 function humanizeKey(path: string) {
@@ -81,7 +138,23 @@ const GROUP_META: Record<
   },
   "common-nav": { label: "Navigation", labelKey: "sectionNavLinks" },
   "common-footer": { label: "Footer links", labelKey: "sectionFooterLinks" },
-  home: { label: "Home page", labelKey: "sectionHome" },
+  "home-hero": { label: "Home — hero", labelKey: "sectionHomeHero" },
+  "home-paths": { label: "Home — path cards", labelKey: "sectionHomePaths" },
+  "home-popular": {
+    label: "Home — popular services",
+    labelKey: "sectionHomePopular",
+  },
+  "home-guarantee": {
+    label: "Home — guarantee band",
+    labelKey: "sectionHomeGuarantee",
+  },
+  "home-verified": {
+    label: "Home — verified lawyers",
+    labelKey: "sectionHomeVerified",
+  },
+  "home-reviews": { label: "Home — reviews", labelKey: "sectionHomeReviews" },
+  "home-cta": { label: "Home — bottom CTA", labelKey: "sectionHomeCta" },
+  "home-misc": { label: "Home — other", labelKey: "sectionHomeMisc" },
   services: { label: "Services catalog", labelKey: "sectionServices" },
   serviceDetail: {
     label: "Service detail page",
@@ -109,7 +182,14 @@ const GROUP_ORDER = [
   "common-shared",
   "common-nav",
   "common-footer",
-  "home",
+  "home-hero",
+  "home-paths",
+  "home-popular",
+  "home-guarantee",
+  "home-verified",
+  "home-reviews",
+  "home-cta",
+  "home-misc",
   "services",
   "serviceDetail",
   "lawyers",
@@ -136,7 +216,7 @@ function buildGroups(): CmsGroup[] {
     const fields = byGroup.get(id) ?? [];
     fields.push({
       key: path,
-      label: humanizeKey(path),
+      label: fieldLabel(path),
       ...fieldMeta(path),
     });
     byGroup.set(id, fields);
