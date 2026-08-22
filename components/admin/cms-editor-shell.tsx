@@ -164,11 +164,23 @@ export function CmsEditorShell({
   return (
     <div className="min-w-0">
       <div className="lg:grid lg:grid-cols-[11.5rem_minmax(0,1fr)] lg:gap-10">
-        <div className="mb-6 lg:mb-0 lg:sticky lg:top-24 lg:self-start">
-          <p className="mb-2 font-mono text-[11px] uppercase tracking-widest text-espresso/50 lg:mb-3">
+        <div
+          className={cn(
+            "mb-6 lg:mb-0 lg:sticky lg:top-24 lg:self-start",
+            "lg:flex lg:max-h-[calc(100vh-6.5rem)] lg:flex-col lg:min-h-0"
+          )}
+        >
+          <p className="mb-2 shrink-0 font-mono text-[11px] uppercase tracking-widest text-espresso/50 lg:mb-3">
             {t("sectionNav")}
           </p>
-          <CmsSectionNav sections={sections} />
+          <div
+            className={cn(
+              "min-h-0 lg:-mr-1 lg:overflow-y-auto lg:overscroll-y-contain lg:pr-1",
+              "lg:[scrollbar-width:thin] lg:[scrollbar-color:var(--color-espresso)_transparent]"
+            )}
+          >
+            <CmsSectionNav sections={sections} />
+          </div>
         </div>
 
         <div className="min-w-0 pb-2">{children}</div>
