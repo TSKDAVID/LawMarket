@@ -68,6 +68,47 @@ const ALIGN_CLASS: Record<Exclude<CmsTextAlign, "inherit">, string> = {
   right: "text-right",
 };
 
+/** Typography when CMS style is "inherit" (page default) for specific keys. */
+export const CMS_FIELD_STYLE_DEFAULTS: Partial<Record<string, CmsTextStyle>> = {
+  "home.heroTitle": {
+    size: "hero",
+    weight: "semibold",
+    color: "default",
+  },
+};
+
+function resolveStyleProp(
+  style: CmsTextStyle | undefined,
+  defaults: CmsTextStyle | undefined,
+  prop: "color"
+): CmsTextColor | null;
+function resolveStyleProp(
+  style: CmsTextStyle | undefined,
+  defaults: CmsTextStyle | undefined,
+  prop: "size"
+): CmsTextSize | null;
+function resolveStyleProp(
+  style: CmsTextStyle | undefined,
+  defaults: CmsTextStyle | undefined,
+  prop: "weight"
+): CmsTextWeight | null;
+function resolveStyleProp(
+  style: CmsTextStyle | undefined,
+  defaults: CmsTextStyle | undefined,
+  prop: "align"
+): CmsTextAlign | null;
+function resolveStyleProp(
+  style: CmsTextStyle | undefined,
+  defaults: CmsTextStyle | undefined,
+  prop: keyof CmsTextStyle
+): CmsTextColor | CmsTextSize | CmsTextWeight | CmsTextAlign | null {
+  const value = style?.[prop];
+  if (value && value !== "inherit") return value;
+  const fallback = defaults?.[prop];
+  if (fallback && fallback !== "inherit") return fallback;
+  return null;
+}
+
 export function normalizeCmsTextStyle(raw: unknown): CmsTextStyle {
   if (!raw || typeof raw !== "object") return {};
   const obj = raw as Record<string, unknown>;
@@ -101,13 +142,21 @@ export function normalizeCmsTextStyle(raw: unknown): CmsTextStyle {
   return style;
 }
 
-export function cmsStyleClasses(style: CmsTextStyle | undefined) {
-  if (!style) return "";
+export function cmsStyleClasses(
+  style: CmsTextStyle | undefined,
+  contentKey?: string
+) {
+  const defaults = contentKey ? CMS_FIELD_STYLE_DEFAULTS[contentKey] : undefined;
+  const color = resolveStyleProp(style, defaults, "color");
+  const size = resolveStyleProp(style, defaults, "size");
+  const weight = resolveStyleProp(style, defaults, "weight");
+  const align = resolveStyleProp(style, defaults, "align");
+
   return cn(
-    style.color && style.color !== "inherit" ? COLOR_CLASS[style.color] : null,
-    style.size && style.size !== "inherit" ? SIZE_CLASS[style.size] : null,
-    style.weight && style.weight !== "inherit" ? WEIGHT_CLASS[style.weight] : null,
-    style.align && style.align !== "inherit" ? ALIGN_CLASS[style.align] : null
+    color && color !== "inherit" ? COLOR_CLASS[color] : null,
+    size && size !== "inherit" ? SIZE_CLASS[size] : null,
+    weight && weight !== "inherit" ? WEIGHT_CLASS[weight] : null,
+    align && align !== "inherit" ? ALIGN_CLASS[align] : null
   );
 }
 

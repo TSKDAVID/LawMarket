@@ -13,6 +13,7 @@ import type { CmsTextColor, CmsTextStyle } from "@/lib/cms/text-style";
 import {
   CMS_COLOR_SWATCH,
   CMS_COLOR_SWATCH_DEFAULT,
+  CMS_FIELD_STYLE_DEFAULTS,
   CMS_TEXT_ALIGNS,
   CMS_TEXT_COLORS,
   CMS_TEXT_SIZES,
@@ -135,6 +136,12 @@ export function CmsStyleToolbar({
   const weight = style.weight ?? "inherit";
   const align = style.align ?? "inherit";
 
+  const fieldDefaults = CMS_FIELD_STYLE_DEFAULTS[contentKey];
+  const displaySize =
+    size === "inherit" && fieldDefaults?.size && fieldDefaults.size !== "inherit"
+      ? fieldDefaults.size
+      : size;
+
   return (
     <div className="mt-3 space-y-2">
       <p className="font-mono text-[10px] uppercase tracking-widest text-espresso/50">
@@ -228,7 +235,7 @@ export function CmsStyleToolbar({
             }
           >
             <Type className="h-3.5 w-3.5" aria-hidden="true" />
-            <span>{t(`styleSize_${size}`)}</span>
+            <span>{t(`styleSize_${displaySize}`)}</span>
           </ToolbarButton>
           <PopoverPanel
             open={openMenu === "size"}
@@ -342,10 +349,12 @@ export function CmsStylePreview({
   text,
   style,
   label,
+  contentKey,
 }: {
   text: string;
   style: CmsTextStyle;
   label: string;
+  contentKey?: string;
 }) {
   const previewColor = style.color ?? "inherit";
   const onDark = previewColor === "cream";
@@ -369,7 +378,7 @@ export function CmsStylePreview({
         className={cn(
           "mt-1 font-body leading-relaxed break-words",
           onDark ? "text-cream" : "text-espresso",
-          cmsStyleClasses(style)
+          cmsStyleClasses(style, contentKey)
         )}
       >
         {text.trim() || "—"}

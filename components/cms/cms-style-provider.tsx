@@ -63,7 +63,7 @@ export function CmsStyledText({
   const content = resolveChildText(children, cmsText);
 
   return (
-    <Component className={cn(className, cmsStyleClasses(style))}>
+    <Component className={cn(className, cmsStyleClasses(style, contentKey))}>
       {content}
     </Component>
   );

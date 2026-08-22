@@ -86,6 +86,7 @@ function CmsLangColumn({
           explain={accentLabels.explain}
           isGeorgian={lang === "ka"}
           previewStyle={liveStyle}
+          contentKey={fieldKey}
         />
         <CmsStyleToolbar
           contentKey={fieldKey}
@@ -109,17 +110,22 @@ function CmsLangColumn({
           rows={3}
           value={liveText}
           onChange={(e) => setLiveText(e.target.value)}
-          className={cn(cmsStyleClasses(liveStyle))}
+          className={cn(cmsStyleClasses(liveStyle, fieldKey))}
         />
       ) : (
         <Input
           name={cmsFormFieldName(fieldKey, lang)}
           value={liveText}
           onChange={(e) => setLiveText(e.target.value)}
-          className={cn(cmsStyleClasses(liveStyle))}
+          className={cn(cmsStyleClasses(liveStyle, fieldKey))}
         />
       )}
-      <CmsStylePreview text={liveText} style={liveStyle} label={previewLabel} />
+      <CmsStylePreview
+        text={liveText}
+        style={liveStyle}
+        label={previewLabel}
+        contentKey={fieldKey}
+      />
       <CmsStyleToolbar
         contentKey={fieldKey}
         lang={lang}

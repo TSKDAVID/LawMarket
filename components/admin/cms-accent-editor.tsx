@@ -27,6 +27,7 @@ type CmsAccentEditorProps = {
   highlightWordLimitHint?: string;
   isGeorgian?: boolean;
   previewStyle?: CmsTextStyle;
+  contentKey?: string;
 };
 
 export function CmsAccentEditor({
@@ -42,6 +43,7 @@ export function CmsAccentEditor({
   highlightWordLimitHint,
   isGeorgian = false,
   previewStyle,
+  contentKey,
 }: CmsAccentEditorProps) {
   const initial = useMemo(
     () => parseAccentMarkup(defaultValue),
@@ -137,7 +139,7 @@ export function CmsAccentEditor({
         <p
           className={cn(
             "mt-1 font-heading text-lg font-semibold leading-snug text-espresso",
-            cmsStyleClasses(previewStyle)
+            cmsStyleClasses(previewStyle, contentKey)
           )}
         >
           {parts.before && <span>{parts.before} </span>}

@@ -363,7 +363,7 @@ export function ServicesExplorer({
                 <CmsStyledText
                   contentKey="home.heroTitle"
                   as="h1"
-                  className="animate-fade-up max-w-none min-h-[5.5rem] font-heading text-[clamp(2.25rem,4vw,3.5rem)] font-semibold leading-[1.1] tracking-[-0.03em] text-espresso sm:min-h-[7.5rem] lg:max-w-[36rem]"
+                  className="animate-fade-up max-w-none min-h-[5.5rem] font-heading tracking-[-0.03em] sm:min-h-[7.5rem] lg:max-w-[36rem]"
                 >
                   {t.rich("heroTitle", {
                     accent: (chunks) => (
