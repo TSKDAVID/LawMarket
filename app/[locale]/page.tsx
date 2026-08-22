@@ -14,6 +14,8 @@ import { getSessionUser } from "@/lib/auth";
 import { getSiteSettings } from "@/lib/cms/settings";
 import type { Locale } from "@/i18n/routing";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage({
   params,
 }: {

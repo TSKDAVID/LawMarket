@@ -5,7 +5,7 @@ import { routing } from "@/i18n/routing";
 import { requireAdmin } from "@/lib/auth";
 import { createAdminClient, createClient } from "@/lib/supabase/server";
 import { CMS_CONTENT_KEYS } from "@/lib/cms/content-groups";
-import { readCmsTextFormData } from "@/lib/cms/form-fields";
+import { cmsFormFieldName } from "@/lib/cms/form-fields";
 import { readCmsTextStyleFormData } from "@/lib/cms/text-style";
 import {
   composeAccentMarkup,
@@ -95,13 +95,15 @@ export async function saveSiteText(
   const admin = await requireAdmin(locale);
   const db = createAdminClient();
 
-  const submitted = readCmsTextFormData(formData, CMS_CONTENT_KEYS);
   let savedCount = 0;
 
   for (const key of CMS_CONTENT_KEYS) {
-    const row = submitted.get(key) ?? { en: "", ka: "" };
-    const rawEn = row.en || String(formData.get(`${key}__en`) ?? "");
-    const rawKa = row.ka || String(formData.get(`${key}__ka`) ?? "");
+    const enField = cmsFormFieldName(key, "en");
+    const kaField = cmsFormFieldName(key, "ka");
+    if (!formData.has(enField) && !formData.has(kaField)) continue;
+
+    const rawEn = String(formData.get(enField) ?? "");
+    const rawKa = String(formData.get(kaField) ?? "");
     const valueEn =
       key === "home.heroTitle"
         ? sanitizeHeroTitle(rawEn)

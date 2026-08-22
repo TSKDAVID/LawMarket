@@ -61,7 +61,6 @@ function CmsLangColumn({
   const textValue = values[lang === "en" ? "en" : "ka"];
   const styleValue = values[lang === "en" ? "style_en" : "style_ka"];
   const styleSeed = cmsStyleSeed(styleValue);
-  const inputKey = `${fieldKey}-${lang}-${textValue}-${styleSeed}`;
 
   const [liveText, setLiveText] = useState(textValue);
   const [liveStyle, setLiveStyle] = useState(() => mergeCmsTextStyle(styleValue));
@@ -106,18 +105,16 @@ function CmsLangColumn({
       </label>
       {multiline ? (
         <Textarea
-          key={inputKey}
           name={cmsFormFieldName(fieldKey, lang)}
           rows={3}
-          defaultValue={textValue}
+          value={liveText}
           onChange={(e) => setLiveText(e.target.value)}
           className={cn(cmsStyleClasses(liveStyle))}
         />
       ) : (
         <Input
-          key={inputKey}
           name={cmsFormFieldName(fieldKey, lang)}
-          defaultValue={textValue}
+          value={liveText}
           onChange={(e) => setLiveText(e.target.value)}
           className={cn(cmsStyleClasses(liveStyle))}
         />

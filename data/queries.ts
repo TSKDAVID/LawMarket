@@ -1,5 +1,6 @@
 import "server-only";
 
+import { unstable_noStore as noStore } from "next/cache";
 import { createAnonClient } from "@/lib/supabase/server";
 import { sortByPopularity } from "@/data/popularity";
 import type {
@@ -383,6 +384,7 @@ export async function getLawyerRatings(): Promise<Map<string, LawyerRating>> {
 // --- Editable site copy ----------------------------------------------------
 
 export async function getSiteContent(): Promise<SiteContent> {
+  noStore();
   const supabase = createAnonClient();
   const { data } = await supabase.from("site_content").select("*");
   const map: SiteContent = {};

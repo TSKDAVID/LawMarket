@@ -12,7 +12,7 @@ import { Footer } from "@/components/layout/footer";
 import { IntlProvider } from "@/components/providers/intl-provider";
 import { getSessionUser } from "@/lib/auth";
 import { getSiteSettings } from "@/lib/cms/settings";
-import { getCmsStyleMap } from "@/lib/cms/admin-data";
+import { getCmsStyleMap, getCmsTextMap } from "@/lib/cms/admin-data";
 import { CmsStyleProvider } from "@/components/cms/cms-style-provider";
 import "../globals.css";
 
@@ -71,7 +71,11 @@ export default async function LocaleLayout({
   const messages = await getMessagesForLocale(locale as Locale);
   const settings = await getSiteSettings();
   const user = await getSessionUser();
-  const cmsStyles = await getCmsStyleMap(locale === "ka" ? "ka" : "en");
+  const lang = locale === "ka" ? "ka" : "en";
+  const [cmsStyles, cmsTexts] = await Promise.all([
+    getCmsStyleMap(lang),
+    getCmsTextMap(locale as Locale),
+  ]);
 
   return (
     <html lang={locale} data-locale={locale} data-scroll-behavior="smooth">
@@ -95,7 +99,7 @@ export default async function LocaleLayout({
       )}
       <body className="flex min-h-screen flex-col bg-cream font-body text-espresso antialiased">
         <IntlProvider locale={locale} messages={messages}>
-          <CmsStyleProvider styles={cmsStyles}>
+          <CmsStyleProvider styles={cmsStyles} texts={cmsTexts}>
             <GlobalBanner visible={settings.banner_visible} />
             <Header
               signedIn={Boolean(user)}
