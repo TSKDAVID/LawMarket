@@ -75,6 +75,7 @@ export function CmsTextForm({
                           beforeLabel={t("accentBefore")}
                           afterLabel={t("accentAfter")}
                           previewLabel={t("accentPreview")}
+                          highlightWordLimitHint={t("accentHighlightLimit")}
                         />
                         <CmsAccentEditor
                           name={`${field.key}__ka`}
@@ -84,6 +85,7 @@ export function CmsTextForm({
                           beforeLabel={t("accentBefore")}
                           afterLabel={t("accentAfter")}
                           previewLabel={t("accentPreview")}
+                          highlightWordLimitHint={t("accentHighlightLimit")}
                         />
                       </>
                     ) : (

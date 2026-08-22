@@ -86,7 +86,7 @@ export function HeroMediaSlot({ settings }: HeroMediaSlotProps) {
       />
 
       <p
-        className="pointer-events-none absolute left-6 top-5 z-10 max-w-[14rem] font-mono text-[11px] uppercase leading-snug tracking-[0.14em] text-cream/90 sm:left-8 sm:top-6 sm:text-xs lg:left-10"
+        className="pointer-events-none absolute left-6 top-5 z-10 max-w-[min(100%,22rem)] font-mono text-[11px] uppercase leading-snug tracking-[0.14em] text-cream/90 sm:left-8 sm:top-6 sm:text-xs lg:left-10"
       >
         {t("heroMediaLabel")}
       </p>

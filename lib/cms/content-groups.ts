@@ -34,6 +34,7 @@ export const CMS_CONTENT_GROUPS: CmsGroup[] = [
         key: "home.heroTitle",
         label: "Hero headline",
         format: "accent",
+        hint: "Highlighted words: up to 6 (burgundy on the site).",
       },
       { key: "home.heroSubtitle", label: "Hero subtitle", multiline: true },
       { key: "home.heroMediaLabel", label: "Hero media label" },

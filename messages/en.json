@@ -488,6 +488,7 @@
       "accentBefore": "Text before highlight",
       "accentAfter": "Text after highlight",
       "accentPreview": "Preview",
+      "accentHighlightLimit": "Up to 6 highlighted words",
       "saveFailed": "Could not save. Try again.",
       "missingFields": "Please fill in every field.",
       "sendFailed": "Could not send your message. Try again.",

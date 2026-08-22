@@ -5,7 +5,13 @@ import { routing } from "@/i18n/routing";
 import { requireAdmin } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { CMS_CONTENT_KEYS } from "@/lib/cms/content-groups";
-import { sanitizePlainCmsText } from "@/lib/cms/accent-text";
+import {
+  composeAccentMarkup,
+  HERO_HIGHLIGHT_MAX_WORDS,
+  limitWords,
+  parseAccentMarkup,
+  sanitizePlainCmsText,
+} from "@/lib/cms/accent-text";
 import {
   SITE_PAGE_SLUGS,
   type HeroMediaType,
@@ -13,6 +19,14 @@ import {
   type SitePageSlug,
 } from "@/lib/cms/types";
 import type { Json } from "@/lib/supabase/database.types";
+
+function sanitizeHeroTitle(value: string) {
+  const parts = parseAccentMarkup(value.trim());
+  parts.highlight = limitWords(parts.highlight, HERO_HIGHLIGHT_MAX_WORDS);
+  parts.before = sanitizePlainCmsText(parts.before);
+  parts.after = sanitizePlainCmsText(parts.after);
+  return composeAccentMarkup(parts);
+}
 
 export type CmsState = { error: string | null; ok?: boolean };
 
@@ -81,9 +95,13 @@ export async function saveSiteText(
     const rawEn = String(formData.get(`${key}__en`) ?? "");
     const rawKa = String(formData.get(`${key}__ka`) ?? "");
     const valueEn =
-      key === "home.heroTitle" ? rawEn.trim() : sanitizePlainCmsText(rawEn);
+      key === "home.heroTitle"
+        ? sanitizeHeroTitle(rawEn)
+        : sanitizePlainCmsText(rawEn);
     const valueKa =
-      key === "home.heroTitle" ? rawKa.trim() : sanitizePlainCmsText(rawKa);
+      key === "home.heroTitle"
+        ? sanitizeHeroTitle(rawKa)
+        : sanitizePlainCmsText(rawKa);
     if (!valueEn && !valueKa) continue;
 
     const { error } = await supabase.from("site_content").upsert({

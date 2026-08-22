@@ -4,6 +4,19 @@ export type AccentParts = {
   after: string;
 };
 
+/** Hero headline highlight — keep short for layout (about one line). */
+export const HERO_HIGHLIGHT_MAX_WORDS = 6;
+
+export function limitWords(value: string, maxWords: number) {
+  const words = value.trim().split(/\s+/).filter(Boolean);
+  if (words.length <= maxWords) return value.trim();
+  return words.slice(0, maxWords).join(" ");
+}
+
+export function countWords(value: string) {
+  return value.trim().split(/\s+/).filter(Boolean).length;
+}
+
 /** Strip angle-bracket tags from plain text segments. */
 export function stripHtmlTags(value: string) {
   return value.replace(/<[^>]*>/g, "").trim();

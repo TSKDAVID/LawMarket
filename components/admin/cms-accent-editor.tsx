@@ -4,6 +4,9 @@ import { useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import {
   composeAccentMarkup,
+  countWords,
+  HERO_HIGHLIGHT_MAX_WORDS,
+  limitWords,
   parseAccentMarkup,
   stripHtmlTags,
 } from "@/lib/cms/accent-text";
@@ -16,6 +19,8 @@ type CmsAccentEditorProps = {
   beforeLabel: string;
   afterLabel: string;
   previewLabel: string;
+  highlightWordLimit?: number;
+  highlightWordLimitHint?: string;
 };
 
 export function CmsAccentEditor({
@@ -26,6 +31,8 @@ export function CmsAccentEditor({
   beforeLabel,
   afterLabel,
   previewLabel,
+  highlightWordLimit = HERO_HIGHLIGHT_MAX_WORDS,
+  highlightWordLimitHint,
 }: CmsAccentEditorProps) {
   const initial = useMemo(
     () => parseAccentMarkup(defaultValue),
@@ -36,8 +43,17 @@ export function CmsAccentEditor({
   const composed = composeAccentMarkup(parts);
 
   function update(field: keyof typeof parts, raw: string) {
-    setParts((prev) => ({ ...prev, [field]: stripHtmlTags(raw) }));
+    const cleaned = stripHtmlTags(raw);
+    setParts((prev) => ({
+      ...prev,
+      [field]:
+        field === "highlight"
+          ? limitWords(cleaned, highlightWordLimit)
+          : cleaned,
+    }));
   }
+
+  const highlightWords = countWords(parts.highlight);
 
   return (
     <div className="space-y-3">
@@ -51,8 +67,17 @@ export function CmsAccentEditor({
         <Input
           value={parts.highlight}
           onChange={(e) => update("highlight", e.target.value)}
-          placeholder="Fixed-price"
+          placeholder="Fixed-price legal help"
         />
+        <p className="mt-1 font-body text-[11px] text-espresso/55">
+          {highlightWordLimitHint ?? `Up to ${highlightWordLimit} words`}
+          {highlightWords > 0 && (
+            <span className="font-mono">
+              {" "}
+              · {highlightWords}/{highlightWordLimit}
+            </span>
+          )}
+        </p>
       </div>
 
       <div>

@@ -360,7 +360,7 @@ export function ServicesExplorer({
             <div className="border-b border-espresso/15 lg:grid lg:grid-cols-2 lg:items-stretch lg:min-h-[26rem] xl:min-h-[30rem]">
               <div className="flex flex-col justify-center px-4 py-10 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
                 <h1
-                  className="animate-fade-up line-clamp-2 max-w-2xl min-h-[4.75rem] font-heading text-[clamp(2.25rem,4vw,3.5rem)] font-semibold leading-[1.08] tracking-[-0.03em] text-espresso sm:min-h-[5.5rem]"
+                  className="animate-fade-up max-w-none min-h-[5.5rem] font-heading text-[clamp(2.25rem,4vw,3.5rem)] font-semibold leading-[1.1] tracking-[-0.03em] text-espresso sm:min-h-[7.5rem] lg:max-w-[36rem]"
                 >
                   {t.rich("heroTitle", {
                     accent: (chunks) => (
