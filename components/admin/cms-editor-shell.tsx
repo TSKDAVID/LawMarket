@@ -166,8 +166,8 @@ export function CmsEditorShell({
       <div className="lg:grid lg:grid-cols-[11.5rem_minmax(0,1fr)] lg:gap-10">
         <div
           className={cn(
-            "mb-6 lg:mb-0 lg:sticky lg:top-24 lg:self-start",
-            "lg:flex lg:max-h-[calc(100vh-6.5rem)] lg:flex-col lg:min-h-0"
+            "mb-6 lg:mb-0 lg:sticky lg:top-24 lg:self-start lg:w-full",
+            "lg:flex lg:max-h-[calc(100dvh-6rem)] lg:flex-col lg:min-h-0 lg:overflow-hidden"
           )}
         >
           <p className="mb-2 shrink-0 font-mono text-[11px] uppercase tracking-widest text-espresso/50 lg:mb-3">
@@ -175,8 +175,10 @@ export function CmsEditorShell({
           </p>
           <div
             className={cn(
-              "min-h-0 lg:-mr-1 lg:overflow-y-auto lg:overscroll-y-contain lg:pr-1",
-              "lg:[scrollbar-width:thin] lg:[scrollbar-color:var(--color-espresso)_transparent]"
+              "min-h-0 flex-1 lg:overflow-y-auto lg:overscroll-y-contain",
+              "lg:pr-2 lg:pb-4",
+              "lg:[scrollbar-width:thin]",
+              "lg:[scrollbar-color:color-mix(in_srgb,var(--color-espresso)_35%,transparent)_transparent]"
             )}
           >
             <CmsSectionNav sections={sections} />
