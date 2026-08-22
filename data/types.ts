@@ -69,6 +69,11 @@ export type LawyerCase = {
   outcome_ka: string;
 };
 
+export type PublishedCase = LawyerCase & {
+  lawyerSlug: string;
+  lawyerName: string;
+};
+
 export type Review = {
   id: string;
   authorName: string;

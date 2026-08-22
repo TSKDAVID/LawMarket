@@ -3,12 +3,14 @@ import { ServicesExplorer } from "@/components/home/services-explorer";
 import { GuaranteeBand } from "@/components/home/guarantee-band";
 import { TrustBand } from "@/components/home/trust-band";
 import { ReviewsSection } from "@/components/home/reviews-section";
+import { SuccessfulCasesSection } from "@/components/home/successful-cases-section";
 import { CtaSection } from "@/components/home/cta-section";
 import {
   getCategories,
   getServices,
   getVerifiedLawyers,
   getReviews,
+  getPublishedCases,
 } from "@/data/queries";
 import { getSessionUser } from "@/lib/auth";
 import { getSiteSettings } from "@/lib/cms/settings";
@@ -24,13 +26,16 @@ export default async function HomePage({
   const { locale } = await params;
   setRequestLocale(locale as Locale);
 
-  const [categories, services, lawyers, reviews, user, settings] = await Promise.all([
+  const settings = await getSiteSettings();
+  const showReviews = settings.home_show_reviews;
+
+  const [categories, services, lawyers, reviews, cases, user] = await Promise.all([
     getCategories(),
     getServices(),
     getVerifiedLawyers(),
-    getReviews(),
+    showReviews ? getReviews() : Promise.resolve([]),
+    showReviews ? Promise.resolve([]) : getPublishedCases(8),
     getSessionUser(),
-    getSiteSettings(),
   ]);
 
   const role = user?.profile?.role;
@@ -53,7 +58,11 @@ export default async function HomePage({
       />
       <GuaranteeBand />
       <TrustBand lawyers={lawyers} />
-      <ReviewsSection reviews={reviews} lawyers={lawyers} services={services} />
+      {showReviews ? (
+        <ReviewsSection reviews={reviews} lawyers={lawyers} services={services} />
+      ) : (
+        <SuccessfulCasesSection cases={cases} categories={categories} />
+      )}
       <CtaSection />
     </>
   );

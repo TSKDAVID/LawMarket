@@ -189,6 +189,7 @@ export async function saveSiteContact(
       social_instagram: String(formData.get("social_instagram") ?? "").trim(),
       social_linkedin: String(formData.get("social_linkedin") ?? "").trim(),
       banner_visible: formData.get("banner_visible") === "on",
+      home_show_reviews: formData.get("home_show_reviews") === "on",
       legal_updated_at: String(formData.get("legal_updated_at") ?? "").trim(),
       updated_by: admin.id,
     })

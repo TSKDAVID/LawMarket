@@ -176,6 +176,7 @@ export type SiteSettingsRow = {
   hero_embed_url: string;
   legal_updated_at: string;
   banner_visible: boolean;
+  home_show_reviews: boolean;
   updated_at: string;
   updated_by: string | null;
 };

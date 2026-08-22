@@ -7,6 +7,7 @@ import type {
   Category,
   Lawyer,
   LawyerCase,
+  PublishedCase,
   Review,
   Service,
   ServiceFaq,
@@ -426,4 +427,40 @@ export async function getCasesByLawyer(
     .order("sort_order")
     .order("year", { ascending: false });
   return (data ?? []).map(mapCase);
+}
+
+/** Published past cases from live lawyer profiles (homepage showcase). */
+export async function getPublishedCases(limit = 8): Promise<PublishedCase[]> {
+  const supabase = createAnonClient();
+
+  const { data: lawyerRows } = await supabase
+    .from("lawyers")
+    .select("id, slug, name")
+    .eq("published", true);
+
+  const lawyerMap = new Map(
+    (lawyerRows ?? []).map((row) => [row.id, { slug: row.slug, name: row.name }])
+  );
+  if (lawyerMap.size === 0) return [];
+
+  const { data } = await supabase
+    .from("lawyer_cases")
+    .select("*")
+    .eq("published", true)
+    .in("lawyer_id", [...lawyerMap.keys()])
+    .order("sort_order")
+    .order("year", { ascending: false })
+    .limit(limit);
+
+  const cases: PublishedCase[] = [];
+  for (const row of data ?? []) {
+    const lawyer = lawyerMap.get(row.lawyer_id);
+    if (!lawyer) continue;
+    cases.push({
+      ...mapCase(row),
+      lawyerSlug: lawyer.slug,
+      lawyerName: lawyer.name,
+    });
+  }
+  return cases;
 }

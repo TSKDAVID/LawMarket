@@ -52,6 +52,18 @@ export function CmsContactForm({
               />
               {t("bannerVisible")}
             </label>
+            <label className="mt-4 flex items-center gap-2 font-body text-sm text-espresso">
+              <input
+                type="checkbox"
+                name="home_show_reviews"
+                defaultChecked={settings.home_show_reviews}
+                className="h-4 w-4 rounded border-espresso/30"
+              />
+              {t("homeShowReviews")}
+            </label>
+            <p className="mt-2 font-body text-xs text-espresso/60">
+              {t("homeShowReviewsHint")}
+            </p>
           </CmsSectionBlock>
 
           <CmsSectionBlock

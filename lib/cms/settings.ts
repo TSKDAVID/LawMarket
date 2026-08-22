@@ -15,7 +15,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
   const { data } = await supabase
     .from("site_settings")
     .select(
-      "contact_email, contact_phone, contact_phone_href, contact_location_en, contact_location_ka, social_facebook, social_instagram, social_linkedin, hero_media_type, hero_media_url, hero_poster_url, hero_embed_url, legal_updated_at, banner_visible"
+      "contact_email, contact_phone, contact_phone_href, contact_location_en, contact_location_ka, social_facebook, social_instagram, social_linkedin, hero_media_type, hero_media_url, hero_poster_url, hero_embed_url, legal_updated_at, banner_visible, home_show_reviews"
     )
     .eq("id", 1)
     .maybeSingle();
@@ -43,5 +43,6 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     legal_updated_at:
       row.legal_updated_at || DEFAULT_SITE_SETTINGS.legal_updated_at,
     banner_visible: row.banner_visible ?? true,
+    home_show_reviews: row.home_show_reviews ?? false,
   };
 }

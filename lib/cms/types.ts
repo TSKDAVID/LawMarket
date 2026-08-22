@@ -15,6 +15,8 @@ export type SiteSettings = {
   hero_embed_url: string;
   legal_updated_at: string;
   banner_visible: boolean;
+  /** When true, homepage shows client reviews instead of lawyer past cases. */
+  home_show_reviews: boolean;
 };
 
 export type SitePageSection = {
@@ -64,4 +66,5 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   hero_embed_url: "",
   legal_updated_at: "2026-08-08",
   banner_visible: true,
+  home_show_reviews: false,
 };
