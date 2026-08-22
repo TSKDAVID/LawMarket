@@ -34,9 +34,15 @@ export function useCmsStyle(contentKey: string) {
 }
 
 export function useCmsText(contentKey: string, fallback?: string) {
-  const cms = useContext(CmsTextContext)[contentKey];
-  if (cms) return cms;
+  const texts = useContext(CmsTextContext);
+  if (contentKey in texts) {
+    return texts[contentKey];
+  }
   return fallback ?? "";
+}
+
+export function hasCmsTextOverride(contentKey: string) {
+  return contentKey in useContext(CmsTextContext);
 }
 
 function resolveChildText(children: ReactNode, cmsText?: string) {
@@ -58,9 +64,18 @@ export function CmsStyledText({
   as?: ElementType;
   children: ReactNode;
 }) {
+  const texts = useContext(CmsTextContext);
   const style = useCmsStyle(contentKey);
-  const cmsText = useContext(CmsTextContext)[contentKey];
-  const content = resolveChildText(children, cmsText);
+  const hasOverride = contentKey in texts;
+  const cmsText = texts[contentKey];
+
+  if (hasOverride && !cmsText.trim()) {
+    return null;
+  }
+
+  const content = hasOverride
+    ? cmsText
+    : resolveChildText(children, undefined);
 
   return (
     <Component className={cn(className, cmsStyleClasses(style, contentKey))}>

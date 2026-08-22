@@ -6,8 +6,8 @@ export function buildCmsTextMap(siteContent: SiteContent, locale: Locale) {
   const lang = locale === "ka" ? "ka" : "en";
   const map: Record<string, string> = {};
   for (const [key, row] of Object.entries(siteContent)) {
-    const value = row[lang]?.trim();
-    if (value) map[key] = value;
+    // Include empty strings — a saved blank in CMS must hide copy, not fall back to JSON.
+    map[key] = (row[lang] ?? "").trim();
   }
   return map;
 }

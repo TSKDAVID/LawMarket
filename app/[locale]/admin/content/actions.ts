@@ -120,7 +120,6 @@ export async function saveSiteText(
       key === "home.heroTitle"
         ? sanitizeHeroTitle(rawKa)
         : sanitizePlainCmsText(rawKa);
-    if (!valueEn && !valueKa) continue;
 
     const styleEn = readCmsTextStyleFormData(formData, key, "en");
     const styleKa = readCmsTextStyleFormData(formData, key, "ka");
