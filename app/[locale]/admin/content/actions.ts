@@ -87,7 +87,10 @@ export async function saveSiteText(
       value_ka: valueKa,
       updated_by: admin.id,
     });
-    if (error) return { error: "saveFailed" };
+    if (error) {
+      console.error("[cms] site_content", key, error.message);
+      return { error: "saveFailed" };
+    }
   }
 
   revalidateSite(locale);
@@ -119,7 +122,10 @@ export async function saveSiteContact(
     })
     .eq("id", 1);
 
-  if (error) return { error: "saveFailed" };
+  if (error) {
+    console.error("[cms] site_settings contact", error.message);
+    return { error: "saveFailed" };
+  }
 
   revalidateSite(locale);
   return { error: null, ok: true };
@@ -168,7 +174,10 @@ export async function saveHeroMedia(
     })
     .eq("id", 1);
 
-  if (error) return { error: "saveFailed" };
+  if (error) {
+    console.error("[cms] site_settings hero", error.message);
+    return { error: "saveFailed" };
+  }
 
   revalidateSite(locale);
   return { error: null, ok: true };
@@ -214,7 +223,10 @@ export async function saveSitePage(
     updated_by: admin.id,
   });
 
-  if (error) return { error: "saveFailed" };
+  if (error) {
+    console.error("[cms] site_pages", slug, error.message);
+    return { error: "saveFailed" };
+  }
 
   revalidateSite(locale);
   return { error: null, ok: true };

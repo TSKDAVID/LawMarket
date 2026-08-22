@@ -8,6 +8,7 @@ export type CmsField = {
 export type CmsGroup = {
   id: string;
   label: string;
+  labelKey?: string;
   fields: CmsField[];
 };
 
@@ -16,6 +17,7 @@ export const CMS_CONTENT_GROUPS: CmsGroup[] = [
   {
     id: "global",
     label: "Banner & branding",
+    labelKey: "sectionGlobal",
     fields: [
       { key: "common.banner", label: "Top banner text" },
       { key: "common.tagline", label: "Site tagline (footer)" },
@@ -25,6 +27,7 @@ export const CMS_CONTENT_GROUPS: CmsGroup[] = [
   {
     id: "home-hero",
     label: "Home — hero",
+    labelKey: "sectionHomeHero",
     fields: [
       {
         key: "home.heroTitle",
@@ -43,6 +46,7 @@ export const CMS_CONTENT_GROUPS: CmsGroup[] = [
   {
     id: "home-bands",
     label: "Home — sections",
+    labelKey: "sectionHomeBands",
     fields: [
       { key: "home.popularServicesTitle", label: "Popular services title" },
       { key: "home.popularServicesSubtitle", label: "Popular services subtitle", multiline: true },
@@ -65,6 +69,7 @@ export const CMS_CONTENT_GROUPS: CmsGroup[] = [
   {
     id: "footer",
     label: "Footer",
+    labelKey: "sectionFooter",
     fields: [
       { key: "common.footer.description", label: "Footer description", multiline: true },
       { key: "common.footer.platform", label: "Platform column heading" },
@@ -77,6 +82,7 @@ export const CMS_CONTENT_GROUPS: CmsGroup[] = [
   {
     id: "contact-form",
     label: "Contact page — form",
+    labelKey: "sectionContactForm",
     fields: [
       { key: "contact.title", label: "Page title" },
       { key: "contact.subtitle", label: "Page subtitle", multiline: true },
@@ -97,6 +103,7 @@ export const CMS_CONTENT_GROUPS: CmsGroup[] = [
   {
     id: "catalog",
     label: "Services & lawyers pages",
+    labelKey: "sectionCatalog",
     fields: [
       { key: "services.title", label: "Services page title" },
       { key: "services.subtitle", label: "Services page subtitle", multiline: true },
