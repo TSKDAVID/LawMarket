@@ -363,7 +363,9 @@ export function ServicesExplorer({
                   className="animate-fade-up line-clamp-2 max-w-2xl min-h-[4.75rem] font-heading text-[clamp(2.25rem,4vw,3.5rem)] font-semibold leading-[1.08] tracking-[-0.03em] text-espresso sm:min-h-[5.5rem]"
                 >
                   {t.rich("heroTitle", {
-                    accent: (chunks) => <>{chunks}</>,
+                    accent: (chunks) => (
+                      <span className="text-burgundy">{chunks}</span>
+                    ),
                   })}
                 </h1>
                 <p

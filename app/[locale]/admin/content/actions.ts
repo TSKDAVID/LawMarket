@@ -5,6 +5,7 @@ import { routing } from "@/i18n/routing";
 import { requireAdmin } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { CMS_CONTENT_KEYS } from "@/lib/cms/content-groups";
+import { sanitizePlainCmsText } from "@/lib/cms/accent-text";
 import {
   SITE_PAGE_SLUGS,
   type HeroMediaType,
@@ -77,9 +78,13 @@ export async function saveSiteText(
   const supabase = await createClient();
 
   for (const key of CMS_CONTENT_KEYS) {
-    const valueEn = String(formData.get(`${key}__en`) ?? "");
-    const valueKa = String(formData.get(`${key}__ka`) ?? "");
-    if (!valueEn.trim() && !valueKa.trim()) continue;
+    const rawEn = String(formData.get(`${key}__en`) ?? "");
+    const rawKa = String(formData.get(`${key}__ka`) ?? "");
+    const valueEn =
+      key === "home.heroTitle" ? rawEn.trim() : sanitizePlainCmsText(rawEn);
+    const valueKa =
+      key === "home.heroTitle" ? rawKa.trim() : sanitizePlainCmsText(rawKa);
+    if (!valueEn && !valueKa) continue;
 
     const { error } = await supabase.from("site_content").upsert({
       key,

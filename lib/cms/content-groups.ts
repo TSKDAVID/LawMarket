@@ -3,6 +3,7 @@ export type CmsField = {
   label: string;
   hint?: string;
   multiline?: boolean;
+  format?: "plain" | "accent" | "placeholders";
 };
 
 export type CmsGroup = {
@@ -32,13 +33,13 @@ export const CMS_CONTENT_GROUPS: CmsGroup[] = [
       {
         key: "home.heroTitle",
         label: "Hero headline",
-        hint: "Wrap highlighted words in <accent> tags.",
+        format: "accent",
       },
       { key: "home.heroSubtitle", label: "Hero subtitle", multiline: true },
       { key: "home.heroMediaLabel", label: "Hero media label" },
       { key: "home.searchPlaceholder", label: "Search placeholder" },
       { key: "home.searchButton", label: "Search button" },
-      { key: "home.proofLine", label: "Proof line", hint: "Use {services} and {lawyers} placeholders." },
+      { key: "home.proofLine", label: "Proof line", format: "placeholders", hint: "Use {services} and {lawyers}." },
       { key: "home.attorneyPrompt", label: "Attorney prompt" },
       { key: "home.attorneyCta", label: "Attorney CTA" },
     ],

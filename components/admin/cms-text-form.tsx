@@ -9,6 +9,7 @@ import {
   CmsEditorShell,
   CmsSectionBlock,
 } from "@/components/admin/cms-editor-shell";
+import { CmsAccentEditor } from "@/components/admin/cms-accent-editor";
 import {
   saveSiteText,
   type CmsState,
@@ -64,40 +65,65 @@ export function CmsTextForm({
                     </p>
                   )}
                   <div className="mt-3 grid gap-4 lg:grid-cols-2">
-                    <div>
-                      <label className="mb-1 block font-mono text-xs text-espresso/70">
-                        {t("english")}
-                      </label>
-                      {field.multiline ? (
-                        <Textarea
+                    {field.format === "accent" ? (
+                      <>
+                        <CmsAccentEditor
                           name={`${field.key}__en`}
-                          rows={3}
+                          langLabel={t("english")}
                           defaultValue={values[field.key]?.en ?? ""}
+                          highlightLabel={t("accentHighlight")}
+                          beforeLabel={t("accentBefore")}
+                          afterLabel={t("accentAfter")}
+                          previewLabel={t("accentPreview")}
                         />
-                      ) : (
-                        <Input
-                          name={`${field.key}__en`}
-                          defaultValue={values[field.key]?.en ?? ""}
-                        />
-                      )}
-                    </div>
-                    <div>
-                      <label className="mb-1 block font-mono text-xs text-espresso/70">
-                        {t("georgian")}
-                      </label>
-                      {field.multiline ? (
-                        <Textarea
+                        <CmsAccentEditor
                           name={`${field.key}__ka`}
-                          rows={3}
+                          langLabel={t("georgian")}
                           defaultValue={values[field.key]?.ka ?? ""}
+                          highlightLabel={t("accentHighlight")}
+                          beforeLabel={t("accentBefore")}
+                          afterLabel={t("accentAfter")}
+                          previewLabel={t("accentPreview")}
                         />
-                      ) : (
-                        <Input
-                          name={`${field.key}__ka`}
-                          defaultValue={values[field.key]?.ka ?? ""}
-                        />
-                      )}
-                    </div>
+                      </>
+                    ) : (
+                      <>
+                        <div>
+                          <label className="mb-1 block font-mono text-xs text-espresso/70">
+                            {t("english")}
+                          </label>
+                          {field.multiline ? (
+                            <Textarea
+                              name={`${field.key}__en`}
+                              rows={3}
+                              defaultValue={values[field.key]?.en ?? ""}
+                            />
+                          ) : (
+                            <Input
+                              name={`${field.key}__en`}
+                              defaultValue={values[field.key]?.en ?? ""}
+                            />
+                          )}
+                        </div>
+                        <div>
+                          <label className="mb-1 block font-mono text-xs text-espresso/70">
+                            {t("georgian")}
+                          </label>
+                          {field.multiline ? (
+                            <Textarea
+                              name={`${field.key}__ka`}
+                              rows={3}
+                              defaultValue={values[field.key]?.ka ?? ""}
+                            />
+                          ) : (
+                            <Input
+                              name={`${field.key}__ka`}
+                              defaultValue={values[field.key]?.ka ?? ""}
+                            />
+                          )}
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
               ))}
